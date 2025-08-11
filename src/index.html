@@ -1,13 +1,246 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>MySsrApp</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Selection App</title>
+    <!-- Use Tailwind CSS for a modern, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the selection border */
+        .image-card.selected {
+            border: 4px solid #3b82f6; /* Blue border for selected images */
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            transform: scale(1.02);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        /* Basic styling for the modal */
+        .modal {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal.hidden {
+            visibility: hidden;
+            opacity: 0;
+        }
+    </style>
 </head>
-<body>
-  <app-root></app-root>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm p-4 sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800">Image Selection</h1>
+            <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+                <span id="selected-counter" class="text-lg font-medium text-gray-600">Selected: 0 / 300</span>
+                <button id="submit-button"
+                        class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-full shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out"
+                        disabled>
+                    Submit Images
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content - Image Grid -->
+    <main class="container mx-auto p-4">
+        <div id="image-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Images will be dynamically inserted here -->
+        </div>
+        <div id="loading-indicator" class="text-center p-4 text-gray-500 hidden">
+            <p>Loading more images...</p>
+        </div>
+    </main>
+
+    <!-- Submission Result Modal -->
+    <div id="result-modal" class="modal fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute inset-0 bg-gray-900 opacity-50"></div>
+        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-lg w-full z-50">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="text-xl font-bold text-gray-800">Selected Images</h2>
+                <button id="close-modal-button" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            <div id="modal-content" class="mt-4 max-h-64 overflow-y-auto space-y-2">
+                <!-- Selected image URLs will be displayed here -->
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="copy-button" class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300">
+                    Copy URLs
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Define the state for the application
+            const state = {
+                selectedImages: new Set(), // Use a Set for efficient lookups
+                maxSelection: 3,
+                totalImagesToLoad: 3,
+                imagesLoaded: 0,
+                imagesPerLoad: 3,
+                isLoading: false,
+                isSubmitting: false,
+            };
+
+            // DOM elements
+            const imageGrid = document.getElementById('image-grid');
+            const selectedCounter = document.getElementById('selected-counter');
+            const submitButton = document.getElementById('submit-button');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const resultModal = document.getElementById('result-modal');
+            const modalContent = document.getElementById('modal-content');
+            const closeModalButton = document.getElementById('close-modal-button');
+            const copyButton = document.getElementById('copy-button');
+
+            // Function to update the UI counter and button state
+            const updateUI = () => {
+                const count = state.selectedImages.size;
+                selectedCounter.textContent = `Selected: ${count} / ${state.maxSelection}`;
+                submitButton.disabled = count === 0;
+            };
+
+            // Function to create an image element with a click listener
+            const createImageCard = (url) => {
+                const card = document.createElement('div');
+                card.className = 'image-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer relative transition-all duration-200 ease-in-out';
+                card.setAttribute('data-url', url);
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `Image ${state.imagesLoaded + 1}`;
+                img.className = 'w-full h-48 object-cover';
+                img.loading = 'lazy'; // Lazy loading for better performance
+
+                card.appendChild(img);
+                return card;
+            };
+
+            // Function to handle image selection
+            const handleImageClick = (event) => {
+                const card = event.currentTarget;
+                const url = card.getAttribute('data-url');
+
+                if (state.selectedImages.has(url)) {
+                    // Deselect the image
+                    state.selectedImages.delete(url);
+                    card.classList.remove('selected');
+                } else if (state.selectedImages.size < state.maxSelection) {
+                    // Select the image
+                    state.selectedImages.add(url);
+                    card.classList.add('selected');
+                } else {
+                    // Max selection reached, show a temporary message
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = `You can only select up to ${state.maxSelection} images.`;
+                    messageElement.className = 'absolute top-0 left-0 right-0 bg-red-500 text-white text-xs p-1 text-center animate-pulse';
+                    card.appendChild(messageElement);
+                    setTimeout(() => messageElement.remove(), 2000);
+                }
+                updateUI();
+            };
+
+            // Function to load and render a batch of images
+            const loadMoreImages = () => {
+                if (state.isLoading || state.imagesLoaded >= state.totalImagesToLoad) {
+                    return;
+                }
+                state.isLoading = true;
+                loadingIndicator.classList.remove('hidden');
+
+                const fragment = document.createDocumentFragment();
+                const currentImagesToLoad = Math.min(state.imagesPerLoad, state.totalImagesToLoad - state.imagesLoaded);
+
+                for (let i = 0; i < currentImagesToLoad; i++) {
+                    const url = `https://picsum.photos/3/3?random=${state.imagesLoaded + i + 1}`;
+                    const card = createImageCard(url);
+                    card.addEventListener('click', handleImageClick);
+                    fragment.appendChild(card);
+                }
+
+                imageGrid.appendChild(fragment);
+                state.imagesLoaded += currentImagesToLoad;
+                state.isLoading = false;
+                loadingIndicator.classList.add('hidden');
+            };
+
+            // Function to handle the submit action
+            const handleSubmit = () => {
+                if (state.selectedImages.size === 0 || state.isSubmitting) {
+                    return;
+                }
+                state.isSubmitting = true;
+
+                // Clear previous modal content
+                modalContent.innerHTML = '';
+
+                if (state.selectedImages.size > 0) {
+                    const ul = document.createElement('ul');
+                    ul.className = 'list-disc list-inside';
+                    state.selectedImages.forEach(url => {
+                        const li = document.createElement('li');
+                        li.textContent = url;
+                        li.className = 'text-sm text-gray-700 truncate';
+                        ul.appendChild(li);
+                    });
+                    modalContent.appendChild(ul);
+                } else {
+                    const p = document.createElement('p');
+                    p.textContent = 'No images were selected.';
+                    p.className = 'text-gray-500 italic';
+                    modalContent.appendChild(p);
+                }
+
+                resultModal.classList.remove('hidden');
+                state.isSubmitting = false;
+            };
+
+            // Function to close the modal
+            const closeModal = () => {
+                resultModal.classList.add('hidden');
+            };
+
+            // Function to copy the URLs to the clipboard
+            const copyUrlsToClipboard = () => {
+                const urls = Array.from(state.selectedImages).join('\n');
+                if (urls) {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = urls;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    // Add a temporary feedback message
+                    const copyMessage = document.createElement('span');
+                    copyMessage.textContent = 'URLs copied!';
+                    copyMessage.className = 'text-green-500 font-semibold ml-2';
+                    copyButton.parentNode.insertBefore(copyMessage, copyButton.nextSibling);
+                    setTimeout(() => copyMessage.remove(), 2000);
+                }
+            };
+
+            // Event listeners
+            submitButton.addEventListener('click', handleSubmit);
+            closeModalButton.addEventListener('click', closeModal);
+            copyButton.addEventListener('click', copyUrlsToClipboard);
+
+            // Infinite scroll logic
+            window.addEventListener('scroll', () => {
+                // Check if the user has scrolled to the bottom of the page
+                const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+                if (isAtBottom) {
+                    loadMoreImages();
+                }
+            });
+
+            // Initial load of images
+            loadMoreImages();
+        });
+    </script>
+    <app-root></app-root>
 </body>
 </html>

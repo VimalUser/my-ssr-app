@@ -1,0 +1,5 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/920b4794-64e2-4e16-92ef-bd6e6db688bb/resourceGroups/Perfectlypicked/providers/Microsoft.Web/sites/webPerfectlyPicked",
+  "appService.deploySubpath": "dist\\my-ssr-app"
+
+}
