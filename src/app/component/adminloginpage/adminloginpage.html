@@ -1,0 +1,33 @@
+<div class="login-container">
+  <h2>Login</h2>
+   <img src="assets/logo.png" alt="Candy Express Logo" class="header-logo" />
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <label for="username">Username</label>
+    <input
+      id="username"
+      formControlName="username"
+      type="text"
+      placeholder="Enter username"
+      [class.invalid]="username.invalid && (username.dirty || username.touched)"
+    />
+    <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
+      Username is required
+    </div>
+
+    <label for="password">Password</label>
+    <input
+      id="password"
+      formControlName="password"
+      type="password"
+      placeholder="Enter password"
+      [class.invalid]="password.invalid && (password.dirty || password.touched)"
+    />
+    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
+      Password is required
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid" class="login-btn">
+      Login
+    </button>
+  </form>
+</div>

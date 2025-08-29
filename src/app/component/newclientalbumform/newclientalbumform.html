@@ -1,0 +1,105 @@
+<div class="main-client-container">
+  <header class="header-line">
+    <img src="assets/logo.png" alt="Candy Express Photography" class="logo" />
+    <button class="save-btn" (click)="onSave()">Save</button>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <button class="create-btn">+ Create new</button>
+      <nav class="nav-menu">
+        <a href="#">Home</a>
+        <a href="#">Progress</a>
+        <a href="#">Cancelled</a>
+        <a href="#">Completed</a>
+        <a href="#">Notification</a>
+        <a href="#">Comments</a>
+      </nav>
+      <div class="sidebar-user">Kavin S...</div>
+    </aside>
+
+    <section class="form-section">
+      <h2 class="form-title">New client form</h2>
+      <form [formGroup]="clientForm" autocomplete="off" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Order no</label>
+            <input formControlName="orderNo" type="text" placeholder="Enter no" />
+          </div>
+          <div class="form-group">
+            <label>Client name</label>
+            <input formControlName="clientName" type="text" placeholder="Enter name" />
+          </div>
+          <div class="form-group">
+            <label>Date of Event</label>
+            <input formControlName="dateOfEvent" type="date" />
+          </div>
+          <div class="form-group">
+            <label>Type of event</label>
+            <select formControlName="typeOfEvent">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let event of eventTypes" [value]="event">{{event}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mobile no</label>
+            <input formControlName="mobileNo" type="text" placeholder="Enter no" />
+          </div>
+          <div class="form-group">
+            <label>Type of album</label>
+            <select formControlName="typeOfAlbum">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let album of albumTypes" [value]="album">{{album}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>No of albums</label>
+            <select formControlName="noOfAlbums">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let n of numbers" [value]="n">{{n}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Album size</label>
+            <select formControlName="albumSize">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let s of sizes" [value]="s">{{s}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>No of Sheets</label>
+            <select formControlName="noOfSheets">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let n of numbers" [value]="n">{{n}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Album pics</label>
+            <input formControlName="albumPics" placeholder="Enter text" />
+          </div>
+          <div class="form-group">
+            <label>No of Frame</label>
+            <select formControlName="noOfFrame">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let n of numbers" [value]="n">{{n}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Frame Size</label>
+            <select formControlName="frameSize">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let s of frameSizes" [value]="s">{{s}}</option>
+            </select>
+          </div>
+           <div class="form-group">
+            <label>Login URL</label>
+            <input formControlName="loginURL" type="text" placeholder="Login URL" />
+          </div>
+          <div class="form-group">
+            <label>Login Code</label>
+            <input formControlName="loginCode" type="text" placeholder="Login Code" />
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

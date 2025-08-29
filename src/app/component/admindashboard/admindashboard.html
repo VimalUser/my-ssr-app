@@ -1,0 +1,58 @@
+<div class="main-container">
+  <header class="dashboard-header">
+    <img src="assets/logo.png" alt="Candy Express Photography" class="logo" />
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
+      <button class="create-btn"  (click)="createnew()">+ Create new</button>
+      <nav class="nav-menu">
+        <a href="#">Home</a>
+        <a href="#">Progress</a>
+        <a href="#">Cancelled</a>
+        <a href="#">Completed</a>
+        <a href="#">Notification</a>
+        <a href="#">Comments</a>
+      </nav>
+      <div class="sidebar-user">Kavin S...</div>
+    </aside>
+
+    <!-- Main content area -->
+    <section class="dashboard-content">
+      <!-- Tabs -->
+      <div class="tabs">
+        <button
+          *ngFor="let tab of tabs"
+          [class.active]="activeTab === tab.key"
+          (click)="setTab(tab.key)"
+        >
+          {{ tab.label }}
+          <span class="tab-count">{{ tab.count }}</span>
+        </button>
+      </div>
+
+      <!-- Orders list -->
+      <div class="orders-list">
+        <div *ngFor="let order of filteredOrders" class="order-card" (click)="vieworder(order.id)">
+          <div class="order-info">
+            Client : {{ order.clientName }} / Order no : {{ order.orderNo }}
+          </div>
+          <div class="event-type">Event type : {{ order.typeOfEvent }}</div>
+          <div class="order-status">
+            <span
+              class="status-dot"
+              [ngClass]="{
+                grey: order.status === 'Yet to start',
+                red: order.status === 'Cancelled',
+                blue: order.status === 'Progressing',
+                green: order.status === 'Completed'
+              }"
+            ></span>
+            {{ order.status }}
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
