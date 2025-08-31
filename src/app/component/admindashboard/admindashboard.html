@@ -1,58 +1,55 @@
-<div class="main-container">
-  <header class="dashboard-header">
-    <img src="assets/logo.png" alt="Candy Express Photography" class="logo" />
-  </header>
+<!-- AdminDashboard.component.html -->
+<section class="dashboard-content">
+  <!-- Tabs -->
+  <div class="d-flex flex-wrap gap-3 mb-3">
+    <button
+      *ngFor="let tab of tabs"
+      type="button"
+      class="btn"
+      [ngClass]="activeTab === tab.key ? 'btn-primary fw-bold' : 'btn-outline-secondary'"
+      (click)="setTab(tab.key)"
+    >
+      {{ tab.label }}
+      <span class="badge bg-warning text-dark ms-2">{{ tab.count }}</span>
+    </button>
+  </div>
 
-  <div class="layout">
-    <!-- Sidebar navigation -->
-    <aside class="sidebar">
-      <button class="create-btn"  (click)="createnew()">+ Create new</button>
-      <nav class="nav-menu">
-        <a href="#">Home</a>
-        <a href="#">Progress</a>
-        <a href="#">Cancelled</a>
-        <a href="#">Completed</a>
-        <a href="#">Notification</a>
-        <a href="#">Comments</a>
-      </nav>
-      <div class="sidebar-user">Kavin S...</div>
-    </aside>
-
-    <!-- Main content area -->
-    <section class="dashboard-content">
-      <!-- Tabs -->
-      <div class="tabs">
-        <button
-          *ngFor="let tab of tabs"
-          [class.active]="activeTab === tab.key"
-          (click)="setTab(tab.key)"
-        >
-          {{ tab.label }}
-          <span class="tab-count">{{ tab.count }}</span>
-        </button>
-      </div>
-
-      <!-- Orders list -->
-      <div class="orders-list">
-        <div *ngFor="let order of filteredOrders" class="order-card" (click)="vieworder(order.id)">
-          <div class="order-info">
-            Client : {{ order.clientName }} / Order no : {{ order.orderNo }}
+  <!-- Orders List -->
+  <div class="d-flex flex-column gap-3">
+    <div
+      *ngFor="let order of filteredOrders"
+      class="card shadow-sm"
+      (click)="vieworder(order.id)"
+      style="cursor: pointer;"
+    >
+      <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <div class="mb-2 mb-md-0">
+          <div class="fs-5 fw-semibold text-dark">
+            Client: {{ order.clientName }} / Order no: {{ order.orderNo }}
           </div>
-          <div class="event-type">Event type : {{ order.typeOfEvent }}</div>
-          <div class="order-status">
+          <div class="text-muted">Event type: {{ order.typeOfEvent }}</div>
+          <div class="d-flex align-items-center mt-1 text-secondary">
             <span
-              class="status-dot"
+              class="rounded-circle me-2"
               [ngClass]="{
-                grey: order.status === 'Yet to start',
-                red: order.status === 'Cancelled',
-                blue: order.status === 'Progressing',
-                green: order.status === 'Completed'
+                'bg-secondary': order.status === 'Yet to start',
+                'bg-danger': order.status === 'Cancelled',
+                'bg-primary': order.status === 'Progressing',
+                'bg-success': order.status === 'Completed'
               }"
+              style="width: 12px; height: 12px;"
             ></span>
             {{ order.status }}
           </div>
         </div>
+
+        <button
+          class="btn btn-primary"
+          (click)="$event.stopPropagation(); uploadpage(order.id)"
+        >
+          Upload Picture
+        </button>
       </div>
-    </section>
+    </div>
   </div>
-</div>
+</section>

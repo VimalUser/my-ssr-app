@@ -1,24 +1,6 @@
-<div class="main-client-container">
-  <header class="header-line">
-    <img src="assets/logo.png" alt="Candy Express Photography" class="logo" />
-    <button class="save-btn" (click)="onSave()">Save</button>
-  </header>
-  <div class="layout">
-    <aside class="sidebar">
-      <button class="create-btn">+ Create new</button>
-      <nav class="nav-menu">
-        <a href="#">Home</a>
-        <a href="#">Progress</a>
-        <a href="#">Cancelled</a>
-        <a href="#">Completed</a>
-        <a href="#">Notification</a>
-        <a href="#">Comments</a>
-      </nav>
-      <div class="sidebar-user">Kavin S...</div>
-    </aside>
-
     <section class="form-section">
       <h2 class="form-title">New client form</h2>
+       <button class="save-btn" (click)="onSave()">Save</button>
       <form [formGroup]="clientForm" autocomplete="off" novalidate>
         <div class="form-grid">
           <div class="form-group">
@@ -101,5 +83,3 @@
         </div>
       </form>
     </section>
-  </div>
-</div>

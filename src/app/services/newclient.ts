@@ -16,6 +16,12 @@ export class newclientapi {
    * Fetches data from the API.
    * @returns An Observable of the API response.
    */
+
+validateUserLogin(data: any): Observable<any> {
+      var finalUrl = this.apiBaseUrl + 'ValidateUserLogin';    
+    return this.http.post(`${finalUrl}`, data);
+  }
+
   getAlbumDetails(id: string): Observable<any> {
     var finalUrl = this.apiBaseUrl + 'GetAlbumDetails';
     return this.http.get(`${finalUrl}?Id=${id}`);

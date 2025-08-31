@@ -1,0 +1,159 @@
+<!-- AdminLayout.component.html -->
+
+<header class="d-flex align-items-center justify-content-between border-bottom p-2 px-3" style="background-color: #f6ecdb;">
+  <div class="d-flex align-items-center gap-3">
+    <img src="assets/logo.png" alt="Candy Express Photography" class="logo" style="height:36px;" />
+
+    <!-- Hamburger toggle button: visible only on mobile -->
+    <button
+      class="btn btn-outline-primary d-lg-none"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#sidebarMenu"
+      aria-controls="sidebarMenu"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      &#9776;
+    </button>
+  </div>
+
+  <!-- Logout button on right -->
+  <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="logout()">
+    Logout
+  </button>
+</header>
+
+<div class="container-fluid">
+  <div class="row min-vh-100">
+    <!-- Sidebar -->
+    <nav
+      id="sidebarMenu"
+      class="col-lg-2 col-md-3 d-lg-block collapse sidebar-custom p-3"
+      style="overflow-y: auto;"
+    >
+      <button class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3">+ Create new</button>
+
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item mb-2">
+          <a
+            [routerLink]="['/admindashboard']"
+            class="nav-link sidebar-link d-flex align-items-center"
+            routerLinkActive="sidebar-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bi bi-house-door me-2"></i> Home
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a
+            routerLink="/admindashboard/progress"
+            routerLinkActive="sidebar-active"
+            class="nav-link sidebar-link d-flex align-items-center"
+          >
+            <i class="bi bi-speedometer2 me-2"></i> Progress
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a
+            routerLink="/admindashboard/cancelled"
+            routerLinkActive="sidebar-active"
+            class="nav-link sidebar-link d-flex align-items-center"
+          >
+            <i class="bi bi-calendar-x me-2"></i> Cancelled
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a
+            routerLink="/admindashboard/completed"
+            routerLinkActive="sidebar-active"
+            class="nav-link sidebar-link d-flex align-items-center"
+          >
+            <i class="bi bi-check2-square me-2"></i> Completed
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a
+            routerLink="/admindashboard/notifications"
+            routerLinkActive="sidebar-active"
+            class="nav-link sidebar-link d-flex align-items-center"
+          >
+            <i class="bi bi-bell me-2"></i> Notification
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            routerLink="/admindashboard/comments"
+            routerLinkActive="sidebar-active"
+            class="nav-link sidebar-link d-flex align-items-center"
+          >
+            <i class="bi bi-chat-left me-2"></i> Comments
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer mt-auto pt-3 border-top d-flex align-items-center text-white">
+        <span>Kavin S...</span>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="col-lg-10 col-md-9 px-4 py-3">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- CSS remains the same -->
+
+<style>
+  /* Sidebar base */
+  .sidebar-custom {
+    background-color: #222831; /* dark background */
+    min-width: 200px;
+    width: 200px;
+  }
+
+  /* Menu link style */
+  .sidebar-link {
+    color: #fff;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    user-select: none;
+  }
+
+  /* Menu link hover/focus */
+  .sidebar-link:hover {
+    background-color: #cc8400; /* darker orange on hover */
+    color: #fff !important;
+    text-decoration: none;
+  }
+
+  /* Active menu item */
+  .sidebar-active {
+    background-color: #ffa500 !important; /* same orange as create new */
+    color: #fff !important;
+  }
+
+  /* Sidebar footer styling */
+  .sidebar-footer {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  /* Sidebar Icons */
+  .sidebar-link i {
+    font-size: 1.1rem;
+  }
+
+  /* Responsive adjustments: full width sidebar on smaller screens */
+  @media (max-width: 991px) {
+    .sidebar-custom {
+      min-width: 100%;
+      width: 100%;
+      height: auto;
+    }
+  }
+</style>
