@@ -7,6 +7,7 @@ import { Admindashboard } from './component/admindashboard/admindashboard';
 import { Newclientalbumform } from './component/newclientalbumform/newclientalbumform';
 import { Uploadalbumpics } from './component/uploadalbumpics/uploadalbumpics';
 import { Adminlayout } from './component/adminlayout/adminlayout'; // Import the new layout component
+import { Adminactionshome } from './component/adminactionshome/adminactionshome';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -25,6 +26,7 @@ export const routes: Routes = [
       { path: 'newclient', component: Newclientalbumform },
       { path: 'newclient/:id', component: Newclientalbumform  },
       { path: 'uploadpictures/:id', component: Uploadalbumpics  },
+      {path: 'adminactions', component: Adminactionshome}
     ]
   },
 

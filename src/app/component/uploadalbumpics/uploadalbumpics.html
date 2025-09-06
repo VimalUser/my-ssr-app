@@ -13,14 +13,14 @@
         class="form-control mb-2"
         required
       />
-     <button
-  type="button"
-  class="btn btn-warning fw-bold px-4"
-  [disabled]="!selectedFiles['category1']"
-  (click)="uploadCategory('category1')"
->
-  Upload Category 1
-</button>
+      <button
+        type="button"
+        class="btn btn-warning fw-bold px-4"
+        [disabled]="!selectedFiles['category1']"
+        (click)="uploadCategory('category1')"
+      >
+        Upload Category 1
+      </button>
     </div>
 
     <div class="mb-4">
@@ -34,15 +34,15 @@
         class="form-control mb-2"
         required
       />
-    
+
       <button
-  type="button"
-  class="btn btn-warning fw-bold px-4"
-  [disabled]="!selectedFiles['category2']"
-  (click)="uploadCategory('category2')"
->
-  Upload Category 2
-</button>
+        type="button"
+        class="btn btn-warning fw-bold px-4"
+        [disabled]="!selectedFiles['category2']"
+        (click)="uploadCategory('category2')"
+      >
+        Upload Category 2
+      </button>
     </div>
 
     <div class="mb-4">
@@ -56,14 +56,43 @@
         class="form-control mb-2"
         required
       />
-    <button
-  type="button"
-  class="btn btn-warning fw-bold px-4"
-  [disabled]="!selectedFiles['category3']"
-  (click)="uploadCategory('category3')"
->
-  Upload Category 3
-</button>
+      <button
+        type="button"
+        class="btn btn-warning fw-bold px-4"
+        [disabled]="!selectedFiles['category3']"
+        (click)="uploadCategory('category3')"
+      >
+        Upload Category 3
+      </button>
     </div>
+
+    <section class="container bg-white p-4 shadow rounded" style="text-align: center;">
+    <div class="mb-4">
+      <button
+        type="button"
+        class="btn btn-success fw-bold px-4"
+        [disabled]="!selectedFiles['category3']"
+        (click)="generateUserLogin()"
+      >
+        Generate User login Details
+      </button>
+    </div>
+
+    <div class="mb-4">
+      <label for="" class="form-label fw-bold">
+        user login URL : </label
+      >
+      <label for="" class="form-label fw-semibold">
+        logincode/uiuiuiuiuiuereuiu</label
+      >
+    </div>
+
+    <div class="mb-4">
+      <label for="" class="form-label fw-bold">
+        user login passcode : </label
+      >
+      <label for="" class="form-label fw-semibold text-uppercase"> asdsdsds</label>
+    </div>
+    </section>
   </form>
 </section>

@@ -2,7 +2,7 @@
 
 <header class="d-flex align-items-center justify-content-between border-bottom p-2 px-3" style="background-color: #f6ecdb;">
   <div class="d-flex align-items-center gap-3">
-    <img src="assets/logo.png" alt="Candy Express Photography" class="logo" style="height:36px;" />
+    <img src="assets/logo.png" (click)="homePage()" alt="Candy Express Photography" class="logo" style="height:36px;" />
 
     <!-- Hamburger toggle button: visible only on mobile -->
     <button
@@ -32,7 +32,7 @@
       class="col-lg-2 col-md-3 d-lg-block collapse sidebar-custom p-3"
       style="overflow-y: auto;"
     >
-      <button class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3">+ Create new</button>
+      <button class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3" (click)="createnew()">+ Create new</button>
 
       <ul class="nav nav-pills flex-column">
         <li class="nav-item mb-2">

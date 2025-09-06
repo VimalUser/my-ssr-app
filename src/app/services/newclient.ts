@@ -39,4 +39,10 @@ validateUserLogin(data: any): Observable<any> {
     }
     return this.http.post(`${finalUrl}`, data);
   }
+
+   generateUserlogin(id: string): Observable<any> {
+    var finalUrl = this.apiBaseUrl + 'GetUserLogin';
+    return this.http.get(`${finalUrl}?Id=${id}`);
+  }
+
 }

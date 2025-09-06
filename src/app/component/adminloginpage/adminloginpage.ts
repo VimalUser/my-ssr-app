@@ -70,7 +70,7 @@ export class Adminloginpage {
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
-        this.loggingService.validateLoginFailure(error.error);
+        // this.loggingService.validateLoginFailure(error.error);
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
         this.isLoading = false;

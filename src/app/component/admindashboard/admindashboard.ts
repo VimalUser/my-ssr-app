@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import {
+  Router,
+  Event,
+  NavigationStart,
+  NavigationEnd,
+  NavigationError,
+} from '@angular/router';
 import { newclientapi } from '../../services/newclient';
 import { inject } from '@angular/core';
 import { ClientAlbum } from '../../model/ClientAlbum';
@@ -36,7 +42,7 @@ export class Admindashboard implements OnInit {
     { key: 'progress', label: 'Progress', count: 124 },
     { key: 'completed', label: 'Completed', count: 124 },
     { key: 'cancelled', label: 'Cancelled', count: 124 },
-  ];  
+  ];
 
   get filteredOrders() {
     switch (this.activeTab) {
@@ -76,7 +82,7 @@ export class Admindashboard implements OnInit {
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
-        this.loggingService.validateLoginFailure(error.error);
+        // this.loggingService.validateLoginFailure(error.error);
         console.error('There was an error!', error);
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
@@ -92,12 +98,13 @@ export class Admindashboard implements OnInit {
 
   vieworder(id: string | null) {
     alert('View order functionality to be implemented for order ID: ' + id);
-      this.router.navigate(['admindashboard/newclient', id]);
-
+    this.router.navigate(['admindashboard/adminactions']);
   }
 
   uploadpage(id: string | null) {
-    alert('Upload pictures functionality to be implemented for order ID: ' + id);
+    alert(
+      'Upload pictures functionality to be implemented for order ID: ' + id
+    );
     this.router.navigate(['admindashboard/uploadpictures', id]);
   }
 }

@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Also needed for common directives
+import { newclientapi } from '../../services/newclient';
+import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -8,22 +11,39 @@ import { CommonModule } from '@angular/common'; // Also needed for common direct
   imports: [
     CommonModule, // Required for ngIf, ngFor etc.
     FormsModule, // Needed for template-driven forms
-    ReactiveFormsModule // Needed for reactive forms
+    ReactiveFormsModule, // Needed for reactive forms
   ],
   templateUrl: './uploadalbumpics.html',
-  styleUrl: './uploadalbumpics.css'
+  styleUrl: './uploadalbumpics.css',
 })
-export class Uploadalbumpics {
+export class Uploadalbumpics implements OnInit {
   clientForm: ReturnType<FormBuilder['group']>;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     this.clientForm = this.fb.group({
       // Define your form controls here, for example:
       albumTitle: [''],
-      clientName: ['']
+      clientName: [''],
     });
   }
 
+  // Declare variables to hold the data and potential errors
+  apiResponse: any;
+  errorMessage: string | null = null;
+  isLoading: boolean = false;
+  id: string = '';
+
+  private apiService = inject(newclientapi);
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.id = params.get('id') ?? '';
+    });
+  }
 
   selectedFiles: { [key: string]: File | null } = {
     category1: null,
@@ -49,8 +69,38 @@ export class Uploadalbumpics {
     // Reset after upload
     this.selectedFiles[category] = null;
   }
-  
 
+  generateUserLogin() {
+    // Implement your logic here
+    if (this.id != '') {
+      this.genertaeloginData();
+    }
+    console.log('Generating user login...');
+  }
 
- 
+  genertaeloginData(): void {
+    console.log('Fetching data from API...');
+    this.isLoading = true;
+    this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
+    this.apiService.generateUserlogin(this.id).subscribe({
+      next: (data) => {
+        // This is where you process the successful response
+        console.log('API Response:', data);
+        this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
+        alert('User login generated successfully!');
+        this.isLoading = false;
+      },
+      error: (error) => {
+        // This is executed if the request fails (e.g., 404, 500)
+        console.error('There was an error!', error);
+        this.errorMessage =
+          'Failed to load data. Check the server or network connection.';
+        this.isLoading = false;
+      },
+      complete: () => {
+        // Optional: Executed when the Observable completes
+        console.log('Data fetching complete.');
+      },
+    });
+  }
 }

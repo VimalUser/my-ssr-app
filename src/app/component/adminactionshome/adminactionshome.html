@@ -1,0 +1,67 @@
+<div class="container my-5">
+  <div class="row row-cols-1 row-cols-md-5 g-4">
+
+    <!-- Edit Client -->
+    <div class="col">
+      <div
+        class="card h-100 shadow-sm text-center p-4"
+        [routerLink]="['/admindashboard/newclient', clientId]"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+        <div class="card-body p-0">
+          <h5 class="card-title">Generate  Client Details</h5>
+          <p class="card-text text-muted">A short description here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Client -->
+    <div class="col">
+      <div
+        class="card h-100 shadow-sm text-center p-4"
+        [routerLink]="['/admindashboard/newclient', clientId]"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+        <div class="card-body p-0">
+          <h5 class="card-title">Edit Client Details</h5>
+          <p class="card-text text-muted">A short description here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Pictures -->
+    <div class="col">
+      <div
+        class="card h-100 shadow-sm text-center p-4"
+        [routerLink]="['/admindashboard/uploadpictures', clientId]"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-box fa-3x text-primary mb-3"></i>
+        <div class="card-body p-0">
+          <h5 class="card-title">Upload Pictures</h5>
+          <p class="card-text text-muted">upload function photos for the users to select from</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example more cards -->
+    <div class="col">
+      <div
+        class="card h-100 shadow-sm text-center p-4"
+        [routerLink]="['/admindashboard/downloadpictures', 4]"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-users fa-3x text-success mb-3"></i>
+        <div class="card-body p-0">
+          <h5 class="card-title">Comments and download Pictures</h5>
+          <p class="card-text text-muted">See the user comments on the selected photos and Download them</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
