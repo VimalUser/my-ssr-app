@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class newclientapi {
   // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
-  private readonly apiBaseUrl = 'http://localhost:5167/NewclientAlbum/';
+  private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
   private readonly loginUrl = 'https://localhost:44313/Api/Auth/';
 
   // Inject HttpClient using the `inject` function (modern approach)

@@ -43,10 +43,7 @@ export class Adminloginpage {
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      alert(`Login successful!\nUsername: ${email}\nPassword: ${password}`);
       this.validateLogin(email ?? '', password ?? '');
-      //  this.router.navigate(['/admindashboard']);
-      // Replace alert with real login logic
     }
   }
 

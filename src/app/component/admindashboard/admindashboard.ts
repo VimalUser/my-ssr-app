@@ -49,12 +49,12 @@ export class Admindashboard implements OnInit {
       case 'progress':
         return this.orders.filter(
           (order) =>
-            order.status === 'Yet to start' || order.status === 'Progressing'
+            order.clientStatus === 'Yet to start' || order.clientStatus === 'Progressing'
         );
       case 'completed':
-        return this.orders.filter((order) => order.status === 'Completed');
+        return this.orders.filter((order) => order.clientStatus === 'Completed');
       case 'cancelled':
-        return this.orders.filter((order) => order.status === 'Cancelled');
+        return this.orders.filter((order) => order.clientStatus === 'Cancelled');
       default:
         return this.orders;
     }
@@ -70,6 +70,7 @@ export class Admindashboard implements OnInit {
   }
 
   fetchData(): void {
+    debugger;
     console.log('Fetching data from API...');
     this.isLoading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
