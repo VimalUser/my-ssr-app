@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { newclientapi } from '../../services/newclient';
+import { DropdownResponse, newclientapi } from '../../services/newclient';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Logincode } from '../logincode/logincode';
@@ -15,6 +15,7 @@ import { Logincode } from '../logincode/logincode';
 })
 export class Newclientalbumform implements OnInit {
   clientForm: ReturnType<FormBuilder['group']>;
+  dropdowns: DropdownResponse | null = null;
 
   // Declare variables to hold the data and potential errors
   apiResponse: any;
@@ -22,21 +23,21 @@ export class Newclientalbumform implements OnInit {
   isLoading: boolean = false;
   id: string = '';
 
+  get f() {
+    return this.clientForm.controls;
+  }
+
   private apiService = inject(newclientapi);
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id') ?? '';
     });
+    this.loadDropdowns();
     if (this.id != '') {
       this.fetchData();
     }
+    
   }
-
-  eventTypes = ['Wedding', 'Birthday', 'Engagement', 'Baby Shower', 'Other'];
-  albumTypes = ['Photobook', 'Classic', 'Digital'];
-  frameSizes = ['8x10', '10x12', '12x18'];
-  sizes = ['8x12', '12x15', '18x24'];
-  numbers = [1, 2, 3, 4, 5];
 
   // This is the single, combined constructor
   constructor(
@@ -46,26 +47,30 @@ export class Newclientalbumform implements OnInit {
   ) {
     // Logic from the FormBuilder constructor
     this.clientForm = this.fb.group({
-      orderNo: ['', Validators.required],
+      orderNumber: ['', Validators.required],
       clientName: ['', Validators.required],
-      dateOfEvent: ['', Validators.required],
-      typeOfEvent: ['', Validators.required],
-      mobileNo: ['', [Validators.required, Validators.pattern('[0-9]{10,}')]],
-      typeOfAlbum: ['', Validators.required],
+      eventDate: ['', Validators.required],
+      eventTypeId: ['', Validators.required],
+      mobileNumber: ['', [Validators.required, Validators.pattern('[0-9]{10,}')]],
+      albumMaterialTypeId: ['', Validators.required],
       noOfAlbums: ['', Validators.required],
       noOfSheets: ['', Validators.required],
       noOfFrame: ['', Validators.required],
-      albumSize: ['', Validators.required],
-      albumPics: ['', Validators.required],
-      frameSize: ['', Validators.required],
-      id: [''],
-      status: ['Progressing'],
+      albumSizeId: ['', Validators.required],
+      noOfPics: ['', Validators.required],
+      frameSizeId: ['', Validators.required],
+      clientId: [0],
+      status: ['Yet to Start'],
       loginURL: [''],
-      loginCode:[''],
+      loginCode: [''],
     });
   }
 
   onSave() {
+    if (this.clientForm.invalid) {
+      this.clientForm.markAllAsTouched(); // highlight errors
+      return;
+    }
     alert('Save button clicked!');
     if (this.clientForm.valid) {
       // Implement your save logic here
@@ -84,8 +89,8 @@ export class Newclientalbumform implements OnInit {
         // This is where you process the successful response
         console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
-                      this.clientForm.patchValue(data);
-
+        this.clientForm.patchValue(data);
+        console.log('Form Values:', this.clientForm.value);
         this.isLoading = false;
       },
       error: (error) => {
@@ -124,5 +129,17 @@ export class Newclientalbumform implements OnInit {
     } else {
       this.errorMessage = 'Please fill all required fields correctly.';
     }
+  }
+
+  loadDropdowns() {
+    this.apiService.getDropdowns().subscribe({
+      next: (res) => {
+        this.dropdowns = res;
+        this.errorMessage = null;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
   }
 }

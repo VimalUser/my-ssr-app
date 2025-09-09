@@ -1,6 +1,18 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
+
+export interface DropdownItem {
+  id: number;
+  name: string;
+}
+
+export interface DropdownResponse {
+  eventTypes: DropdownItem[];
+  albumSizes: DropdownItem[];
+  frameSizes: DropdownItem[];
+  albumMaterialTypes: DropdownItem[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +25,7 @@ export class newclientapi {
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
-  /**
-   * Fetches data from the API.
-   * @returns An Observable of the API response.
-   */
-
+  
 validateUserLogin(data: any): Observable<any> {
       var finalUrl = this.loginUrl + 'login';    
     return this.http.post(`${finalUrl}`, data);
@@ -35,15 +43,36 @@ validateUserLogin(data: any): Observable<any> {
 
   saveClientAlbumDetails(data: any): Observable<any> {
     var finalUrl = this.apiBaseUrl + 'SaveClientDetails';
-    if (data.id != '') {
+    if (data.clientId != 0) {
       finalUrl = this.apiBaseUrl +'UpdateClientAlbum';
     }
-    return this.http.post(`${finalUrl}`, data);
+    return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 
    generateUserlogin(id: string): Observable<any> {
     var finalUrl = this.apiBaseUrl + 'GetUserLogin';
     return this.http.get(`${finalUrl}?Id=${id}`);
+  }
+
+  getDropdowns(): Observable<DropdownResponse> {
+    return this.http.get<DropdownResponse>(`${this.apiBaseUrl}dropdowns`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMsg = '';
+
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMsg = `Client Error: ${error.error.message}`;
+    } else {
+      // Server-side error
+      errorMsg = `Server Error (${error.status}): ${error.error?.message || error.message}`;
+    }
+
+    return throwError(() => new Error(errorMsg));
   }
 
 }

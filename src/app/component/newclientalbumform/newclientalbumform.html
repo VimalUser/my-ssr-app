@@ -1,85 +1,143 @@
-    <section class="form-section">
-      <h2 class="form-title">New client form</h2>
-       <button class="save-btn" (click)="onSave()">Save</button>
-      <form [formGroup]="clientForm" autocomplete="off" novalidate>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Order no</label>
-            <input formControlName="orderNo" type="text" placeholder="Enter no" />
-          </div>
-          <div class="form-group">
-            <label>Client name</label>
-            <input formControlName="clientName" type="text" placeholder="Enter name" />
-          </div>
-          <div class="form-group">
-            <label>Date of Event</label>
-            <input formControlName="dateOfEvent" type="date" />
-          </div>
-          <div class="form-group">
-            <label>Type of event</label>
-            <select formControlName="typeOfEvent">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let event of eventTypes" [value]="event">{{event}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Mobile no</label>
-            <input formControlName="mobileNo" type="text" placeholder="Enter no" />
-          </div>
-          <div class="form-group">
-            <label>Type of album</label>
-            <select formControlName="typeOfAlbum">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let album of albumTypes" [value]="album">{{album}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>No of albums</label>
-            <select formControlName="noOfAlbums">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let n of numbers" [value]="n">{{n}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Album size</label>
-            <select formControlName="albumSize">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let s of sizes" [value]="s">{{s}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>No of Sheets</label>
-            <select formControlName="noOfSheets">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let n of numbers" [value]="n">{{n}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Album pics</label>
-            <input formControlName="albumPics" placeholder="Enter text" />
-          </div>
-          <div class="form-group">
-            <label>No of Frame</label>
-            <select formControlName="noOfFrame">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let n of numbers" [value]="n">{{n}}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Frame Size</label>
-            <select formControlName="frameSize">
-              <option value="" disabled>Select</option>
-              <option *ngFor="let s of frameSizes" [value]="s">{{s}}</option>
-            </select>
-          </div>
-           <div class="form-group">
-            <label>Login URL</label>
-            <input formControlName="loginURL" type="text" placeholder="Login URL" />
-          </div>
-          <div class="form-group">
-            <label>Login Code</label>
-            <input formControlName="loginCode" type="text" placeholder="Login Code" />
-          </div>
+<section class="form-section">
+  <h2 class="form-title">New client form</h2>
+  <button class="save-btn" (click)="onSave()">Save</button>
+  <form [formGroup]="clientForm" autocomplete="off" novalidate>
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Order no</label>
+        <input formControlName="orderNumber" type="text" placeholder="Enter Order No" />
+        <div *ngIf="f['orderNumber']?.touched && f['orderNumber']?.hasError('required')" class="text-danger">
+          Order number is required.
         </div>
-      </form>
-    </section>
+      </div>
+
+      <div class="form-group">
+        <label>Client name</label>
+        <input formControlName="clientName" type="text" placeholder="Enter Client Name" />
+        <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('required')" class="text-danger">
+          Client name is required.
+        </div>
+        <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('minlength')" class="text-danger">
+          Client name must be at least 3 characters.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Date of Event</label>
+        <input formControlName="eventDate" type="date" />
+        <div *ngIf="f['eventDate']?.touched && f['eventDate']?.hasError('required')" class="text-danger">
+          Event date is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Type of event</label>
+        <select formControlName="eventTypeId">
+          <option value="" disabled>Select</option>
+          <option *ngFor="let ev of dropdowns?.eventTypes" [value]="ev.id">
+            {{ ev.name }}
+          </option>
+        </select>
+        <div *ngIf="f['eventTypeId']?.touched && f['eventTypeId']?.hasError('required')" class="text-danger">
+          Event type is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Mobile no</label>
+        <input formControlName="mobileNumber" type="text" placeholder="Enter Mobile no" />
+        <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('required')" class="text-danger">
+          Mobile number is required.
+        </div>
+        <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('pattern')" class="text-danger">
+          Mobile number must be exactly 10 digits.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Type of album</label>
+        <select formControlName="albumMaterialTypeId">
+          <option value="" disabled>Select</option>
+          <option *ngFor="let am of dropdowns?.albumMaterialTypes" [value]="am.id">
+            {{ am.name }}
+          </option>
+        </select>
+        <div *ngIf="f['albumMaterialTypeId']?.touched && f['albumMaterialTypeId']?.hasError('required')" class="text-danger">
+          Album material type is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>No of albums</label>
+        <input formControlName="noOfAlbums" placeholder="Enter No of Albums" />
+        <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('required')" class="text-danger">
+          Number of albums is required.
+        </div>
+        <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('min')" class="text-danger">
+          Must be at least 1 album.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Album size</label>
+        <select formControlName="albumSizeId">
+          <option value="" disabled>Select</option>
+          <option *ngFor="let al of dropdowns?.albumSizes" [value]="al.id">
+            {{ al.name }}
+          </option>
+        </select>
+        <div *ngIf="f['albumSizeId']?.touched && f['albumSizeId']?.hasError('required')" class="text-danger">
+          Album size is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>No of Sheets</label>
+        <input formControlName="noOfSheets" placeholder="Enter No of Sheets" />
+        <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('required')" class="text-danger">
+          Number of sheets is required.
+        </div>
+        <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('min')" class="text-danger">
+          Must be at least 1 sheet.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>No of pics</label>
+        <input formControlName="noOfPics" placeholder="Enter No of Pics" />
+        <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('required')" class="text-danger">
+          Number of pics is required.
+        </div>
+        <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('min')" class="text-danger">
+          Must be at least 1 pic.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>No of Frame</label>
+        <input formControlName="noOfFrame" placeholder="Enter No of Frame" />
+        <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('required')" class="text-danger">
+          Number of frames is required.
+        </div>
+        <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('min')" class="text-danger">
+          Must be at least 1 frame.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Frame Size</label>
+        <select formControlName="frameSizeId">
+          <option value="" disabled>Select</option>
+          <option *ngFor="let fr of dropdowns?.frameSizes" [value]="fr.id">
+            {{ fr.name }}
+          </option>
+        </select>
+        <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')" class="text-danger">
+          Frame size is required.
+        </div>
+      </div>
+
+    </div>
+  </form>
+</section>
