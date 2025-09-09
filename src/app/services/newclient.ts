@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class newclientapi {
   // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
   private readonly apiBaseUrl = 'http://localhost:5167/NewclientAlbum/';
+  private readonly loginUrl = 'https://localhost:44313/Api/Auth/';
 
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
@@ -18,7 +19,7 @@ export class newclientapi {
    */
 
 validateUserLogin(data: any): Observable<any> {
-      var finalUrl = this.apiBaseUrl + 'ValidateUserLogin';    
+      var finalUrl = this.loginUrl + 'login';    
     return this.http.post(`${finalUrl}`, data);
   }
 
