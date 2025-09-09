@@ -98,7 +98,7 @@ export class Admindashboard implements OnInit {
 
   vieworder(id: string | null) {
     alert('View order functionality to be implemented for order ID: ' + id);
-    this.router.navigate(['admindashboard/adminactions']);
+    this.router.navigate(['admindashboard/adminactions', id]);
   }
 
   uploadpage(id: string | null) {

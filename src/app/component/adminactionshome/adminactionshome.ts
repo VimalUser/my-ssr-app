@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LoggingService } from '../../shared/logging.service';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-adminactionshome',
@@ -10,16 +12,20 @@ import { LoggingService } from '../../shared/logging.service';
 })
 export class Adminactionshome implements OnInit {
 
-  clientId: number | null = null;
+  clientId: string | null = null;
   username: string ="";
 
-  constructor(private loggingService: LoggingService  ) {
+  constructor(private loggingService: LoggingService, private route: ActivatedRoute,  ) {
     // You can initialize any required services or data here
     
   }
+
   ngOnInit(): void {
+    
+this.route.paramMap.subscribe((params) => {
+      this.clientId = params.get('id') ?? '';
+    });
     // Initialization logic can go here
-    this.clientId = 4; // Example client ID, replace with actual logic to get the client ID
       this.loggingService.username$.subscribe(name => {
       this.username = name;
     });
