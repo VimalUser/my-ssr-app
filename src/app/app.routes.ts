@@ -30,7 +30,7 @@ export const routes: Routes = [
       { path: 'newclient', component: Newclientalbumform },
       { path: 'newclient/:id', component: Newclientalbumform  },
       { path: 'uploadpictures/:id', component: Uploadalbumpics  },
-      {path: 'adminactions', component: Adminactionshome}
+      {path: 'adminactions/:id', component: Adminactionshome}
     ]
   },
 

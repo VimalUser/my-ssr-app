@@ -7,18 +7,18 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <div class="mb-3">
-        <label for="username" class="form-label fw-semibold">Username</label>
+        <label for="email" class="form-label fw-semibold">Email</label>
         <input
-          id="username"
+          id="email"
           type="text"
           class="form-control"
-          [ngClass]="{'is-invalid': username.invalid && (username.dirty || username.touched)}"
-          placeholder="Enter username"
-          formControlName="username"
-          autocomplete="username"
+          [ngClass]="{'is-invalid': email.invalid && (email.dirty || email.touched)}"
+          placeholder="Enter email"
+          formControlName="email"
+          autocomplete="email"
         />
-        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="invalid-feedback">
-          Username is required
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="invalid-feedback">
+          Email is required
         </div>
       </div>
 

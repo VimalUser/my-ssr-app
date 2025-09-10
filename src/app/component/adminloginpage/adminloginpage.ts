@@ -27,13 +27,13 @@ export class Adminloginpage {
      private router: Router,
      private loggingService: LoggingService) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
 
-  get username() {
-    return this.loginForm.get('username')!;
+  get email() {
+    return this.loginForm.get('email')!;
   }
 
   get password() {
@@ -42,19 +42,16 @@ export class Adminloginpage {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      // alert(`Login successful!\nUsername: ${username}\nPassword: ${password}`);
-      this.validateLogin(username ?? '', password ?? '');
-      //  this.router.navigate(['/admindashboard']);
-      // Replace alert with real login logic
+      const { email, password } = this.loginForm.value;
+      this.validateLogin(email ?? '', password ?? '');
     }
   }
 
-  validateLogin(username: string, password: string) {
+  validateLogin(email: string, password: string) {
     console.log('validating login...');
     this.isLoading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
-    this.userLogin.username = username;
+    this.userLogin.email = email;
     this.userLogin.password = password;
 
     this.apiService.validateUserLogin(this.userLogin).subscribe({
@@ -62,8 +59,8 @@ export class Adminloginpage {
         // This is where you process the successful response
         console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
-
-        if (this.apiResponse.message === 'Log in successfully!') {
+        console.log('Parsed Response:', this.apiResponse);
+        if (this.apiResponse.token!= null && this.apiResponse.token!=undefined) {
           this.router.navigate(['/admindashboard']);
           this.isLoading = false;
         }
