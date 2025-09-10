@@ -27,6 +27,14 @@ yarn-error.log
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+.vs/
+# Visual Studio cache/workspace files
+.vs/
+*.db
+*.sqlite
+*.wsuo
+
+
 
 # Miscellaneous
 /.angular/cache

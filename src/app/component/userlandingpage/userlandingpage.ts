@@ -2,11 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api';
+import { Router, RouterOutlet,RouterModule } from '@angular/router';
+import { ClientDataService } from '../../shared/ClientDataService';
 
 
 @Component({
   selector: 'app-userlandingpage',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,RouterOutlet,RouterModule],
   templateUrl: './userlandingpage.html',
   styleUrl: './userlandingpage.css',
   standalone: true,
@@ -19,116 +21,66 @@ export class Userlandingpage implements OnInit  {
   isLoading: boolean = false;
 
 
-    // 1. Inject the Api service using the private property shortcut
+  constructor(private router: Router,private ClientDataService : ClientDataService) { }    // 1. Inject the Api service using the private property shortcut
   // or the `inject` function for standalone components/services
   private apiService = inject(Api);
-  ngOnInit(): void {
-    this.fetchData();
+
+  ngOnInit(): void {   
+ this.ClientDataService.nextStep$.subscribe(() => {
+    this.nextStep(); // call existing nextStep() method
+  });
+
+   this.ClientDataService.prevStep$.subscribe(() => {
+    this.prevStep();
+  });
+
   }
 
 
-  step = 0;
-  coupleName = '';
-  albumDate = '';
-  selectedPhotoType = '';
-  showThumbnails = false;
-  sidebarOpen = false;
+currentStepIndex = 0; // 0-based index, first menu item enabled initially
 
-  welcomeMessageContent = {
-    title: 'Welcome to Candy Express Photography',
-    description:
-      "Create your personalized photo album with ease. Let's get started!",
-    albumText: 'Select 480 images for album',
-    coupleText: 'Hey Meena Sudhan test',
-    frameText: 'Select 5 images for frame',
-  };
-
-  images = [
-    { name: 'Img_133.jpg', thumb: 'assets/placeholder.png', selected: false },
-    { name: 'Img_134.jpg', thumb: 'assets/placeholder.png', selected: false },
-    { name: 'Img_135.jpg', thumb: 'assets/placeholder.png', selected: false },
+  menuItems = [
+    { name: 'Home',  route: 'userhome/startpage', icon: 'bi-speedometer2', disabled: false },
+    { name: 'Album Name', route: 'userhome/albumname', icon: 'bi-pencil-square', disabled: true },
+    { name: 'Album Selection', route: 'userhome/gallery', icon: 'bi-calendar2-week', disabled: true },
+    { name: 'Frame Picture', route: '/video-guides', icon: 'bi-film', disabled: true },
+    { name: 'Cover Picture', route: '/notifications', icon: 'bi-bell', disabled: true },
+    { name: 'Submit Form', route: '/achievements', icon: 'bi-trophy', disabled: true },
   ];
-  selectedImagesCount = 0;
-  showImageViewer = false;
-  selectedImage: any = null;
-  showTooltip = false;
 
-  goToStep(newStep: number) {
-    if (
-      newStep === 2 &&
-      this.coupleName.trim() === '' &&
-      this.albumDate.trim() === ''
-    ) {
-      alert('Please enter the couple name and date before proceeding.');
-      return;
+
+  // Call this when next button clicked, to move to next step and enable menu
+  nextStep() {
+    if (this.currentStepIndex < this.menuItems.length - 1) {
+      this.currentStepIndex++;
+      this.menuItems[this.currentStepIndex].disabled = false;
+
+      // Optional: navigate to next route automatically
+      const nextRoute = this.menuItems[this.currentStepIndex].route;
+      this.router.navigate([nextRoute]);
     }
-    this.step = newStep;
-    this.showThumbnails = false;
-    this.selectedPhotoType = '';
   }
 
-  saveAlbumName() {
-    this.step = 2;
+  prevStep() {
+  if (this.currentStepIndex > 0) {
+    this.currentStepIndex--;
+    this.menuItems[this.currentStepIndex].disabled = false;
+    
+    const prevRoute = this.menuItems[this.currentStepIndex].route;
+    this.router.navigate([prevRoute]);
   }
+}
 
-  selectPhotoType(type: string) {
-    this.selectedPhotoType = type;
-    this.showThumbnails = true;
+
+  isLightTheme = false; // false = dark (black) by default
+
+  toggleTheme() {
+    this.isLightTheme = !this.isLightTheme;
+    // Optionally add body class toggling or localStorage persistence here
   }
-
-  viewImage(img: any) {
-    this.selectedImage = img;
-    this.showImageViewer = true;
-    this.showTooltip = true;
+  
+logout() {
+    // Implement logout logic here, e.g., clear session, redirect to login page
+    console.log('User logged out');
   }
-
-  closeViewer() {
-    this.showImageViewer = false;
-    this.showTooltip = false;
-  }
-
-  selectImage(img: any) {
-    img.selected = !img.selected;
-    this.selectedImagesCount = this.images.filter((i) => i.selected).length;
-    this.showImageViewer = false;
-  }
-
-  hideTooltip() {
-    this.showTooltip = false;
-  }
-
-  savePhotoSelection() {
-    this.step = 3;
-    this.showThumbnails = false;
-  }
-
-   fetchData(): void {
-    this.isLoading = true;
-    this.errorMessage = null;
-    
-    // 2. Call the service method and subscribe to the Observable
-    this.apiService.getData(1).subscribe({
-      next: (data) => {
-        // This is where you process the successful response
-        console.log('API Response:', data);
-        this.apiResponse = data; // Assign the raw response
-        // **Important Note on responseType: 'text'**
-        // Since your service specifies responseType: 'text',
-        // `data` will be a raw string. If the API returns JSON,
-        // you might need to parse it here: this.apiResponse = JSON.parse(data);
-        this.isLoading = false;
-      },
-      error: (error) => {
-        // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
-        this.errorMessage =
-          'Failed to load data. Check the server or network connection.';
-        this.isLoading = false;
-      },
-      complete: () => {
-        // Optional: Executed when the Observable completes
-        console.log('Data fetching complete.');
-      },
-    });
-  }
 }

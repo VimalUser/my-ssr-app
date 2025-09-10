@@ -13,7 +13,7 @@ export class LoggingService {
   username$ = this.usernameSource.asObservable();  
 
     setUsername(name: string) {
-    this.usernameSource.next(name);
+    this.usernameSource.next(name)
   }
 
    getUsername(): string {

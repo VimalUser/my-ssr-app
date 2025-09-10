@@ -1,70 +1,42 @@
-<section class="dashboard-content">
-  <h2 class="mb-4 fw-bold">Upload Pictures</h2>
+<div class="row align-items-center mb-4">
+  <!-- Category Label (optional) -->
+  <div class="col-12 col-md-2 fw-semibold mb-2 mb-md-0">
+    Category 1
+  </div>
 
-  <form novalidate>
-    <div class="mb-4">
-      <label for="category1" class="form-label fw-semibold">Category 1</label>
-      <input
-        type="file"
-        id="category1"
-        name="category1"
-        accept="image/*"
-        (change)="onFileSelected($event, 'category1')"
-        class="form-control mb-2"
-        required
-      />
-      <button
-        type="button"
-        class="btn btn-warning fw-bold px-4"
-        [disabled]="!selectedFiles['category1']"
-        (click)="uploadCategory('category1')"
-      >
-        Upload Category 1
-      </button>
-    </div>
+  <!-- File Input -->
+  <div class="col-12 col-md-5">
+    <input
+      type="file"
+      id="category1"
+      name="category1"
+      accept="image/*"
+      (change)="onFileSelected($event, 'category1')"
+      class="form-control"
+      required
+    />
+  </div>
 
-    <div class="mb-4">
-      <label for="category2" class="form-label fw-semibold">Category 2</label>
-      <input
-        type="file"
-        id="category2"
-        name="category2"
-        accept="image/*"
-        (change)="onFileSelected($event, 'category2')"
-        class="form-control mb-2"
-        required
-      />
+  <!-- Upload Button -->
+  <div class="col-6 col-md-3 mt-2 mt-md-0">
+    <button
+      type="button"
+      class="btn btn-warning fw-bold w-100"
+      [disabled]="!selectedFiles['category1']"
+      (click)="uploadCategory('category1')"
+    >
+      Upload
+    </button>
+  </div>
 
-      <button
-        type="button"
-        class="btn btn-warning fw-bold px-4"
-        [disabled]="!selectedFiles['category2']"
-        (click)="uploadCategory('category2')"
-      >
-        Upload Category 2
-      </button>
-    </div>
+  <!-- Uploaded Count -->
+  <div class="col-6 col-md-2 text-center mt-2 mt-md-0">
+    <span class="badge bg-success fs-6">
+      {{ uploadedCounts['category1'] || 0 }} Uploaded
+    </span>
+  </div>
+</div>
 
-    <div class="mb-4">
-      <label for="category3" class="form-label fw-semibold">Category 3</label>
-      <input
-        type="file"
-        id="category3"
-        name="category3"
-        accept="image/*"
-        (change)="onFileSelected($event, 'category3')"
-        class="form-control mb-2"
-        required
-      />
-      <button
-        type="button"
-        class="btn btn-warning fw-bold px-4"
-        [disabled]="!selectedFiles['category3']"
-        (click)="uploadCategory('category3')"
-      >
-        Upload Category 3
-      </button>
-    </div>
 
     <section class="container bg-white p-4 shadow rounded" style="text-align: center;">
     <div class="mb-4">
@@ -94,5 +66,3 @@
       <label for="" class="form-label fw-semibold text-uppercase"> asdsdsds</label>
     </div>
     </section>
-  </form>
-</section>

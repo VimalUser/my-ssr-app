@@ -1,0 +1,43 @@
+<!-- home.component.html -->
+
+<div class="container-fluid py-3 px-2">
+  <div class="card shadow-sm border-0 rounded-4 p-3 mb-3 bg-white">
+    <div class="row align-items-center justify-content-center g-3">
+      <div class="col-md-8 col-12">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <div class="text-center">
+            <!-- <img src="assets/special-offer.png" alt="Special Offer" class="mb-2" style="height:38px;" /> -->
+            <h2 class="fw-bold text-secondary d-inline-block mb-0 align-middle" style="font-family:serif;">Photo <span style="color:#a34a24;">Frames</span></h2>
+            <div class="small text-muted">Elite | Comfort | Royal | Masterpiece</div>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <img src="assets/frame1.jpg" alt="Frame 1" style="height:68px; width:auto;" class="rounded border"/>
+            <img src="assets/frame2.jpg" alt="Frame 2" style="height:68px; width:auto;" class="rounded border"/>
+            <img src="assets/frame2.jpg" alt="Frame 3" style="height:68px; width:auto;" class="rounded border"/>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-12 text-center">
+        <div class="bg-warning rounded-3 py-2 px-2 shadow-sm d-inline-block">
+          <div class="fw-bold small text-dark">2 no's 18" x 12" Size<br>2 no's 12" x 8" Size<br>2 no's 8" x 6" Size</div>
+          <div class="fs-4 text-dark mt-2 fw-bold">Just <span class="text-orange">Rs. 2555/-</span> Only</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-3 rounded-4 bg-white shadow-sm">
+    <h5 class="fw-bold mb-1" style="color: black;">Hey {{this.currentData.coupleName }} ...!</h5>
+    <div class="mb-2 text-muted">Pleasure to see you back,</div>
+    <div class="fw-bold mb-2" style="color: black;">Important message</div>
+    <ul class="mb-3 text-dark" style="list-style: disc inside;">
+      <li>Select 480 images for album</li>
+      <li>Select 5 images for frame</li>
+      <li>Enter name and date for cover page</li>
+      <li>Select single image for cover page</li>
+    </ul>
+    <button class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
+      Start the process <i class="bi bi-arrow-right ms-2"></i>
+    </button>
+  </div>
+</div>

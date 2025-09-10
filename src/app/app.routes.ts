@@ -8,12 +8,16 @@ import { Newclientalbumform } from './component/newclientalbumform/newclientalbu
 import { Uploadalbumpics } from './component/uploadalbumpics/uploadalbumpics';
 import { Adminlayout } from './component/adminlayout/adminlayout'; // Import the new layout component
 import { Adminactionshome } from './component/adminactionshome/adminactionshome';
+import { Albumstratpage } from './component/albumstratpage/albumstratpage';
+import { AlbumName } from './component/album-name/album-name';
+// import { Albumtypefolder } from './component/albumtypefolder/albumtypefolder';
+import { Imagegallery } from './component/imagegallery/imagegallery';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
   { path: '', redirectTo: 'adminlogin', pathMatch: 'full' },
  { path: 'logincode', component: Logincode },
-  { path: 'userhome', component: Userlandingpage },
+  // { path: 'userhome', component: Userlandingpage },
   { path: 'adminlogin', component: Adminloginpage },
   { path: 'userlogin', component: Userloginpage },
 
@@ -27,6 +31,19 @@ export const routes: Routes = [
       { path: 'newclient/:id', component: Newclientalbumform  },
       { path: 'uploadpictures/:id', component: Uploadalbumpics  },
       {path: 'adminactions', component: Adminactionshome}
+    ]
+  },
+
+    // A parent route for the admin layout
+  {
+    path: 'userhome',
+    component: Userlandingpage, // The layout component provides the sidebar and router-outlet
+    children: [
+      // { path: '', component: Albumstratpage }, // This is the main dashboard content
+       { path: 'startpage', component: Albumstratpage },
+      { path: 'albumname', component: AlbumName },    
+      // {path  : 'folderpage', component: Albumtypefolder },
+      {path  : 'gallery', component: Imagegallery }
     ]
   },
 

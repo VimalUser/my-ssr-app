@@ -45,30 +45,49 @@ export class Uploadalbumpics implements OnInit {
     });
   }
 
-  selectedFiles: { [key: string]: File | null } = {
-    category1: null,
-    category2: null,
-    category3: null,
-  };
+  // selectedFiles: { [key: string]: File | null } = {
+  //   category1: null,
+  //   category2: null,
+  //   category3: null,
+  // };
 
-  onFileSelected(event: Event, category: string) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFiles[category] = input.files[0];
-    } else {
-      this.selectedFiles[category] = null;
-    }
-  }
+  // onFileSelected(event: Event, category: string) {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length > 0) {
+  //     this.selectedFiles[category] = input.files[0];
+  //   } else {
+  //     this.selectedFiles[category] = null;
+  //   }
+  // }
 
-  uploadCategory(category: string) {
-    const file = this.selectedFiles[category];
-    if (!file) return;
+  // uploadCategory(category: string) {
+  //   const file = this.selectedFiles[category];
+  //   if (!file) return;
 
-    console.log(`Uploading file for ${category}`, file);
+  //   console.log(`Uploading file for ${category}`, file);
 
-    // Reset after upload
-    this.selectedFiles[category] = null;
-  }
+  //   // Reset after upload
+  //   this.selectedFiles[category] = null;
+  // }
+
+  categories = [
+  { key: 'category1', label: 'Category 1' },
+  { key: 'category2', label: 'Category 2' },
+  { key: 'category3', label: 'Category 3' }
+]
+
+uploadedCounts: { [key: string]: number } = {};
+selectedFiles: { [key: string]: File | null } = {};
+
+onFileSelected(event: any, category: string) {
+  this.selectedFiles[category] = event.target.files[0];
+}
+
+uploadCategory(category: string) {
+  // Simulate upload
+  if (!this.uploadedCounts[category]) this.uploadedCounts[category] = 0;
+  this.uploadedCounts[category]++;
+}
 
   generateUserLogin() {
     // Implement your logic here

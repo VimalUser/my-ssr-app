@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
+
 export class AdminStateService {
   private _username: string = '';
   private _clientId: number | null = null;
