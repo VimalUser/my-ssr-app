@@ -13,36 +13,9 @@ import { clientData } from '../../model/clientData';
 })
 export class Imagegallery implements OnInit {
   //folder selection logic
-  folderNames: string[] = ["Traditional Photos","Candid Photos"];
+  folderNames: string[] = ['Traditional Photos', 'Candid Photos'];
   selectedFolderName: string = '';
-
-  showGallery(folderName: string) {
-   
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
-    this.selectedFolderName = folderName;
-
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'block';
-      selectionSection.style.display = 'none'; // Hide selection section
-    }
-  }
-
-  gobackFolderSelection() {
-
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
-
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'none';
-      selectionSection.style.display = 'block'; // Show selection section
-    }   
-    this.selectedFolderName = '';
-  }
-
-  prevStep() {
-    this.clientDataService.triggerPrevStep();
-  }
+  isTraditional: boolean = true;
 
   // Image gallery logic
   images: string[] = [];
@@ -62,15 +35,120 @@ export class Imagegallery implements OnInit {
   imageCount = 60;
   thumbW = 600;
   thumbH = 400;
+  clientDataload: clientData = new clientData();
 
   constructor(private clientDataService: ClientDataService) {}
 
   ngOnInit(): void {
+    // // Generate sample URLs
+    // for (let i = 1; i <= this.imageCount; i++) {
+    //   this.images.push(`${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`);
+    // }
+    this.loading = false;
+    const data = this.clientDataService.getData();
+    this.clientDataload = data;
+    console.log('Initial Client Data in ImageGallery:', data);
+
+    // if (data.tranditionalAlbumSelection.length > 0) {
+    //   this.selectedItems = [...data.tranditionalAlbumSelection];
+    // }
+  }
+
+  generateImages() {
     // Generate sample URLs
+    if (this.isTraditional) {
+      this.baseUrl = 'https://picsum.photos/seed/';
+    } else {
+      this.baseUrl = 'https://picsum.photos/seed/';
+    }
+
     for (let i = 1; i <= this.imageCount; i++) {
       this.images.push(`${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`);
     }
-    this.loading = false;
+  }
+
+  showGallery(folderName: string) {
+    const gallerySection = document.getElementById('gallerySection');
+    const selectionSection = document.getElementById('selctionSection');
+    this.selectedFolderName = folderName;
+    this.images = [];
+    this.selectedItems = [];
+    const data = this.clientDataService.getData();
+    this.clientDataload = data;
+
+    if (gallerySection && selectionSection) {
+      gallerySection.style.display = 'block';
+      selectionSection.style.display = 'none'; // Hide selection section
+
+      if (folderName === this.folderNames[0]) {
+        this.isTraditional = true;
+        // this.generateImages();
+        this.selectedItems = [...data.tranditionalAlbumSelection];
+        console.log('traditional photos', this.selectedItems);
+        console.log(
+          'data length',
+          this.clientDataload.tranditionalAlbumSelection.length
+        );
+      } else {
+        this.isTraditional = false;
+        // this.generateImages();
+        this.selectedItems = [...data.candidAlbumSelection];
+        console.log('candid photos', this.selectedItems);
+        console.log(
+          'data length',
+          this.clientDataload.candidAlbumSelection.length
+        );
+      }
+
+      this.generateImages();
+    }
+  }
+
+  gobackFolderSelection() {
+  const confirmCancelled = confirm('Are you sure to go back? Unsaved changes will be lost.');
+    if (!confirmCancelled) {
+      // User pressed Cancel, stop execution here
+      return;
+    }
+
+    const gallerySection = document.getElementById('gallerySection');
+    const selectionSection = document.getElementById('selctionSection');
+
+    if (gallerySection && selectionSection) {
+      gallerySection.style.display = 'none';
+      selectionSection.style.display = 'block'; // Show selection section
+    }
+
+    this.selectedFolderName = '';
+  }
+
+  prevStep() {
+    this.clientDataService.triggerPrevStep();
+  }
+
+  nextStep() {
+// {{clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length}} /{{clientDataload.noOfPics}}
+    
+    // if(this.clientDataload.tranditionalAlbumSelection.length + this.clientDataload.candidAlbumSelection.length < this.clientDataload.noOfPics) {
+    //   const alertMessage = `You have selected ${this.clientDataload.tranditionalAlbumSelection.length + this.clientDataload.candidAlbumSelection.length} images. Please select a total of ${this.clientDataload.noOfPics} images to proceed.`;
+    //   alert(alertMessage);      
+    //   return;
+    // }
+
+    // this.patchData();
+    // Logic to proceed to the next step
+    console.log('Proceeding to the next step...');
+    // Notify other components to move to next step
+    this.clientDataService.triggerNextStep();
+  }
+
+   patchData() {
+
+    // this.clientDataService.patchData({
+    //   albumName: this.albumPageData.AlbumName,
+    //   albumDate: this.albumPageData.AlbumDate,
+    // });
+    
   }
 
   get totalPages(): number {
@@ -108,8 +186,11 @@ export class Imagegallery implements OnInit {
         comment: '',
         type: 'image',
         url: imgUrl,
+        isTraditional: this.isTraditional
       });
     }
+
+    console.log('selected photos', this.selectedItems);
   }
 
   openPreview(imgUrl: string) {
@@ -142,6 +223,7 @@ export class Imagegallery implements OnInit {
         comment: '',
         type: 'image',
         url: this.previewImage || '',
+        isTraditional: this.isTraditional
       };
       this.selectedItems.push(item);
     }
@@ -151,16 +233,18 @@ export class Imagegallery implements OnInit {
 
   saveSelection() {
     const data: clientData = this.clientDataService.getData();
+    const propertyToUpdate = this.isTraditional
+      ? 'tranditionalAlbumSelection'
+      : 'candidAlbumSelection';
+
     const updated: clientData = {
       ...data,
-      tranditionalAlbumSelection: [
-        ...this.mergeByFileName(
-          data.tranditionalAlbumSelection,
-          this.selectedItems
-        ),
-      ],
+      [propertyToUpdate]: [...this.selectedItems],
     };
+
     this.clientDataService.updateData(updated);
+    this.clientDataload = updated;
+    alert('Your Selection/unselection saved successfully!');
     console.log('Saved to ClientDataService:', updated);
   }
 

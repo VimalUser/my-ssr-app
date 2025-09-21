@@ -12,8 +12,10 @@ export class ClientAlbum {
   frameSizeId: string | null = null;
   mobileNo: string | null = null;
   noOfAlbums: number | null = null;
-  noOfFrames: number | null = null;
-  noOfSheets: number | null = null;
+  noOfFrame: number | null = null;
+  NoOfSheets: number | null = null;
+  noOfPics: number | null = null;
+  albumMaterial: string | null = null
   orderNumber: string | null = null;
   albumMaterialType: string | null = null;
   albumMaterialTypeId: number | null = null;

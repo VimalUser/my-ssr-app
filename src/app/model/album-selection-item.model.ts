@@ -3,5 +3,6 @@ export interface AlbumSelectionItem {
   comment?: string;
   type?: string;
   url: string;
-  selected?: boolean;
+  selectedAsFrame?: string;
+  isTraditional?: boolean;
 }

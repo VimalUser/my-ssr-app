@@ -19,12 +19,21 @@
       <form class="mb-4" novalidate>
         <div class="mb-4">
           <label for="coupleName" class="form-label fw-semibold text-white">Couple Name</label>
-          <input type="text" id="coupleName" class="form-control" placeholder="Enter your name" />
+          <input type="text" id="coupleName" class="form-control" placeholder="Enter your name"  [(ngModel)]="albumPageData.AlbumName" name="albumName" />
         </div>
 
         <div class="mb-4">
           <label for="albumDate" class="form-label fw-semibold text-white">Date</label>
-          <input type="date" id="albumDate" class="form-control text-white bg-dark border-secondary" placeholder="Select date" />
+<input
+  type="date"
+  id="albumDate"
+  class="form-control border-secondary"
+  placeholder="Select date"
+  [(ngModel)]="albumPageData.AlbumDate"
+  name="albumDate"
+/>
+
+
         </div>
       </form>
 
@@ -32,7 +41,7 @@
         <a class="text-primary fw-semibold d-block mb-2" href="#">
           Look you preview <i class="bi bi-eye"></i>
         </a>
-        <img src="assets/album-preview.jpg" alt="Album Preview" class="img-fluid rounded shadow-sm" style="max-width:120px;">
+        <img src="assets/albumcover.jpg" alt="Album Preview" class="img-fluid rounded shadow-sm" style="max-width:120px;">
         <div class="text-white mt-1">Preview</div>
       </div>
     </div>

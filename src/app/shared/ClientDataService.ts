@@ -7,17 +7,38 @@ import { clientData } from '../model/clientData';
 export class ClientDataService {
   // Initial JSON data object
   private dataSubject = new BehaviorSubject<clientData>({
+    clientName: '',
     status: 'new',
-    coupleName: '',
+    albumName: '',
     albumDate: '',
     tranditionalAlbumSelection: [],
     candidAlbumSelection: [],
     frameSelection: [],
     coverSelection: [],
+    noOfPics: 0,
+    noOfFrames: 0,
+    coverPic: '',
+    mobileNumber: '',
+    eventTypeId: 0,
+    albumSizeId: 0,
+    frameSizeId: 0,
+    eventType: '',
+    albumSize: '',
+    frameSize: '',
   });
 
   // Observable to subscribe to data changes
   data$ = this.dataSubject.asObservable();
+
+  private lightTheme = new BehaviorSubject<boolean>(true);
+  isLightTheme$ = this.lightTheme.asObservable();
+
+  setTheme(isLight: boolean) {
+    this.lightTheme.next(isLight);
+  }
+  getTheme(): boolean {
+    return this.lightTheme.value;
+  }
 
   // Getter for current value
   getData(): any {
@@ -30,6 +51,11 @@ export class ClientDataService {
   }
 
   // Partial update for key-value pairs/properties
+  patchData1(patch: Partial<any>) {
+    const newData = { ...this.dataSubject.value, ...patch };
+    this.dataSubject.next(newData);
+  }
+
   patchData(patch: Partial<any>) {
     const newData = { ...this.dataSubject.value, ...patch };
     this.dataSubject.next(newData);

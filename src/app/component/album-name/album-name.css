@@ -1,3 +1,28 @@
 .text-orange {
   color: #fc9500 !important;
 }
+
+/* body.bright-mode input.form-control {
+  background: #fff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body.dark-mode input.form-control {
+  background: #181818 !important;
+  color: #fff !important;
+  border-color: #444 !important;
+} */
+
+
+.bg-gray-light input.form-control {
+  background-color: #fff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+.bg-dark input.form-control {
+  background-color: #181818 !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}

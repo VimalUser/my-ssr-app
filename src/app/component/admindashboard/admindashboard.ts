@@ -19,6 +19,7 @@ import { LoggingService } from '../../shared/logging.service';
   styleUrl: './admindashboard.css',
   standalone: true,
 })
+
 export class Admindashboard implements OnInit {
   String(arg0: number | null): string | null {
     throw new Error('Method not implemented.');
@@ -70,7 +71,7 @@ export class Admindashboard implements OnInit {
   }
 
   fetchData(): void {
-    debugger;
+  
     console.log('Fetching data from API...');
     this.isLoading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
