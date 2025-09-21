@@ -1,68 +1,65 @@
-<div class="row align-items-center mb-4">
-  <!-- Category Label (optional) -->
-  <div class="col-12 col-md-2 fw-semibold mb-2 mb-md-0">
-    Category 1
-  </div>
-
-  <!-- File Input -->
-  <div class="col-12 col-md-5">
-    <input
-      type="file"
-      id="category1"
-      name="category1"
-      accept="image/*"
-      (change)="onFileSelected($event, 'category1')"
-      class="form-control"
-      required
-    />
-  </div>
-
-  <!-- Upload Button -->
-  <div class="col-6 col-md-3 mt-2 mt-md-0">
-    <button
-      type="button"
-      class="btn btn-warning fw-bold w-100"
-      [disabled]="!selectedFiles['category1']"
-      (click)="uploadCategory('category1')"
-    >
-      Upload
+<div class="main-container">
+  <div class="header-section">
+    <button class="back-button">
+      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()" style="width: 40px; height: 40px; cursor: pointer;" />
     </button>
+    <div class="header-info">
+      <span>Client : {{clientData.clientName}}</span>
+      <span>Order no : {{clientData.orderNumber}}</span>
+    </div>
+    <div></div>
   </div>
 
-  <!-- Uploaded Count -->
-  <div class="col-6 col-md-2 text-center mt-2 mt-md-0">
-    <span class="badge bg-success fs-6">
-      {{ uploadedCounts['category1'] || 0 }} Uploaded
-    </span>
-  </div>
+  <div class="upload-sections">
+    
+    <div class="category-block">
+      <div class="header-group">
+        <h3>Traditional photos:</h3>
+        <span class="uploaded-count">{{ traditionalPhotosCount }} images uploaded</span>
+      </div>
+      <div class="upload-group">
+        <div class="upload-controls">
+          <input type="file" multiple (change)="onFileSelected($event, 'traditional')" class="file-input" #traditionalFileInput />
+          <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="traditionalFileInput.click()">Add images</button>
+          <span class="file-count">{{ selectedTraditionalFiles.length }} images selected</span>
+          <button class="upload-button" (click)="onUpload('traditional')">Upload</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-block">
+      <div class="header-group">
+        <h3>Candid photos:</h3>
+        <span class="uploaded-count">{{ candidPhotosCount }} images uploaded</span>
+      </div>
+      <div class="upload-group">
+        <div class="upload-controls">
+          <input type="file" multiple (change)="onFileSelected($event, 'candid')" class="file-input" #candidFileInput />
+          <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="candidFileInput.click()">Add images</button>
+          <span class="file-count">{{ selectedCandidFiles.length }} images selected</span>
+          <button class="upload-button" (click)="onUpload('candid')">Upload</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-block">
+      <div class="header-group">
+        <h3>Login Cover picture:</h3>
+        <span class="uploaded-count">{{ loginCoverPhotosCount }} images uploaded</span>
+      </div>
+      <div class="upload-group">
+        <div class="upload-controls">
+          <input type="file" multiple (change)="onFileSelected($event, 'loginCover')" class="file-input" #loginCoverFileInput />
+          <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="loginCoverFileInput.click()">Add images</button>
+          <span class="file-count">{{ selectedLoginCoverFiles.length }} images selected</span>
+          <button class="upload-button" (click)="onUpload('loginCover')">Upload</button>
+        </div>
+      </div>
+    </div>
+
+    </div>
 </div>
-
-
-    <section class="container bg-white p-4 shadow rounded" style="text-align: center;">
-    <div class="mb-4">
-      <button
-        type="button"
-        class="btn btn-success fw-bold px-4"
-        [disabled]="!selectedFiles['category3']"
-        (click)="generateUserLogin()"
-      >
-        Generate User login Details
-      </button>
-    </div>
-
-    <div class="mb-4">
-      <label for="" class="form-label fw-bold">
-        user login URL : </label
-      >
-      <label for="" class="form-label fw-semibold">
-        logincode/uiuiuiuiuiuereuiu</label
-      >
-    </div>
-
-    <div class="mb-4">
-      <label for="" class="form-label fw-bold">
-        user login passcode : </label
-      >
-      <label for="" class="form-label fw-semibold text-uppercase"> asdsdsds</label>
-    </div>
-    </section>
+<div *ngIf="loading" class="loading-container">
+    <img src="assets/loading-spinner.gif" alt="Uploading..." class="spinner">
+    <p>Uploading, please wait...</p>
+</div>

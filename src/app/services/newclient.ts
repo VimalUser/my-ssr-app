@@ -21,13 +21,14 @@ export class newclientapi {
   // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
   private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
   private readonly loginUrl = 'https://localhost:44313/Api/Auth/';
+  private readonly blobUrl = 'https://localhost:44313/Api/Blob/';
 
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
-  
-validateUserLogin(data: any): Observable<any> {
-      var finalUrl = this.loginUrl + 'login';    
+
+  validateUserLogin(data: any): Observable<any> {
+    var finalUrl = this.loginUrl + 'login';
     return this.http.post(`${finalUrl}`, data);
   }
 
@@ -44,12 +45,12 @@ validateUserLogin(data: any): Observable<any> {
   saveClientAlbumDetails(data: any): Observable<any> {
     var finalUrl = this.apiBaseUrl + 'SaveClientDetails';
     if (data.clientId != 0) {
-      finalUrl = this.apiBaseUrl +'UpdateClientAlbum';
+      finalUrl = this.apiBaseUrl + 'UpdateClientAlbum';
     }
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 
-   generateUserlogin(id: string): Observable<any> {
+  generateUserlogin(id: string): Observable<any> {
     var finalUrl = this.apiBaseUrl + 'GetUserLogin';
     return this.http.get(`${finalUrl}?Id=${id}`);
   }
@@ -59,6 +60,21 @@ validateUserLogin(data: any): Observable<any> {
       .pipe(
         catchError(this.handleError)
       );
+  }
+
+  uploadImages(formData: FormData, category: string, clientId: number): Observable<any> {
+    // Construct the endpoint URL with query parameters
+    const endpoint = `${this.blobUrl}uploadParallelFiles?clientId=${clientId}&photoType=${category}`;
+    console.log('Uploading to endpoint:', endpoint);
+
+    // The backend expects files in the FormData, so pass the formData object directly
+    return this.http.post(endpoint, formData);
+  }
+
+  // Fetch client with folder counts
+  getClientFolderCounts(clientId: number): Observable<any> {
+    alert('Fetching folder counts for clientId: ' + clientId);
+    return this.http.get(`${this.blobUrl}getClientFolderCount?clientId=${clientId}`);
   }
 
   private handleError(error: HttpErrorResponse) {
