@@ -5,6 +5,7 @@ import { newclientapi } from '../../services/newclient';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Notificationservice } from '../../services/notificationservice';
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -24,7 +25,8 @@ export class Uploadalbumpics implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private notify: Notificationservice
   ) {
 
   }
@@ -68,7 +70,7 @@ export class Uploadalbumpics implements OnInit {
         this.loading = false; // stop loading
       },
       error: err => {
-        alert('Error fetching folder counts');
+        this.notify.error('Error fetching folder counts');
         console.error('Error fetching folder counts', err);
         this.loading = false; // stop loading even on error
       }
@@ -121,7 +123,7 @@ export class Uploadalbumpics implements OnInit {
       this.apiService.uploadImages(formData, category, +(this.clientId)).subscribe({
         next: (response: any) => {
           this.loading = false;
-          alert(`Upload successful for ${category}:`);
+          this.notify.success(`Upload successful for ${category}:`);
           console.log(`Upload successful for ${category}:`, response);
           // Clear the selection ONLY after a successful upload
           this.clearSelection(category);
@@ -130,14 +132,14 @@ export class Uploadalbumpics implements OnInit {
         },
         error: (error: any) => {
           this.loading = false;
-          alert(`Upload failed for ${category}`);
+          this.notify.error(`Upload failed for ${category}`);
           console.error(`Upload failed for ${category}:`, error);
           // Do not clear the selection if the upload fails
         }
       });
     } else {
       this.loading = false;
-      alert('No files selected to upload.');
+      this.notify.warning('No files selected to upload.');
       console.warn('No files selected to upload.');
     }
   }

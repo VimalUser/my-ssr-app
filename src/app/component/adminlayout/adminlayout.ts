@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router  } from '@angular/router';
 import { RouterOutlet,RouterModule } from '@angular/router';
+import { NotificationComponent } from '../../notification/notification';
 
 @Component({
   selector: 'app-adminlayout',
