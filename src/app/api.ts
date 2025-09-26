@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
 export class Api {
   
 // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
-private readonly apiUrl = 'http://localhost:5167/NewclientAlbum/GetWeatherForecast';
+// private readonly apiUrl = 'http://localhost:5167/NewclientAlbum/GetWeatherForecast';
+private readonly apiUrl = 'http://localhost:7112/NewclientAlbum/GetWeatherForecast';
+
 
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient); 

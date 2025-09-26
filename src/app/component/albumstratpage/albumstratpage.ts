@@ -13,12 +13,12 @@ import { ClientAlbum } from '../../model/ClientAlbum';
   standalone: true,
 })
 export class Albumstratpage implements OnInit {
-  orders: ClientAlbum = new ClientAlbum();
+  formData: ClientAlbum = new ClientAlbum();
 
   constructor(
     private clientDataService: ClientDataService,
     private userService: userserviceapi
-  ) {  }
+  ) {}
 
   ngOnInit(): void {
     this.fetchData();
@@ -30,16 +30,14 @@ export class Albumstratpage implements OnInit {
   }
 
   updateClinetData(order: ClientAlbum) {
-   
-
-
-   const data: clientData = this.clientDataService.getData();
+    const data: clientData = this.clientDataService.getData();
 
     const updated: clientData = {
       ...data,
+      clientId: Number(order.clientId) || 0,
       noOfFrames: order.noOfFrame || 0,
       noOfPics: order.noOfPics || 0,
-      clientName: order.clientName || '', 
+      clientName: order.clientName || '',
       mobileNumber: order.mobileNumber || '',
       // status: 'new',
     };
@@ -47,11 +45,8 @@ export class Albumstratpage implements OnInit {
     this.clientDataService.updateData(updated);
     console.log('startpage form ClientDataService:', updated);
 
-    console.log('Initial Client Data in ImageGallery:', this.clientDataService);  
+    console.log('Initial Client Data in ImageGallery:', this.clientDataService);
   }
-
-
-  
 
   fetchData(): void {
     console.log('Fetching data from API...');
@@ -61,8 +56,8 @@ export class Albumstratpage implements OnInit {
       next: (data) => {
         // This is where you process the successful response
         console.log('API Response:', data);
-        this.orders = data;
-        this.updateClinetData(this.orders);
+        this.formData = data;
+        this.updateClinetData(this.formData);
         // this.isLoading = false;
       },
       error: (error) => {

@@ -7,6 +7,7 @@ import { clientData } from '../model/clientData';
 export class ClientDataService {
   // Initial JSON data object
   private dataSubject = new BehaviorSubject<clientData>({
+    clientId: 0,
     clientName: '',
     status: 'new',
     albumName: '',

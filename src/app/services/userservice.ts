@@ -28,11 +28,8 @@ validateUserLogin(data: any): Observable<any> {
   }
 
  
-  saveClientAlbumDetails(data: any): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'SaveClientDetails';
-    if (data.clientId != 0) {
-      finalUrl = this.apiBaseUrl +'UpdateClientAlbum';
-    }
+  saveUserAlbumDetails(data: any): Observable<any> {
+    var finalUrl = this.apiBaseUrl + 'createAlbum';    
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 

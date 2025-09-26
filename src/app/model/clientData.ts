@@ -1,6 +1,7 @@
 import { AlbumSelectionItem } from "./album-selection-item.model";
 
 export class clientData {
+  clientId : number = 0;
   clientName: string = '';
   status: string = '';
   albumName: string = '';
