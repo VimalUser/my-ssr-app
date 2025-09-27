@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 export interface DropdownItem {
   id: number;
@@ -20,7 +20,7 @@ export interface DropdownResponse {
 export class newclientapi {
   // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
   // private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
-    private readonly apiBaseUrl = 'https://localhost:7112/Api/ClientAlbum/';
+  private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
 
   private readonly loginUrl = 'https://localhost:44313/Api/Auth/';
   private readonly blobUrl = 'https://localhost:44313/Api/Blob/';
@@ -29,10 +29,43 @@ export class newclientapi {
   private http = inject(HttpClient);
 
 
+  // validateUserLogin(data: any): Observable<any> {
+  //   var finalUrl = this.loginUrl + 'login';
+  //   return this.http.post(`${finalUrl}`, data);
+  // }
+
+  // validateUserLogin(data: any): Observable<any> {
+  //   var finalUrl = this.loginUrl + 'login';
+  //   return this.http.post<{ accessToken: string }>(
+  //     `${finalUrl}`, data,
+  //     { withCredentials: true } // send HttpOnly cookie automatically
+  //   );
+  // }
+
   validateUserLogin(data: any): Observable<any> {
     var finalUrl = this.loginUrl + 'login';
-    return this.http.post(`${finalUrl}`, data);
+    return this.http.post<{ accessToken: string }>(
+      `${finalUrl}`, data,
+      { withCredentials: true } // send HttpOnly cookie automatically
+    ).pipe(
+      tap(response => {
+        localStorage.setItem('accessToken', response.accessToken);
+      })
+    );
   }
+
+  register(username: string, email: string, password: string) {
+    return this.http.post<{ message: string }>(
+      'https://api.example.com/register',
+      { username, email, password },
+      { withCredentials: true } // in case backend sets cookies
+    );
+  }
+
+  logout() {
+    localStorage.removeItem('accessToken');
+  }
+
 
   getAlbumDetails(id: string): Observable<any> {
     var finalUrl = this.apiBaseUrl + 'GetAlbumDetails';

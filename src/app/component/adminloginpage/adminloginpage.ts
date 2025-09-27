@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { newclientapi } from '../../services/newclient';
 import { UserLogin } from '../../model/userlogin';
 import { LoggingService } from '../../shared/logging.service';
+import { Notificationservice } from '../../services/notificationservice';
 
 @Component({
   selector: 'app-adminloginpage',
@@ -14,10 +15,10 @@ import { LoggingService } from '../../shared/logging.service';
 })
 export class Adminloginpage {
   loginForm;
+  public loading: boolean = false;
   // Declare variables to hold the data and potential errors
   apiResponse: any;
   errorMessage: string | null = null;
-  isLoading: boolean = false;
   id: string = '';
   userLogin: UserLogin = {} as UserLogin;
 
@@ -25,7 +26,8 @@ export class Adminloginpage {
 
   constructor(private fb: FormBuilder,
      private router: Router,
-     private loggingService: LoggingService) {
+     private loggingService: LoggingService, 
+    private notificationService: Notificationservice) {
     this.loginForm = this.fb.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
@@ -49,7 +51,7 @@ export class Adminloginpage {
 
   validateLogin(email: string, password: string) {
     console.log('validating login...');
-    this.isLoading = true;
+    this.loading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
     this.userLogin.email = email;
     this.userLogin.password = password;
@@ -60,9 +62,9 @@ export class Adminloginpage {
         console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
         console.log('Parsed Response:', this.apiResponse);
-        if (this.apiResponse.token!= null && this.apiResponse.token!=undefined) {
+        if (this.apiResponse.accessToken!= null && this.apiResponse.accessToken!=undefined) {
           this.router.navigate(['/admindashboard']);
-          this.isLoading = false;
+          this.loading = false;
         }
       },
       error: (error) => {
@@ -70,7 +72,8 @@ export class Adminloginpage {
         // this.loggingService.validateLoginFailure(error.error);
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
-        this.isLoading = false;
+        this.loading = false;
+        this.notificationService.error(error.error || 'Login failed');
       },
       complete: () => {
         // Optional: Executed when the Observable completes

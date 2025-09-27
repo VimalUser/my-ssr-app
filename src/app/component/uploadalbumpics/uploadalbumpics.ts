@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Notificationservice } from '../../services/notificationservice';
+import { finalize, firstValueFrom } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -26,7 +28,8 @@ export class Uploadalbumpics implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private notify: Notificationservice
+    private notify: Notificationservice,
+    private cdr: ChangeDetectorRef
   ) {
 
   }
@@ -48,6 +51,7 @@ export class Uploadalbumpics implements OnInit {
   public loading: boolean = false;
 
   ngOnInit(): void {
+
     this.route.paramMap.subscribe((params) => {
       this.clientId = params.get('id') ?? '';
     });
@@ -60,22 +64,23 @@ export class Uploadalbumpics implements OnInit {
 
   loadClientData() {
     this.loading = true; // start loading
-
-    this.apiService.getClientFolderCounts(+(this.clientId)).subscribe({
-      next: res => {
-        this.clientData = res.client;
-        this.traditionalPhotosCount = res.folderCounts?.traditional || 0;
-        this.candidPhotosCount = res.folderCounts?.candid || 0;
-        this.loginCoverPhotosCount = res.folderCounts?.login || 0; // updated key
-        this.loading = false; // stop loading
-      },
-      error: err => {
-        this.notify.error('Error fetching folder counts');
-        console.error('Error fetching folder counts', err);
-        this.loading = false; // stop loading even on error
-      }
-    });
+    this.cdr.detectChanges();
+    this.apiService.getClientFolderCounts(+(this.clientId))
+      .pipe(finalize(() => this.loading = false)) // always hide spinner after completion
+      .subscribe({
+        next: res => {
+          this.clientData = res.client;
+          this.traditionalPhotosCount = res.folderCounts?.traditional || 0;
+          this.candidPhotosCount = res.folderCounts?.candid || 0;
+          this.loginCoverPhotosCount = res.folderCounts?.logincover || 0; // updated key
+        },
+        error: err => {
+          this.notify.error('Error fetching folder counts');
+          console.error('Error fetching folder counts', err);
+        }
+      });
   }
+
 
   // Handles file selection from the input
   onFileSelected(event: any, category: string): void {

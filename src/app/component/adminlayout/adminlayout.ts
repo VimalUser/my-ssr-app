@@ -22,6 +22,7 @@ createnew() {
     this.router.navigate(['admindashboard']);
   }
   logout() {
+    localStorage.removeItem('accessToken');
     this.router.navigate(['adminlogin']);
   }
 }

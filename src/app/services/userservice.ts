@@ -8,8 +8,8 @@ import { catchError, Observable, throwError } from 'rxjs';
 })
 export class userserviceapi {
   // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
-  private readonly apiBaseUrl = 'https://localhost:7112/Api/ClientAlbum/';
-  private readonly loginUrl = 'https://localhost:7112/Api/Auth/';
+  private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
+  private readonly loginUrl = 'https://localhost:44313/Api/Auth/';
 
 
 
