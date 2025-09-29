@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="main-container" *ngIf="!loading">
   <div class="header-section">
     <button class="back-button">
       <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()" style="width: 40px; height: 40px; cursor: pointer;" />

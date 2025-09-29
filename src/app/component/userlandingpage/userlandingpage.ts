@@ -105,6 +105,7 @@ export class Userlandingpage implements OnInit {
   }
 
   logout() {
+    localStorage.removeItem('accessToken');
     // Implement logout logic here, e.g., clear session, redirect to login page
     console.log('User logged out');
   }
