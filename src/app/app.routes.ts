@@ -15,6 +15,8 @@ import { Imagegallery } from './component/imagegallery/imagegallery';
 import { Framepicturecomponent } from './component/framepicturecomponent/framepicturecomponent';
 import { CoverpcitureSelection } from './component/coverpciture-selection/coverpciture-selection';
 import { Useralbumsubmitform } from './component/useralbumsubmitform/useralbumsubmitform';
+import { AdminDownloadSelection } from './component/admin-download-selection/admin-download-selection';
+import { AdminReviewComments } from './component/admin-review-comments/admin-review-comments';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -34,6 +36,9 @@ export const routes: Routes = [
       { path: 'newclient/:id', component: Newclientalbumform },
       { path: 'uploadpictures/:id', component: Uploadalbumpics },
       { path: 'adminactions/:id', component: Adminactionshome },
+      {path: 'download/:id',component:AdminDownloadSelection},
+      {path: 'comments/:id',component:AdminReviewComments},
+      
     ],
   },
 

@@ -22,8 +22,8 @@ export class newclientapi {
   // private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
   private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
 
-  private readonly loginUrl = 'https://localhost:44313/Api/Auth/';
-  private readonly blobUrl = 'https://localhost:44313/Api/Blob/';
+  private readonly loginUrl = 'https://localhost:7112/Api/Auth/';
+  private readonly blobUrl = 'https://localhost:7112/Api/Blob/';
 
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
@@ -111,6 +111,16 @@ export class newclientapi {
     alert('Fetching folder counts for clientId: ' + clientId);
     return this.http.get(`${this.blobUrl}getClientFolderCount?clientId=${clientId}`);
   }
+
+ // download pictures
+  downloadpictures1(clientId: number): Observable<any> {
+    alert('download clientId: ' + clientId);
+    return this.http.get(`${this.blobUrl}downloadImages?clientId=${clientId}`);
+  }
+
+
+
+  
 
   private handleError(error: HttpErrorResponse) {
     let errorMsg = '';

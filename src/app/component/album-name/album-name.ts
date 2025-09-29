@@ -55,12 +55,12 @@ export class AlbumName implements OnInit {
       this.notify.error('Please fill in all required fields!');
       return;
     }
-    this.updateFormData();
+    this.updateModelWithLatestData();
     // Notify other components to move to next step
     this.clientDataService.triggerNextStep();
   }
 
-  updateFormData() {
+  updateModelWithLatestData() {
     const existingData: clientData = this.clientDataService.getData();
 
     const updated: clientData = {
@@ -78,10 +78,12 @@ export class AlbumName implements OnInit {
       this.notify.error('Please fill in all required fields!');
       return;
     }
-    this.apiCalltoSave(this.updateFormData());
+    this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
   apiCalltoSave(updateData: clientData) {
+        console.log('Payload sent to API album screen:', JSON.stringify(updateData, null, 2));
+
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);

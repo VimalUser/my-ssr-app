@@ -1,0 +1,43 @@
+<p>admin-download-selection works!</p>
+
+<div class="container py-4">
+  <!-- Header Row -->
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <span class="fw-bold h5 mb-0">Meena siva sudhan</span>
+    <button class="btn btn-warning btn-sm d-flex align-items-center" (click)="download()">
+      <span class="me-1">Download</span>
+      <i class="bi bi-cloud-arrow-down"></i>
+    </button>
+  </div>
+<img src="https://candyimages.blob.core.windows.net/client-1-photos/candid/tiger.jpg">
+
+  <img src="https://candyimages.blob.core.windows.net/client-1-photos/traditional/dog.jpg?sv=2025-07-05&se=2025-09-27T10%3A37%3A34Z&sr=b&sp=r&sig=Do43KusXsmkvtIN36I0QH8nIQelczJLmWN%2FpwBtP6qI%3D">
+
+  <!-- Photo Type List -->
+  <ul class="list-unstyled ms-1 mb-4">
+    <li class="mb-1">Traditional photos <span class="text-muted">(250)</span></li>
+    <li class="mb-1">Candid photos <span class="text-muted">(250)</span></li>
+    <li class="mb-1">Cover photos <span class="text-muted">(02)</span></li>
+    <li class="mb-1">Frame photos <span class="text-muted">(02)</span></li>
+  </ul>
+
+  <!-- Re-submission Link -->
+  <div class="mb-3 ms-1">
+    <a href="#" class="link-primary" style="text-decoration: underline;">Send it for re-Submission</a>
+  </div>
+
+  <!-- Approval Row -->
+  <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 ms-1">
+    <input 
+      type="text" 
+      class="form-control flex-grow-1" 
+      placeholder="Do you need to approve this Client…?" 
+      [(ngModel)]="approvalComment"
+    />
+    <div class="d-flex gap-2 mt-2 mt-md-0">
+      <button class="btn btn-outline-secondary btn-sm">Deny</button>
+      <button class="btn btn-warning btn-sm">Approve</button>
+    </div>
+  </div>
+</div>
+

@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { AlbumSelectionItem } from '../../model/album-selection-item.model';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { clientData } from '../../model/clientData';
+import { userserviceapi } from '../../services/userservice';
+import { Notificationservice } from '../../services/notificationservice';
+
 
 @Component({
   selector: 'app-framepicturecomponent',
@@ -12,7 +15,10 @@ import { clientData } from '../../model/clientData';
   styleUrl: './framepicturecomponent.css',
 })
 export class Framepicturecomponent {
-  constructor(private clientDataService: ClientDataService) {}
+  constructor(private clientDataService: ClientDataService,
+    private userservice :userserviceapi,
+    private notify:Notificationservice
+  ) {}
   //folder selection logic
   folderNames: string[] = ['Traditional Photos', 'Candid Photos'];
   selectedFolderName: string = '';
@@ -20,10 +26,12 @@ export class Framepicturecomponent {
   selectedImageUrl: string | null = null;
   isPortait: boolean = true;
   showGallerySection = true;
+  
 
   showGallery(isPortait: boolean) {
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
+    this.selectedItems = [];
 
     this.isPortait = isPortait;
     this.selectedFolderName = isPortait ? 'Portrait Frame' : 'Landscape Frame';
@@ -83,31 +91,8 @@ export class Framepicturecomponent {
 
   ngOnInit(): void {
     const selectedImagesSource = this.selectedImagesSource();
-
-    // Generate sample URLs
-    // for (let i = 1; i <= this.imageCount; i++) {
-
-    //   const imgUrl = `${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`;
-    //   if (selectedImagesSource.some(x => x.url === imgUrl)) {
-    //     this.images.push(imgUrl);
-    //   }
-
-    //   this.images.push(`${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`);
-    // }
-
-    for (let i = 1; i <= this.imageCount; i++) {
-      const imgUrl = `${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`;
-
-      if (
-        Array.isArray(selectedImagesSource) &&
-        selectedImagesSource.some(
-          (x) => typeof x !== 'string' && x.fileName === imgUrl
-        )
-      ) {
-        this.images.push(imgUrl);
-      }
-    }
-
+    this.images = this.selectedImagesSource();
+    console.log('image source - 2', this.images);
     this.loading = false;
 
     console.log('Initial Client Data in frameselectin source:', this.images);
@@ -118,10 +103,10 @@ export class Framepicturecomponent {
     const mergedArray: AlbumSelectionItem[] =
       data.tranditionalAlbumSelection.concat(data.candidAlbumSelection);
 
-    const selectedPictureList: string[] = mergedArray.map(
-      (item: AlbumSelectionItem) => item.fileName
+    const frameimagesSource: string[] = mergedArray.map(
+      (item: AlbumSelectionItem) => item.url
     );
-    return mergedArray;
+    return frameimagesSource;
   }
 
   get totalPages(): number {
@@ -262,33 +247,6 @@ export class Framepicturecomponent {
     this.closePreview();
   }
 
-  saveSelection() {
-    const data: clientData = this.clientDataService.getData();
-
-    const updated: clientData = {
-      ...data,
-      frameSelection: this.selectedItems,
-    };
-
-    this.clientDataService.updateData(updated);
-    console.log('Saved to ClientDataService:', updated);
-  }
-
-  saveSelection2() {
-    // const data: clientData = this.clientDataService.getData();
-    // // const propertyToUpdate = this.isTraditional
-    // //   ? 'tranditionalAlbumSelection'
-    // //   : 'candidAlbumSelection';
-    // const updated: clientData = {
-    //   ...data,
-    //   [propertyToUpdate]: [...this.selectedItems],
-    // };
-    // this.clientDataService.updateData(updated);
-    // // this.clientDataload = updated;
-    // alert('Your Selection/unselection saved successfully!');
-    // console.log('Saved to ClientDataService:', updated);
-  }
-
   private mergeByFileName(
     base: AlbumSelectionItem[],
     add: AlbumSelectionItem[]
@@ -303,4 +261,38 @@ export class Framepicturecomponent {
     );
     return Array.from(map.values());
   }
+
+ saveSelection() {    
+    this.apiCalltoSave(this.updateModelWithLatestData());
+  }
+
+  updateModelWithLatestData() {
+    const existingData: clientData = this.clientDataService.getData();
+
+    const updated: clientData = {
+      ...existingData,
+      frameSelection: [...this.selectedItems],
+    };
+
+    this.clientDataService.updateData(updated);
+    return updated;
+    console.log('Saved to ClientDataService: frame', updated);
+  }
+
+  apiCalltoSave(updateData:clientData) {
+    console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
+
+    this.userservice.saveUserAlbumDetails(updateData).subscribe({
+      next: (response) => {
+        console.log('Save Response:', response);
+        this.notify.success('Your Selection/unselection saved successfully!');
+      },
+      error: (error) => {
+        console.log('Save Error:', error);
+        this.notify.error('Failed to save your selection!');
+      },
+    });
+  } 
+
+
 }
