@@ -50,12 +50,27 @@
     <div class="col">
       <div
         class="card h-100 shadow-sm text-center p-4"
-        [routerLink]="['/admindashboard/downloadpictures', 4]"
+        [routerLink]="['/admindashboard/download', clientId]"
         style="cursor: pointer;"
       >
         <i class="fas fa-users fa-3x text-success mb-3"></i>
         <div class="card-body p-0">
-          <h5 class="card-title">Comments and download Pictures</h5>
+          <h5 class="card-title">download pics</h5>
+          <p class="card-text text-muted">See the user comments on the selected photos and Download them</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example more cards -->
+    <div class="col">
+      <div
+        class="card h-100 shadow-sm text-center p-4"
+        [routerLink]="['/admindashboard/comments', clientId]"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-users fa-3x text-success mb-3"></i>
+        <div class="card-body p-0">
+          <h5 class="card-title">Comments </h5>
           <p class="card-text text-muted">See the user comments on the selected photos and Download them</p>
         </div>
       </div>
