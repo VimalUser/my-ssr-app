@@ -22,6 +22,8 @@ export class Newclientalbumform implements OnInit {
   errorMessage: string | null = null;
   isLoading: boolean = false;
   id: string = '';
+  showAccessLink = false;  
+  isDisableAccessLink : boolean = false;
 
   get f() {
     return this.clientForm.controls;
@@ -34,6 +36,7 @@ export class Newclientalbumform implements OnInit {
     });
     this.loadDropdowns();
     if (this.id != '') {
+      this.enableEdit();
       this.fetchData();
     }
     
@@ -61,9 +64,16 @@ export class Newclientalbumform implements OnInit {
       frameSizeId: ['', Validators.required],
       clientId: [0],
       status: ['Yet to Start'],
-      loginURL: [''],
-      loginCode: [''],
+      accessLink: [''],
+      passcode: [''],
     });
+  }
+
+  enableEdit() {
+    this.showAccessLink = true;
+    this.isDisableAccessLink = true;
+    this.clientForm.get('accessLink')?.disable(); // disable while editing
+    this.clientForm.get('passcode')?.disable(); // disable while editing
   }
 
   onSave() {
@@ -86,6 +96,7 @@ export class Newclientalbumform implements OnInit {
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
     this.apiService.getAlbumDetails(this.id).subscribe({
       next: (data) => {
+        console.log('Fetching data from API...' + data);
         // This is where you process the successful response
         console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);

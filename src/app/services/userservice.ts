@@ -1,31 +1,30 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class userserviceapi {
-  // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
-  private readonly apiBaseUrl = 'https://localhost:7112/Api/ClientAlbum/';
-  private readonly loginUrl = 'https://localhost:7112/Api/Auth/';
-  private readonly blobUrl = 'https://localhost:7112/Api/Blob/';
-
+  private clientAlbumUrl = environment.clientAlbumUrl;
+  private blobUrl = environment.blobUrl;
+    
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
-  validateUserLogin(data: any): Observable<any> {
-    var finalUrl = this.loginUrl + 'login';
-    return this.http.post(`${finalUrl}`, data);
+  checkClientUrlInfo(user: string): Observable<any> {
+    var finalUrl = this.clientAlbumUrl + 'getClientUrlInfo';
+    return this.http.get(`${finalUrl}?user=${user}`);
   }
 
   getClientAlbumDetails(id: string): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'GetAlbumDetails';
+    var finalUrl = this.clientAlbumUrl + 'GetAlbumDetails';
     return this.http.get(`${finalUrl}?Id=${id}`);
   }
 
   saveUserAlbumDetails(data: any): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'createAlbum';
+    var finalUrl = this.clientAlbumUrl + 'createAlbum';
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 

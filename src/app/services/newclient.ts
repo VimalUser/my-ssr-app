@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 export interface DropdownItem {
   id: number;
@@ -18,32 +20,29 @@ export interface DropdownResponse {
   providedIn: 'root',
 })
 export class newclientapi {
-  // private readonly apiUrl = 'https://perfectlypickedapi.azurewebsites.net/perfectlypicked';
-  // private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
-  private readonly apiBaseUrl = 'https://localhost:44313/Api/ClientAlbum/';
 
-  private readonly loginUrl = 'https://localhost:7112/Api/Auth/';
-  private readonly blobUrl = 'https://localhost:7112/Api/Blob/';
-
+  private clientAlbumUrl = environment.clientAlbumUrl;
+  private authUrl = environment.authUrl;
+  private blobUrl = environment.blobUrl;
+  
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
 
-  // validateUserLogin(data: any): Observable<any> {
-  //   var finalUrl = this.loginUrl + 'login';
-  //   return this.http.post(`${finalUrl}`, data);
-  // }
-
-  // validateUserLogin(data: any): Observable<any> {
-  //   var finalUrl = this.loginUrl + 'login';
-  //   return this.http.post<{ accessToken: string }>(
-  //     `${finalUrl}`, data,
-  //     { withCredentials: true } // send HttpOnly cookie automatically
-  //   );
-  // }
+  validateClientLogin(data: any): Observable<any> {
+    var finalUrl = this.authUrl + 'clientLogin';
+    return this.http.post<{ accessToken: string }>(
+      `${finalUrl}`, data,
+      { withCredentials: true } // send HttpOnly cookie automatically
+    ).pipe(
+      tap(response => {
+        localStorage.setItem('accessToken', response.accessToken);
+      })
+    );
+  }
 
   validateUserLogin(data: any): Observable<any> {
-    var finalUrl = this.loginUrl + 'login';
+    var finalUrl = this.authUrl + 'login';
     return this.http.post<{ accessToken: string }>(
       `${finalUrl}`, data,
       { withCredentials: true } // send HttpOnly cookie automatically
@@ -68,30 +67,30 @@ export class newclientapi {
 
 
   getAlbumDetails(id: string): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'GetAlbumDetails';
+    var finalUrl = this.clientAlbumUrl + 'GetAlbumDetails';
     return this.http.get(`${finalUrl}?Id=${id}`);
   }
 
   getAllClientDetails(): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'GetAllClientAlbum';
+    var finalUrl = this.clientAlbumUrl + 'GetAllClientAlbum';
     return this.http.get(`${finalUrl}`);
   }
 
   saveClientAlbumDetails(data: any): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'SaveClientDetails';
+    var finalUrl = this.clientAlbumUrl + 'SaveClientDetails';
     if (data.clientId != 0) {
-      finalUrl = this.apiBaseUrl + 'UpdateClientAlbum';
+      finalUrl = this.clientAlbumUrl + 'UpdateClientAlbum';
     }
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 
   generateUserlogin(id: string): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'GetUserLogin';
+    var finalUrl = this.clientAlbumUrl + 'GetUserLogin';
     return this.http.get(`${finalUrl}?Id=${id}`);
   }
 
   getDropdowns(): Observable<DropdownResponse> {
-    return this.http.get<DropdownResponse>(`${this.apiBaseUrl}dropdowns`)
+    return this.http.get<DropdownResponse>(`${this.clientAlbumUrl}dropdowns`)
       .pipe(
         catchError(this.handleError)
       );
@@ -112,15 +111,11 @@ export class newclientapi {
     return this.http.get(`${this.blobUrl}getClientFolderCount?clientId=${clientId}`);
   }
 
- // download pictures
+  // download pictures
   downloadpictures1(clientId: number): Observable<any> {
     alert('download clientId: ' + clientId);
     return this.http.get(`${this.blobUrl}downloadImages?clientId=${clientId}`);
   }
-
-
-
-  
 
   private handleError(error: HttpErrorResponse) {
     let errorMsg = '';
@@ -135,5 +130,4 @@ export class newclientapi {
 
     return throwError(() => new Error(errorMsg));
   }
-
 }

@@ -138,6 +138,16 @@
         </div>
       </div>
 
+      <div class="form-group" *ngIf="showAccessLink">
+        <label>Access Link</label>
+        <input formControlName="accessLink" />
+      </div>
+
+      <div class="form-group" *ngIf="showAccessLink">
+        <label>Passcode</label>
+        <input formControlName="passcode" />
+      </div>
+
     </div>
   </form>
 </section>
