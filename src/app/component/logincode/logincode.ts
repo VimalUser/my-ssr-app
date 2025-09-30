@@ -2,68 +2,98 @@ import { Component } from '@angular/core';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import { ClientDataService } from '../../shared/ClientDataService';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Notificationservice } from '../../services/notificationservice';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { newclientapi } from '../../services/newclient';
+import { ClientLogin } from '../../model/userlogin';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-logincode',
-  imports: [],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './logincode.html',
   styleUrl: './logincode.css',
 })
 export class Logincode {
-  couplename = 'Meena Siva Sudhan1';
-  orders: ClientAlbum = new ClientAlbum();
+  loginForm: FormGroup;
+  loading: boolean = false;
+  userInfo: any;
+  userLogin: ClientLogin = {} as ClientLogin;
 
-  constructor(
-    private clientDataService: ClientDataService,
-    private userService: userserviceapi
-  ) {}
-
-  ngOnInit(): void {
-    this.fetchData();
-  }
-
-  fetchData(): void {
-    console.log('Fetching data from API...');
-    // this.isLoading = true;
-    // this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
-    this.userService.getClientAlbumDetails('1').subscribe({
-      next: (data) => {
-        // This is where you process the successful response
-        console.log('API Response:', data);
-        this.orders = data;
-        this.updateClinetData(this.orders);
-        // this.isLoading = false;
-      },
-      error: (error) => {
-        // This is executed if the request fails (e.g., 404, 500)
-        // this.loggingService.validateLoginFailure(error.error);
-        console.error('There was an error!', error);
-        // this.errorMessage = 'Failed to load data. Check the server or network connection.';
-        // this.isLoading = false;
-      },
-      complete: () => {
-        // Optional: Executed when the Observable completes
-        // console.log('Data fetching complete.');
-        // console.log('orderslist ', this.orders);
-      },
+  constructor(private route: ActivatedRoute, private http: HttpClient,
+    private userService: userserviceapi,
+    private notify: Notificationservice,
+    private fb: FormBuilder,
+    private apiService: newclientapi,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      passcode: ['', Validators.required]
     });
   }
-
-  updateClinetData(order: ClientAlbum) {
-    if (order) {
-      this.clientDataService.patchData({
-        clientName: order.clientName || '',
-        coupleName: order.coupleName || '',
-        mobileNumber: order.mobileNumber || '',
-        noOfPics: order.noOfPics || 0,
-        noOfFrames: order.noOfFrame || 0,
-      });
+  user: string | null = null;
+  ngOnInit() {
+    this.loading = true;
+    this.user = this.route.snapshot.queryParamMap.get('user');
+    console.log('Login Code:', this.user);
+    if (!this.user || this.user.trim() === '') {
+      this.loading = false;
+      this.notify.error('Please enter the exact url you recieved to proceed');
+      return;
     }
-    console.log('Initial Client Data in ImageGallery:', this.clientDataService);
+
+    // Call API to validate
+    this.userService.checkClientUrlInfo(this.user).subscribe({
+      next: (res: any) => {
+        this.userInfo = res; // will be undefined for errors
+        this.loading = false;
+      },
+      error: (err) => {
+        if (err.status === 400)
+          this.notify.error(err.error.message);
+        else if (err.status === 404)
+          this.notify.error(err.error.message);
+        this.loading = false;
+      }
+    });
+
   }
 
-  validateLogin() {
-    alert('Login validated!'); // Placeholder for actual validation logic
-    this.fetchData();
+  validateClientLogin() {
+    this.loading = true;
+
+    if (!this.user) {
+      this.loading = false;
+      this.notify.error('Please enter the exact url you recieved to proceed');
+      return;
+    }
+
+    const passcode = this.loginForm.get('passcode')?.value;
+    console.log('validating login...');
+    this.userLogin.user = this.user;
+    this.userLogin.passcode = passcode;
+
+    this.apiService.validateClientLogin(this.userLogin).subscribe({
+      next: (apiResponse) => {
+        this.loading = false;
+        if (apiResponse.accessToken != null && apiResponse.accessToken != undefined) {
+          this.router.navigate(['/userhome/startpage']);
+          // this.loading = false;
+        }
+        else {
+          this.loading = false;
+          this.notify.error(apiResponse.message || 'Invalid passcode');
+        }
+      },
+      error: (err) => {
+        if (err.status === 400 || err.status === 404)
+          this.notify.error(err.error.message || 'Invalid passcode');
+        else
+          this.notify.error('Something went wrong');
+        this.loading = false;
+      }
+    });
   }
 }

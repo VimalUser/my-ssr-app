@@ -3,16 +3,24 @@ import { EMPTY, Observable, catchError, switchMap, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Notificationservice } from '../../services/notificationservice';
+import { environment } from '../../../environments/environment';
 
-const API_BASE_URL = 'https://localhost:44313/Api/Auth/';
+const API_BASE_URL = environment.authUrl;
 
 export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
- const http = inject(HttpClient);  
+  const http = inject(HttpClient);  
   const router = inject(Router);
   const notify = inject(Notificationservice);
   const isRefresh = req.url.includes('/refresh');
   const isLogin = req.url.includes('/login');
-  const token = localStorage.getItem('accessToken');
+
+  
+
+  // SSR-safe localStorage access
+  const token = (typeof window !== 'undefined' && localStorage)
+    ? localStorage.getItem('accessToken')
+    : null;
+
   console.log('Interceptor running', req.url, token);
 
   let authReq = req;

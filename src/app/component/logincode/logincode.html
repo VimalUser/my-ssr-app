@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Enter Code - {{this.orders.clientName }}</title>
+  <title>Welcome {{this.userInfo?.clientName }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-  <div class="card">
-    <h2>{{couplename}}</h2>
-    <label class="label" for="code">Enter Code</label>
-    <input class="code-input" id="code" type="text" maxlength="6" autocomplete="off" placeholder="- - - - - -" />
-    <button class="submit-btn" (click)="validateLogin()" >Submit</button>
+  <form [formGroup]="loginForm" (ngSubmit)="validateClientLogin()">
+    <div class="card">
+      <h2>Welcome {{this.userInfo?.clientName }}</h2>
+      <label class="label" for="code">Please enter you code to proceed</label>
+      <input class="code-input" id="code" formControlName="passcode" type="text" maxlength="6" autocomplete="off"
+        placeholder="- - - - - -" />
+      <button class="submit-btn">Submit</button>
+    </div>
+     <div *ngIf="loading" class="loading-container">
+    <img src="assets/loading-spinner.gif" alt="Uploading...">
+    <!-- <p>Uploading, please wait...</p> -->
   </div>
+  </form>
+ 
 </body>
+
 </html>
