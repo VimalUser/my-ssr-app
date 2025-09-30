@@ -36,7 +36,7 @@ export class userserviceapi {
   }
 
    getClientAlbumSelectionDetails(id: string): Observable<any> {
-    var finalUrl = this.apiBaseUrl + 'getClientInfoWithImages';
+    var finalUrl = this.clientAlbumUrl + 'getClientInfoWithImages';
     return this.http.get(`${finalUrl}?clientId=${id}`);
   }
 
