@@ -36,6 +36,11 @@ export class userserviceapi {
     );
   }
 
+   getClientAlbumSelectionDetails(id: string): Observable<any> {
+    var finalUrl = this.apiBaseUrl + 'getClientInfoWithImages';
+    return this.http.get(`${finalUrl}?clientId=${id}`);
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMsg = '';
 

@@ -19,8 +19,8 @@
             <li *ngIf="clientData && clientData.candidAlbumSelection.length > 0">
               Candid Photos: {{ clientData.candidAlbumSelection.length }} images selected
             </li> 
-            <li *ngIf="clientData && clientData.frameSelection.length > 0">
-              Number of Frames: {{ clientData.frameSelection.length }} frames selected
+            <li *ngIf="clientData && clientData.portraitFrameSelection.length > 0">
+              Number of Frames: {{ clientData.portraitFrameSelection.length  + clientData.landscapeFrameSelection.length}} frames selected
             </li>
             <li *ngIf="clientData && clientData.coverSelection.length > 0">
               Cover picture: {{ clientData.coverSelection.length }} image selected

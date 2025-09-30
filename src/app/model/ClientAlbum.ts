@@ -5,6 +5,7 @@ export class ClientAlbum {
   albumSize: string | null = null;
   albumSizeId: number | null = null;
   clientName: string | null = null;
+  albumName :string |  null = null;
   coupleName: string | null = null;
   eventDate: Date | null = null;
   albumEventDate: Date | null = null;

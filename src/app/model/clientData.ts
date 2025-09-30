@@ -18,6 +18,7 @@ export class clientData {
   frameSize: string = ''
   tranditionalAlbumSelection: AlbumSelectionItem[] = [];
   candidAlbumSelection: AlbumSelectionItem[] = []; // If same structure, else type accordingly
-  frameSelection: AlbumSelectionItem[] = []; // Define proper type if possible
+  portraitFrameSelection: AlbumSelectionItem[] = []; // Define proper type if possible
+  landscapeFrameSelection: AlbumSelectionItem[] = []; // Define proper type if possible
   coverSelection: AlbumSelectionItem[] = []; // Define proper type if possible
 }

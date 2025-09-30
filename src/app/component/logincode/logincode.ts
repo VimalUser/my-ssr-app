@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import { ClientDataService } from '../../shared/ClientDataService';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-logincode',
@@ -15,11 +17,17 @@ export class Logincode {
 
   constructor(
     private clientDataService: ClientDataService,
-    private userService: userserviceapi
+    private route: ActivatedRoute,
+    private userService: userserviceapi,
+    
+    
   ) {}
-
+loginCode: string | null = null;
   ngOnInit(): void {
-    this.fetchData();
+
+      this.loginCode = this.route.snapshot.queryParamMap.get('user');
+       console.log('Login Code:', this.loginCode);
+    // this.fetchData();
   }
 
   fetchData(): void {

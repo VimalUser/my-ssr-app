@@ -7,7 +7,6 @@ import { clientData } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
 
-
 @Component({
   selector: 'app-framepicturecomponent',
   imports: [CommonModule, FormsModule],
@@ -15,9 +14,10 @@ import { Notificationservice } from '../../services/notificationservice';
   styleUrl: './framepicturecomponent.css',
 })
 export class Framepicturecomponent {
-  constructor(private clientDataService: ClientDataService,
-    private userservice :userserviceapi,
-    private notify:Notificationservice
+  constructor(
+    private clientDataService: ClientDataService,
+    private userservice: userserviceapi,
+    private notify: Notificationservice
   ) {}
   //folder selection logic
   folderNames: string[] = ['Traditional Photos', 'Candid Photos'];
@@ -26,7 +26,6 @@ export class Framepicturecomponent {
   selectedImageUrl: string | null = null;
   isPortait: boolean = true;
   showGallerySection = true;
-  
 
   showGallery(isPortait: boolean) {
     const gallerySection = document.getElementById('gallerySection');
@@ -88,8 +87,11 @@ export class Framepicturecomponent {
   imageCount = 60;
   thumbW = 600;
   thumbH = 400;
+  pagelatestData: clientData = new clientData();
 
   ngOnInit(): void {
+    const data = this.clientDataService.getData();
+    this.pagelatestData = data;
     const selectedImagesSource = this.selectedImagesSource();
     this.images = this.selectedImagesSource();
     console.log('image source - 2', this.images);
@@ -99,9 +101,10 @@ export class Framepicturecomponent {
   }
 
   selectedImagesSource() {
-    const data = this.clientDataService.getData();
     const mergedArray: AlbumSelectionItem[] =
-      data.tranditionalAlbumSelection.concat(data.candidAlbumSelection);
+      this.pagelatestData.tranditionalAlbumSelection.concat(
+        this.pagelatestData.candidAlbumSelection
+      );
 
     const frameimagesSource: string[] = mergedArray.map(
       (item: AlbumSelectionItem) => item.url
@@ -158,17 +161,11 @@ export class Framepicturecomponent {
   }
 
   get hasPortraitType(): boolean {
-    return (
-      Array.isArray(this.selectedItems) &&
-      this.selectedItems.some((item) => item.type === 'portrait')
-    );
+    return this.pagelatestData.portraitFrameSelection.length > 0;
   }
 
   get hasLandscapeType(): boolean {
-    return (
-      Array.isArray(this.selectedItems) &&
-      this.selectedItems.some((item) => item.type === 'landscape')
-    );
+    return this.pagelatestData.landscapeFrameSelection.length > 0;
   }
 
   openPreview(imgUrl: string) {
@@ -186,7 +183,7 @@ export class Framepicturecomponent {
       (item) => item.type === inputType
     )?.url;
     if (!imgUrl) {
-      alert('No landscape image selected for preview.');
+      alert('No image selected for preview.');
       return;
     }
     this.previewImage = imgUrl;
@@ -262,16 +259,20 @@ export class Framepicturecomponent {
     return Array.from(map.values());
   }
 
- saveSelection() {    
+  saveSelection() {
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
   updateModelWithLatestData() {
     const existingData: clientData = this.clientDataService.getData();
 
+    const propertyToUpdate = this.isPortait
+      ? 'portraitFrameSelection'
+      : 'landscapeFrameSelection';
+
     const updated: clientData = {
       ...existingData,
-      frameSelection: [...this.selectedItems],
+      [propertyToUpdate]: [...this.selectedItems],
     };
 
     this.clientDataService.updateData(updated);
@@ -279,7 +280,7 @@ export class Framepicturecomponent {
     console.log('Saved to ClientDataService: frame', updated);
   }
 
-  apiCalltoSave(updateData:clientData) {
+  apiCalltoSave(updateData: clientData) {
     console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
 
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
@@ -292,7 +293,5 @@ export class Framepicturecomponent {
         this.notify.error('Failed to save your selection!');
       },
     });
-  } 
-
-
+  }
 }
