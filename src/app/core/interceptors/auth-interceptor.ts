@@ -53,7 +53,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
             if (currentUrl.includes('/admindashboard')) {
               router.navigate(['/adminlogin']);
             } else {
-              router.navigate(['/startpage']);
+              router.navigate(['/logincode']);
             }
             // return throwError(() => err);
             return EMPTY;
