@@ -114,7 +114,7 @@ export class newclientapi {
   // download pictures
   downloadpictures1(clientId: number): Observable<any> {
     alert('download clientId: ' + clientId);
-    return this.http.get(`${this.blobUrl}downloadImages?clientId=${clientId}`);
+    return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`);
   }
 
   private handleError(error: HttpErrorResponse) {
