@@ -1,3 +1,32 @@
-.rounded-more {
-  border-radius: 1.5rem !important; /* Larger curve - adjust as needed */
+.badge {
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+}
+
+.table th {
+  white-space: nowrap;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+/* Mobile spacing */
+@media (max-width: 576px) {
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  .fs-4 {
+    font-size: 1.2rem !important;
+  }
+
+  .fs-6 {
+    font-size: 0.9rem !important;
+  }
+
+  .table td,
+  .table th {
+    font-size: 0.85rem;
+  }
 }
