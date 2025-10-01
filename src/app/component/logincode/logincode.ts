@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
-import { ClientDataService } from '../../shared/ClientDataService';
+import { ClientDataService, LoggedInUser } from '../../shared/ClientDataService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Notificationservice } from '../../services/notificationservice';
@@ -28,7 +28,8 @@ export class Logincode {
     private notify: Notificationservice,
     private fb: FormBuilder,
     private apiService: newclientapi,
-    private router: Router
+    private router: Router,
+    private clientService: ClientDataService
   ) {
     this.loginForm = this.fb.group({
       passcode: ['', Validators.required]
@@ -49,6 +50,11 @@ export class Logincode {
     this.userService.checkClientUrlInfo(this.user).subscribe({
       next: (res: any) => {
         this.userInfo = res; // will be undefined for errors
+        console.log('User Info from API:', this.userInfo);
+        const loggedInUser: LoggedInUser = { clientId: this.userInfo.clientId, clientName: this.userInfo.clientName };
+
+        // 1. Store user in service
+        this.clientService.setCurrentUser(loggedInUser);
         this.loading = false;
       },
       error: (err) => {

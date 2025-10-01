@@ -5,11 +5,12 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminDataService } from '../../shared/admin-data-service';
 import { AdminData } from '../../model/AdminData';
 import { userserviceapi } from '../../services/userservice';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-adminactionshome',
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './adminactionshome.html',
   styleUrl: './adminactionshome.css'
 })

@@ -3,6 +3,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { clientData } from '../model/clientData';
 
+export interface LoggedInUser {
+  clientId: number | string;
+  clientName: string;
+}
+
+
 @Injectable({ providedIn: 'root' })
 export class ClientDataService {
   // Initial JSON data object
@@ -32,16 +38,7 @@ export class ClientDataService {
   // Observable to subscribe to data changes
   data$ = this.dataSubject.asObservable();
 
-  private lightTheme = new BehaviorSubject<boolean>(true);
-  isLightTheme$ = this.lightTheme.asObservable();
-
-  setTheme(isLight: boolean) {
-    this.lightTheme.next(isLight);
-  }
-  getTheme(): boolean {
-    return this.lightTheme.value;
-  }
-
+  
   // Getter for current value
   getData(): any {
     return this.dataSubject.value;
@@ -61,6 +58,30 @@ export class ClientDataService {
   patchData(patch: Partial<any>) {
     const newData = { ...this.dataSubject.value, ...patch };
     this.dataSubject.next(newData);
+  }
+
+
+  // Holds currently logged-in user
+  private currentUserSubject = new BehaviorSubject<LoggedInUser | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
+
+  // Call this after successful login
+  setCurrentUser(user: LoggedInUser) {
+    this.currentUserSubject.next(user);
+  }
+
+  getCurrentUser(): LoggedInUser | null {
+    return this.currentUserSubject.value;
+  }
+
+  private lightTheme = new BehaviorSubject<boolean>(true);
+  isLightTheme$ = this.lightTheme.asObservable();
+
+  setTheme(isLight: boolean) {
+    this.lightTheme.next(isLight);
+  }
+  getTheme(): boolean {
+    return this.lightTheme.value;
   }
 
   private nextStepSubject = new Subject<void>();

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ClientDataService } from '../../shared/ClientDataService';
+import { ClientDataService, LoggedInUser } from '../../shared/ClientDataService';
 import { CommonModule } from '@angular/common';
 import { clientData } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
@@ -13,14 +13,17 @@ import { ClientAlbum } from '../../model/ClientAlbum';
   standalone: true,
 })
 export class Albumstratpage implements OnInit {
+  user: LoggedInUser | null = null;
+
   formLatestData: clientData = new clientData();
 
   constructor(
     private clientDataService: ClientDataService,
-    private userService: userserviceapi
-  ) {}
+    private userService: userserviceapi,
+  ) { }
 
   ngOnInit(): void {
+    this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
   }
 
@@ -32,7 +35,7 @@ export class Albumstratpage implements OnInit {
   updateClinetData(clientDatafromDb: clientData) {
     // const data: clientData = this.clientDataService.getData();
 
-    const updated: clientData = {     
+    const updated: clientData = {
       clientId: Number(clientDatafromDb.clientId) || 1,
       clientName: clientDatafromDb.clientName || '',
       status: '',
@@ -48,11 +51,11 @@ export class Albumstratpage implements OnInit {
       eventType: '',
       albumSize: '',
       frameSize: '',
-      tranditionalAlbumSelection : clientDatafromDb.tranditionalAlbumSelection || [],
-      candidAlbumSelection :clientDatafromDb.candidAlbumSelection || [],
-      portraitFrameSelection:clientDatafromDb.portraitFrameSelection || [],
+      tranditionalAlbumSelection: clientDatafromDb.tranditionalAlbumSelection || [],
+      candidAlbumSelection: clientDatafromDb.candidAlbumSelection || [],
+      portraitFrameSelection: clientDatafromDb.portraitFrameSelection || [],
       landscapeFrameSelection: clientDatafromDb.landscapeFrameSelection || [],
-      coverSelection:  clientDatafromDb.coverSelection || []
+      coverSelection: clientDatafromDb.coverSelection || []
     };
 
     this.clientDataService.updateData(updated);
@@ -61,7 +64,7 @@ export class Albumstratpage implements OnInit {
 
   fetchData(): void {
     console.log('Fetching data from API...');
-    this.userService.getClientAlbumSelectionDetails('1').subscribe({
+    this.userService.getClientAlbumSelectionDetails(String(this.user?.clientId)).subscribe({
       next: (data) => {
         // This is where you process the successful response
         console.log('API Response:', data);
@@ -73,7 +76,7 @@ export class Albumstratpage implements OnInit {
         // This is executed if the request fails (e.g., 404, 500)
         console.error('There was an error!', error);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 }
