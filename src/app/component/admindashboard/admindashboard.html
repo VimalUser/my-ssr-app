@@ -23,12 +23,8 @@
 
       <!-- Filters -->
       <div class="d-flex flex-column flex-lg-row gap-2 justify-content-between mb-3">
-        <input
-          type="text"
-          class="form-control flex-grow-1"
-          placeholder="Search by client name or order number..."
-          [(ngModel)]="searchText"
-        />
+        <input type="text" class="form-control flex-grow-1" placeholder="Search by client name or order number..."
+          [(ngModel)]="searchText" />
 
         <div class="d-flex flex-column flex-sm-row gap-2">
           <select class="form-select" [(ngModel)]="selectedStatus">
@@ -54,37 +50,46 @@
               <th>Total Photos</th>
               <th>Selected</th>
               <th>Progress</th>
+              <th></th>
             </tr>
           </thead>
+
           <tbody>
-            <tr *ngFor="let client of filteredClients">
-              <td class="fw-semibold">{{ client.orderNo }}</td>
-              <td>{{ client.name }}</td>
+            <tr *ngFor="let client of clientDataList">
+              <td class="fw-semibold">{{ client.orderNumber }}</td>
+              <td>{{ client.clientName }}</td>
               <td>
                 <span class="badge bg-light text-dark border">{{ client.eventType }}</span>
               </td>
               <td>{{ client.totalPhotos }}</td>
-              <td>{{ client.selected }} ({{ client.percentage }}%)</td>
+              <td>{{ client.selectedPhotos }} ({{ getPhotoPercentage(client.totalPhotos, client.selectedPhotos) }}%)
+              </td>
               <td>
-                <span
-                  class="badge px-3 py-2"
-                  [ngClass]="{
-                    'bg-success bg-opacity-25 text-success border border-success': client.status === 'Completed',
-                    'bg-warning bg-opacity-25 text-warning border border-warning': client.status === 'In Progress',
-                    'bg-secondary bg-opacity-25 text-secondary border border-secondary': client.status === 'Yet to Start'
-                  }"
-                >
-                  {{ client.status }}
+                <span class="badge px-3 py-2" [ngClass]="{
+                    'bg-success bg-opacity-25 text-white border border-success': client.progress === 'Completed',
+                    'bg-warning bg-opacity-25 text-dark border border-warning': client.progress === 'Inprogress',
+                    'bg-secondary bg-opacity-25 text-dark border border-secondary': client.progress === 'Yet to Start'
+                  }">
+                  {{ client.progress }}
                 </span>
+              </td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="viewClientInfo(client.clientId)">
+                  View Client
+                </button>
               </td>
             </tr>
 
-            <tr *ngIf="filteredClients.length === 0">
-              <td colspan="6" class="text-center text-muted py-3">No matching clients found</td>
+            <tr *ngIf="clientDataList.length === 0">
+              <td colspan="7" class="text-center text-muted py-3">No matching clients found</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="isLoading" class="loading-container">
+  <img src="assets/loading-spinner.gif" alt="Uploading...">
+  <!-- <p>Uploading, please wait...</p> -->
 </div>

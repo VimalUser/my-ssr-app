@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { ClientManagement } from '../model/ClientManagement';
 
 export interface DropdownItem {
   id: number;
@@ -115,6 +116,10 @@ export class newclientapi {
   downloadpictures1(clientId: number): Observable<any> {
     alert('download clientId: ' + clientId);
     return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`);
+  }
+
+   getClientManagementData(): Observable<ClientManagement> {
+    return this.http.get<ClientManagement>(this.clientAlbumUrl + 'getClientManagementData');
   }
 
   private handleError(error: HttpErrorResponse) {

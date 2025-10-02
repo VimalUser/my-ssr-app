@@ -12,6 +12,10 @@ import { newclientapi } from '../../services/newclient';
 import { inject } from '@angular/core';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import { LoggingService } from '../../shared/logging.service';
+import { ClientManagement, DashBoardDto } from '../../model/ClientManagement';
+import { Notificationservice } from '../../services/notificationservice';
+
+
 
 interface Client {
   orderNo: string;
@@ -31,7 +35,24 @@ interface Client {
   standalone: true,
 })
 
-export class Admindashboard  {
+export class Admindashboard  implements OnInit {
+
+  isLoading: boolean = false;
+clientData?: ClientManagement;
+errorMessage = '';
+statusList: string[] = [];
+eventList: string[] = [];
+statCards: { title: string; value: number | undefined; class: string }[] = [];
+clientDataList: DashBoardDto[] = [];
+    constructor(private router: Router, private apiService: newclientapi,
+    private loggingService: LoggingService, 
+  private notify:Notificationservice) {
+    // You can initialize any required services or data here
+    
+}
+  ngOnInit(): void {
+    this.fetchDashboardData();
+  }
  clients: Client[] = [
     { orderNo: 'PH-2024-001', name: 'Sarah & Michael Johnson', eventType: 'Wedding', totalPhotos: 450, selected: 120, percentage: 27, status: 'Completed' },
     { orderNo: 'PH-2024-002', name: 'Emily Chen', eventType: 'Engagement', totalPhotos: 280, selected: 85, percentage: 30, status: 'In Progress' },
@@ -41,16 +62,9 @@ export class Admindashboard  {
     { orderNo: 'PH-2024-006', name: 'Amanda Wilson', eventType: 'Baby Shower', totalPhotos: 150, selected: 45, percentage: 30, status: 'In Progress' }
   ];
 
-  statusList = ['Completed', 'In Progress', 'Yet to Start'];
-  eventList = ['Wedding', 'Engagement', 'Reception', 'Pre Wedding', 'Baby Shower'];
+ 
 
-  statCards = [
-    { title: 'Total Clients', value: this.clients.length, class: '' },
-    { title: 'Completed Projects', value: this.clients.filter(c => c.status === 'Completed').length, class: 'text-success' },
-    { title: 'In Progress', value: this.clients.filter(c => c.status === 'In Progress').length, class: 'text-warning' },
-    { title: 'Photos Selected', value: this.clients.reduce((acc, c) => acc + c.selected, 0), class: 'text-primary' }
-  ];
-
+ 
   searchText = '';
   selectedStatus = '';
   selectedEvent = '';
@@ -71,95 +85,59 @@ export class Admindashboard  {
       return matchesSearch && matchesStatus && matchesEvent;
     });
   }
+
+  fetchDashboardData(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.apiService.getClientManagementData().subscribe({
+      next: (data) => {
+        console.log('Dashboard data fetched:', data);
+        this.clientData = data;
+        this.clientDataList = this.clientData?.dashBoardData || [];
+         this.statCards = [
+    { title: 'Total Clients', value: this.clientData?.totalClients, class: '' },
+    { title: 'Completed Projects', value: this.clientData?.completedProject, class: 'text-success' },
+    { title: 'In Progress', value: this.clientData?.inprogressProject, class: 'text-warning' },
+    { title: 'Photos Selected', value: 0, class: 'text-primary' }
+  ];
+   this.statusList = [...new Set(this.clientData.dashBoardData?.map(item => item.progress) || [])];
+this.eventList  = [...new Set(this.clientData.dashBoardData?.map(item => item.eventType) || [])];
+
+
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.errorMessage = this.mapError(err);
+        if (this.errorMessage != '')
+        {
+        this.notify.error(this.errorMessage);
+        }
+        this.isLoading = false;
+      }
+    });
+  }
+
+  getPhotoPercentage(totalPhotos: number, selectedPhotos: number): number {
+  if (!totalPhotos || totalPhotos === 0) {
+    return 0; // avoid divide by zero
+  }
+  return Math.round((selectedPhotos / totalPhotos) * 100);
 }
- 
+
+  private mapError(err: any): string {
+    if (err.status === 404)  return 'Dashboard data not found.';
+    if (err.status === 401) return 'Unauthorized: Please log in again.';
+    if (err.status === 403) return 'Forbidden: You do not have permission.';
+    return '';
+  }
+
   
-  // String(arg0: number | null): string | null {
-  //   throw new Error('Method not implemented.');
-  // }
-  // activeTab: string = 'progress';
+  viewClientInfo(id: number | null) {
+    alert('View order functionality to be implemented for order ID: ' + id?.toString());
+    this.router.navigate(['admindashboard/adminactions', id?.toString()]);
+  }
 
-  // constructor(private router: Router, private loggingService: LoggingService) {}
-
-  // // Declare variables to hold the data and potential errors
-  // apiResponse: any;
-  // errorMessage: string | null = null;
-  // isLoading: boolean = false;
-  // orders: ClientAlbum[] = [];
-
-  // private apiService = inject(newclientapi);
-  // ngOnInit(): void {
-  //   this.fetchData();
-  // }
-
-  // tabs = [
-  //   { key: 'progress', label: 'Progress', count: 124 },
-  //   { key: 'completed', label: 'Completed', count: 124 },
-  //   { key: 'cancelled', label: 'Cancelled', count: 124 },
-  // ];
-
-  // get filteredOrders() {
-  //   switch (this.activeTab) {
-  //     case 'progress':
-  //       return this.orders.filter(
-  //         (order) =>
-  //           order.clientStatus === 'Yet to start' || order.clientStatus === 'Progressing'
-  //       );
-  //     case 'completed':
-  //       return this.orders.filter((order) => order.clientStatus === 'Completed');
-  //     case 'cancelled':
-  //       return this.orders.filter((order) => order.clientStatus === 'Cancelled');
-  //     default:
-  //       return this.orders;
-  //   }
-  // }
-
-  // createnew() {
-  //   alert('Create new client album functionality to be implemented.');
-  //   this.router.navigate(['/newclient']);
-  // }
-
-  // setTab(tabKey: string) {
-  //   this.activeTab = tabKey;
-  // }
-
-  // fetchData(): void {
+}
   
-  //   console.log('Fetching data from API...');
-  //   this.isLoading = true;
-  //   this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
-  //   this.apiService.getAllClientDetails().subscribe({
-  //     next: (data) => {
-  //       // This is where you process the successful response
-  //       console.log('API Response:', data);
-  //       this.orders = data;
-  //       this.isLoading = false;
-  //     },
-  //     error: (error) => {
-  //       // This is executed if the request fails (e.g., 404, 500)
-  //       // this.loggingService.validateLoginFailure(error.error);
-  //       console.error('There was an error!', error);
-  //       this.errorMessage =
-  //         'Failed to load data. Check the server or network connection.';
-  //       this.isLoading = false;
-  //     },
-  //     complete: () => {
-  //       // Optional: Executed when the Observable completes
-  //       console.log('Data fetching complete.');
-  //       console.log('orderslist ', this.orders);
-  //     },
-  //   });
-  // }
-
-  // vieworder(id: string | null) {
-  //   alert('View order functionality to be implemented for order ID: ' + id);
-  //   this.router.navigate(['admindashboard/adminactions', id]);
-  // }
-
-  // uploadpage(id: string | null) {
-  //   alert(
-  //     'Upload pictures functionality to be implemented for order ID: ' + id
-  //   );
-  //   this.router.navigate(['admindashboard/uploadpictures', id]);
-  // }
 
