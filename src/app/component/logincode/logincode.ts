@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './logincode.css',
 })
 export class Logincode {
+  bgImage = 'assets/users/wedding.jpg';
   loginForm: FormGroup;
   loading: boolean = false;
   userInfo: any;
@@ -52,6 +53,10 @@ export class Logincode {
         this.userInfo = res; // will be undefined for errors
         console.log('User Info from API:', this.userInfo);
         const loggedInUser: LoggedInUser = { clientId: this.userInfo.clientId, clientName: this.userInfo.clientName };
+        console.log(this.userInfo.loginCoverUrl);
+        if(this.userInfo.loginCoverUrl && this.userInfo.loginCoverUrl.trim() !=='')
+          this.bgImage = this.userInfo.loginCoverUrl;
+        
 
         // 1. Store user in service
         this.clientService.setCurrentUser(loggedInUser);
