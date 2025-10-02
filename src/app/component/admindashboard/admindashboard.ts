@@ -29,115 +29,145 @@ interface Client {
 
 @Component({
   selector: 'app-admindashboard',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admindashboard.html',
   styleUrl: './admindashboard.css',
   standalone: true,
 })
 
-export class Admindashboard  implements OnInit {
+export class Admindashboard implements OnInit {
 
   isLoading: boolean = false;
-clientData?: ClientManagement;
-errorMessage = '';
-statusList: string[] = [];
-eventList: string[] = [];
-statCards: { title: string; value: number | undefined; class: string }[] = [];
-clientDataList: DashBoardDto[] = [];
-    constructor(private router: Router, private apiService: newclientapi,
-    private loggingService: LoggingService, 
-  private notify:Notificationservice) {
+  clientData?: ClientManagement;
+  errorMessage = '';
+  statusList: string[] = [];
+  eventList: string[] = [];
+  statCards: { title: string; value: number | undefined; class: string }[] = [];
+  clientDataList: DashBoardDto[] = [];
+  currentPage = 1;
+  pageSize = 10;
+  totalCount = 0;
+  pageSizes = [5, 10, 20, 50];
+
+  searchText: string = '';
+  selectedStatus: string = 'All Status';
+  selectedEvent: string = 'All Events';
+  filteredData: DashBoardDto[] = [];
+
+  constructor(private router: Router, private apiService: newclientapi,
+    private loggingService: LoggingService,
+    private notify: Notificationservice) {
     // You can initialize any required services or data here
-    
-}
+
+  }
   ngOnInit(): void {
     this.fetchDashboardData();
   }
- clients: Client[] = [
-    { orderNo: 'PH-2024-001', name: 'Sarah & Michael Johnson', eventType: 'Wedding', totalPhotos: 450, selected: 120, percentage: 27, status: 'Completed' },
-    { orderNo: 'PH-2024-002', name: 'Emily Chen', eventType: 'Engagement', totalPhotos: 280, selected: 85, percentage: 30, status: 'In Progress' },
-    { orderNo: 'PH-2024-003', name: 'David & Lisa Rodriguez', eventType: 'Reception', totalPhotos: 520, selected: 0, percentage: 0, status: 'Yet to Start' },
-    { orderNo: 'PH-2024-004', name: 'Jessica Thompson', eventType: 'Pre Wedding', totalPhotos: 180, selected: 60, percentage: 33, status: 'In Progress' },
-    { orderNo: 'PH-2024-005', name: 'Marcus & Jennifer Davis', eventType: 'Wedding', totalPhotos: 380, selected: 95, percentage: 25, status: 'Completed' },
-    { orderNo: 'PH-2024-006', name: 'Amanda Wilson', eventType: 'Baby Shower', totalPhotos: 150, selected: 45, percentage: 30, status: 'In Progress' }
-  ];
-
  
+  filteredClientDataList(): void {
+    this.filteredData = this.clientDataList.filter(client => {
+      const matchesSearch = this.searchText
+        ? client.clientName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        client.orderNumber.toLowerCase().includes(this.searchText.toLowerCase())
+        : true;
 
- 
-  searchText = '';
-  selectedStatus = '';
-  selectedEvent = '';
+      const matchesStatus = this.selectedStatus === 'All Status'
+        ? true
+        : client.progress === this.selectedStatus;
 
-  get filteredClients(): Client[] {
-    return this.clients.filter(client => {
-      const matchesSearch =
-        !this.searchText ||
-        client.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        client.orderNo.toLowerCase().includes(this.searchText.toLowerCase());
-
-      const matchesStatus =
-        !this.selectedStatus || client.status === this.selectedStatus;
-
-      const matchesEvent =
-        !this.selectedEvent || client.eventType === this.selectedEvent;
+      const matchesEvent = this.selectedEvent === 'All Events'
+        ? true
+        : client.eventType === this.selectedEvent;
 
       return matchesSearch && matchesStatus && matchesEvent;
     });
   }
 
+
   fetchDashboardData(): void {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.apiService.getClientManagementData().subscribe({
+    this.apiService.getClientManagementData(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
         console.log('Dashboard data fetched:', data);
+        this.totalCount = data.totalClients || 0;
         this.clientData = data;
         this.clientDataList = this.clientData?.dashBoardData || [];
-         this.statCards = [
-    { title: 'Total Clients', value: this.clientData?.totalClients, class: '' },
-    { title: 'Completed Projects', value: this.clientData?.completedProject, class: 'text-success' },
-    { title: 'In Progress', value: this.clientData?.inprogressProject, class: 'text-warning' },
-    { title: 'Photos Selected', value: 0, class: 'text-primary' }
-  ];
-   this.statusList = [...new Set(this.clientData.dashBoardData?.map(item => item.progress) || [])];
-this.eventList  = [...new Set(this.clientData.dashBoardData?.map(item => item.eventType) || [])];
+        this.statCards = [
+          { title: 'Total Clients', value: this.clientData?.totalClients, class: '' },
+          { title: 'Completed Projects', value: this.clientData?.completedProject, class: 'text-success' },
+          { title: 'In Progress', value: this.clientData?.inprogressProject, class: 'text-warning' },
+          { title: 'Photos Selected', value: 0, class: 'text-primary' }
+        ];
+        this.statusList = [...new Set(this.clientData.dashBoardData?.map(item => item.progress) || [])];
+        this.eventList = [...new Set(this.clientData.dashBoardData?.map(item => item.eventType) || [])];
 
-
+        // Apply filter after loading
+        this.filteredClientDataList();
         this.isLoading = false;
       },
       error: (err) => {
         this.errorMessage = this.mapError(err);
-        if (this.errorMessage != '')
-        {
-        this.notify.error(this.errorMessage);
+        if (this.errorMessage != '') {
+          this.notify.error(this.errorMessage);
         }
         this.isLoading = false;
       }
     });
   }
 
-  getPhotoPercentage(totalPhotos: number, selectedPhotos: number): number {
-  if (!totalPhotos || totalPhotos === 0) {
-    return 0; // avoid divide by zero
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.fetchDashboardData();
   }
-  return Math.round((selectedPhotos / totalPhotos) * 100);
-}
+
+  onPageSizeChange(event: any): void {
+    this.pageSize = Number(event.target.value);
+    this.currentPage = 1;
+    this.fetchDashboardData();
+  }
+
+
+  get totalPages(): number {
+    return Math.ceil(this.totalCount / this.pageSize);
+  }
+  getPhotoPercentage(totalPhotos: number, selectedPhotos: number): number {
+    if (!totalPhotos || totalPhotos === 0) {
+      return 0; // avoid divide by zero
+    }
+    return Math.round((selectedPhotos / totalPhotos) * 100);
+  }
+
+  onSearchChange(event: any) {
+    this.searchText = event.target.value;
+    this.filteredClientDataList();
+  }
+
+  onStatusChange(event: any) {
+    this.selectedStatus = event.target.value;
+    this.filteredClientDataList();
+  }
+
+  onEventChange(event: any) {
+    this.selectedEvent = event.target.value;
+    this.filteredClientDataList();
+  }
 
   private mapError(err: any): string {
-    if (err.status === 404)  return 'Dashboard data not found.';
+    if (err.status === 404) return 'Dashboard data not found.';
     if (err.status === 401) return 'Unauthorized: Please log in again.';
     if (err.status === 403) return 'Forbidden: You do not have permission.';
     return '';
   }
 
-  
+
   viewClientInfo(id: number | null) {
     alert('View order functionality to be implemented for order ID: ' + id?.toString());
     this.router.navigate(['admindashboard/adminactions', id?.toString()]);
   }
 
 }
-  
+
 

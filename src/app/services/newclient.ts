@@ -25,7 +25,7 @@ export class newclientapi {
   private clientAlbumUrl = environment.clientAlbumUrl;
   private authUrl = environment.authUrl;
   private blobUrl = environment.blobUrl;
-  
+
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
@@ -118,8 +118,9 @@ export class newclientapi {
     return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`);
   }
 
-   getClientManagementData(): Observable<ClientManagement> {
-    return this.http.get<ClientManagement>(this.clientAlbumUrl + 'getClientManagementData');
+  getClientManagementData(pageNumber: number, pageSize: number): Observable<ClientManagement> {
+    return this.http.get<ClientManagement>(this.clientAlbumUrl 
+      + 'getClientManagementData' + `?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }
 
   private handleError(error: HttpErrorResponse) {
