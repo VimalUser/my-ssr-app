@@ -2,8 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api';
-import { Router, RouterOutlet, RouterModule } from '@angular/router';
+import { Router, RouterOutlet, RouterModule,NavigationEnd  } from '@angular/router';
 import { ClientDataService } from '../../shared/ClientDataService';
+import { filter } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-userlandingpage',
@@ -25,13 +28,21 @@ export class Userlandingpage implements OnInit {
   private apiService = inject(Api);
 
   ngOnInit(): void {
-    this.ClientDataService.nextStep$.subscribe(() => {
-      this.nextStep(); // call existing nextStep() method
-    });
 
-    this.ClientDataService.prevStep$.subscribe(() => {
-      this.prevStep();
-    });
+    this.ClientDataService.nextStep$.subscribe(() => this.nextStep());
+    this.ClientDataService.prevStep$.subscribe(() => this.prevStep());
+
+      this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        if (event.url === '/userhome/startpage') {
+          this.resetWizardFlow();
+         this.ClientDataService.resetClientDataOnly();
+        }
+      });
+
+      
+  
   }
 
   currentStepIndex = 0; // 0-based index, first menu item enabled initially
@@ -75,15 +86,11 @@ export class Userlandingpage implements OnInit {
     },
   ];
 
-  // Call this when next button clicked, to move to next step and enable menu
-  nextStep() {
+    nextStep() {
     if (this.currentStepIndex < this.menuItems.length - 1) {
       this.currentStepIndex++;
       this.menuItems[this.currentStepIndex].disabled = false;
-
-      // Optional: navigate to next route automatically
-      const nextRoute = this.menuItems[this.currentStepIndex].route;
-      this.router.navigate([nextRoute]);
+      this.router.navigate([this.menuItems[this.currentStepIndex].route]);
     }
   }
 
@@ -91,10 +98,17 @@ export class Userlandingpage implements OnInit {
     if (this.currentStepIndex > 0) {
       this.currentStepIndex--;
       this.menuItems[this.currentStepIndex].disabled = false;
-
-      const prevRoute = this.menuItems[this.currentStepIndex].route;
-      this.router.navigate([prevRoute]);
+      this.router.navigate([this.menuItems[this.currentStepIndex].route]);
     }
+  }
+
+
+  resetWizardFlow() {
+    this.currentStepIndex = 0;
+    this.menuItems.forEach((item, i) => {
+      item.disabled = i !== 0;
+    });
+    console.log('🔄 Wizard flow reset');
   }
 
   isLightTheme = false; // false = dark (black) by default

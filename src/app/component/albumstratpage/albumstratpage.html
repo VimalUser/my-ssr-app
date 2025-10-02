@@ -27,9 +27,22 @@
       <li>Enter name and date for cover page</li>
       <li>Select single image for cover page</li>
     </ul>
-    <button class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
+
+    <button  class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
       Start the process <i class="bi bi-arrow-right ms-2"></i>
     </button>
+
+     <div  class="btn btn-info text-dark fw-bold rounded-pill px-4">
+      Your selection were already submitted
+     </div>
+    <!-- <button *ngIf="!hasSubmitted" class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
+      Start the process <i class="bi bi-arrow-right ms-2"></i>
+    </button>
+
+     <div *ngIf="!hasSubmitted"  class="btn btn-info text-dark fw-bold rounded-pill px-4">
+      Your selection were already submitted
+     </div> -->
+
   </div>
 </div>
 

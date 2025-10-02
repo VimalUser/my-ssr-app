@@ -33,7 +33,7 @@
           </p>
           <div class="mt-4">
             <p>Warm regards,</p>
-            <p class="mb-0 fw-semibold">Nandhini,</p>
+            <p class="mb-0 fw-semibold">{{clientData.createdBy}},</p>
             <p class="mb-1 text-muted small">CRM</p>
             <p class="mb-3">Candy Express Photography.</p>
             <button class="btn btn-warning px-4"  (click)="submissionForm()" >Submit</button>
@@ -65,6 +65,11 @@
     </div>
   </div>
 </div>
-
   </section>
 </div>
+
+<div *ngIf="loading" class="loading-container">
+   <img src="assets/loading-spinner.gif" alt="Uploading...">
+   <!-- <p>Uploading, please wait...</p> -->
+</div>
+

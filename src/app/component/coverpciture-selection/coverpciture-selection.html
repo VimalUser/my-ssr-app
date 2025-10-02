@@ -40,9 +40,13 @@
               class="frame-img"
               style="max-width: 130px; height: auto" />
           </div>
-          <div class="fw-semibold align-self-center" style="font-size: 1.2rem">
+          <div class="fw-semibold align-self-center" style="font-size: 1.1rem">
             Album Cover<br />
             <a (click)="showGallery(true)">Select image</a> <br />
+            <p>
+              {{pagelatestData.coverSelection.length}} photo selected
+            </p>
+           
             <!-- <section >
               <button
                 class="btn btn-sm btn-outline-secondary"

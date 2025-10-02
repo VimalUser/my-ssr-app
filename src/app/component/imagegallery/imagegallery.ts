@@ -386,6 +386,7 @@ this.images = imageSource;
     const updated: clientData = {
       ...existingData,
       [propertyToUpdate]: [...this.selectedItems],
+      status:'Inprogress'
     };
 
     this.clientDataService.updateData(updated);

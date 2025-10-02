@@ -25,6 +25,11 @@ export class Albumstratpage implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    // this.clientDataService.resetAll();
+    // this.clientDataService.triggerResetMenu();
+    this.clientDataService.restoreUserFromStorage();
+    this.clientDataService.resetClientDataOnly();
+
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
   }
@@ -34,15 +39,19 @@ export class Albumstratpage implements OnInit {
     this.clientDataService.triggerNextStep();
   }
 
+ get hasSubmitted(): boolean {
+    return this.formLatestData.status.toLowerCase().trim() == 'completed';
+  }
+
   updateClinetData(clientDatafromDb: clientData) {
     // const data: clientData = this.clientDataService.getData();
 
     const updated: clientData = {
       clientId: Number(clientDatafromDb.clientId) || 1,
       clientName: clientDatafromDb.clientName || '',
-      status: '',
+      status: clientDatafromDb.status || '',
       albumName: clientDatafromDb.albumName || '',
-      albumDate: clientDatafromDb.albumDate || '',
+      albumEventDate: clientDatafromDb.albumEventDate || '',
       noOfPics: Number(clientDatafromDb.noOfPics) || 0,
       noOfFrames: Number(clientDatafromDb.noOfFrames) || 0,
       coverPic: '',
@@ -59,7 +68,7 @@ export class Albumstratpage implements OnInit {
       landscapeFrameSelection: clientDatafromDb.landscapeFrameSelection || [],
       coverSelection: clientDatafromDb.coverSelection || [],
       passCode:'',
-      createdBy:'',
+      createdBy:clientDatafromDb.createdBy || '',
       accessLink:'',
       updatedBy:'',
     };

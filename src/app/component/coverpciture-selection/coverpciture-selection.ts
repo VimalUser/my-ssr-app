@@ -58,7 +58,7 @@ export class CoverpcitureSelection {
   }
 
   nextStep() {
-    if (this.pagelatestData.coverPic.length < 1) {
+    if (this.pagelatestData.coverSelection.length < 1) {
       this.notify.error('Please select 1 picture for album cover!');
       return;
     }
@@ -215,6 +215,7 @@ export class CoverpcitureSelection {
     const updated: clientData = {
       ...existingData,
       coverSelection: [...this.selectedItems],
+      status : 'Inprogress'
     };
 
     this.clientDataService.updateData(updated);

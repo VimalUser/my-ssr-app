@@ -17,7 +17,7 @@ export class ClientDataService {
     clientName: '',
     status: 'new',
     albumName: '',
-    albumDate: '',
+    albumEventDate: '',
     tranditionalAlbumSelection: [],
     candidAlbumSelection: [],
     portraitFrameSelection: [],
@@ -39,10 +39,29 @@ export class ClientDataService {
     accessLink:''
   });
 
+  
+
   // Observable to subscribe to data changes
   data$ = this.dataSubject.asObservable();
 
-  
+  resetClientDataOnly() {
+  const current = this.dataSubject.getValue();
+  this.dataSubject.next({
+    ...current,
+    albumName: '',
+    albumEventDate: '',
+    tranditionalAlbumSelection: [],
+    candidAlbumSelection: [],
+    portraitFrameSelection: [],
+    landscapeFrameSelection: [],
+    coverSelection: [],
+    noOfPics: 0,
+    noOfFrames: 0,
+    coverPic: '',
+  });
+  console.log('🧹 Client data reset only');
+}
+
   // Getter for current value
   getData(): any {
     return this.dataSubject.value;
@@ -72,11 +91,30 @@ export class ClientDataService {
   // Call this after successful login
   setCurrentUser(user: LoggedInUser) {
     this.currentUserSubject.next(user);
+    localStorage.setItem('loggedInUser', JSON.stringify(user));
   }
 
   getCurrentUser(): LoggedInUser | null {
     return this.currentUserSubject.value;
   }
+
+   clearCurrentUser() {
+    this.currentUserSubject.next(null);
+    localStorage.removeItem('loggedInUser');
+  }
+
+public restoreUserFromStorage() {
+  const stored = localStorage.getItem('loggedInUser');
+  if (stored) {
+    try {
+      const user: LoggedInUser = JSON.parse(stored);
+      this.currentUserSubject.next(user);
+    } catch (e) {
+      console.error('Failed to parse stored user', e);
+      localStorage.removeItem('loggedInUser');
+    }
+  }
+}
 
   private lightTheme = new BehaviorSubject<boolean>(true);
   isLightTheme$ = this.lightTheme.asObservable();

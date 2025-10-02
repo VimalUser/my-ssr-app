@@ -285,6 +285,7 @@ export class Framepicturecomponent {
     const updated: clientData = {
       ...existingData,
       [propertyToUpdate]: [...this.selectedItems],
+      status : 'Inprogress'
     };
 
     this.clientDataService.updateData(updated);

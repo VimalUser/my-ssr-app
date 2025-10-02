@@ -50,7 +50,7 @@ export class AlbumName implements OnInit {
   isValidForm(): boolean {
     return (
       this.formData.albumName.trim() !== '' &&
-      this.formData.albumDate.trim() !== ''
+      this.formData.albumEventDate.trim() !== ''
     );
   }
 
@@ -70,7 +70,8 @@ export class AlbumName implements OnInit {
     const updated: clientData = {
       ...existingData,
       albumName: this.formData.albumName,
-      albumDate: this.formData.albumDate,
+      albumEventDate: this.formData.albumEventDate,
+      status : 'Inprogress'
     };
 
     this.clientDataService.updateData(updated);
@@ -87,21 +88,18 @@ export class AlbumName implements OnInit {
   }
 
   apiCalltoSave(updateData: clientData) {
-        this.isLoading = true;
-
-        console.log('Payload sent to API album screen:', JSON.stringify(updateData, null, 2));
+    this.isLoading = true;
+    console.log('Payload sent to API album screen:', JSON.stringify(updateData, null, 2));
 
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);
-            this.isLoading = false;
-
+        this.isLoading = false;
         this.notify.success('Album details saved successfully!');
       },
       error: (error) => {
         console.log('Save Error:', error);
-            this.isLoading = false;
-
+        this.isLoading = false;
         this.notify.error('Failed to save album details.');
       },
     });

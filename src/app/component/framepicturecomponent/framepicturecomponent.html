@@ -43,7 +43,10 @@
           <div class="fw-semibold align-self-center" style="font-size: 1.2rem">
             Portrait Frame<br />
             <a (click)="showGallery(true)">Select image</a> <br />
-            <section *ngIf="hasPortraitType">
+             <p>
+              {{pagelatestData.portraitFrameSelection.length}} portrait frame selected
+            </p>
+            <!-- <section *ngIf="hasPortraitType">
               <button
                 class="btn btn-sm btn-outline-secondary"
                 (click)="
@@ -57,7 +60,7 @@
                 Preview
                 <i class="bi bi-eye"></i>
               </button>
-            </section>
+            </section> -->
           </div>
         </div>
       </div>
@@ -74,8 +77,11 @@
           <div class="fw-semibold align-self-center" style="font-size: 1.2rem">
             Landscape Frame<br />
             <a (click)="showGallery(false)">Select image</a> <br />
+              <p>
+              {{pagelatestData.landscapeFrameSelection.length}} Landscape frame selected
+            </p>
 
-            <section *ngIf="hasLandscapeType">
+            <!-- <section *ngIf="hasLandscapeType">
               <button
                 class="btn btn-sm btn-outline-secondary"
                 (click)="
@@ -89,7 +95,7 @@
                 Preview
                 <i class="bi bi-eye"></i>
               </button>
-            </section>
+            </section> -->
           </div>
         </div>
       </div>

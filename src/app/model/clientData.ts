@@ -5,7 +5,7 @@ export class clientData {
   clientName: string = '';
   status: string = '';
   albumName: string = '';
-  albumDate: string = '';
+  albumEventDate: string = '';
   noOfPics: number = 0;
   noOfFrames: number = 0;
   coverPic: string = '';
