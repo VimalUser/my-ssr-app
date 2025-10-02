@@ -21,14 +21,18 @@ export class AlbumName implements OnInit {
   ) {}
 
   formData: clientData = new clientData();
+  isLoading:boolean =false;
 
   get isLightTheme() {
     return this.clientDataService.getTheme();
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.formData = this.clientDataService.getData();
     console.log('Initial Client Data in AlbumName:', this.formData);
+    this.isLoading = false;
+
   }
 
   goBack() {
@@ -78,19 +82,26 @@ export class AlbumName implements OnInit {
       this.notify.error('Please fill in all required fields!');
       return;
     }
+    
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
   apiCalltoSave(updateData: clientData) {
+        this.isLoading = true;
+
         console.log('Payload sent to API album screen:', JSON.stringify(updateData, null, 2));
 
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);
+            this.isLoading = false;
+
         this.notify.success('Album details saved successfully!');
       },
       error: (error) => {
         console.log('Save Error:', error);
+            this.isLoading = false;
+
         this.notify.error('Failed to save album details.');
       },
     });

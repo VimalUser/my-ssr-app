@@ -14,6 +14,7 @@ import { ClientAlbum } from '../../model/ClientAlbum';
 })
 export class Albumstratpage implements OnInit {
   user: LoggedInUser | null = null;
+  isLoading:boolean =false;
 
   formLatestData: clientData = new clientData();
 
@@ -23,6 +24,7 @@ export class Albumstratpage implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
   }
@@ -55,7 +57,11 @@ export class Albumstratpage implements OnInit {
       candidAlbumSelection: clientDatafromDb.candidAlbumSelection || [],
       portraitFrameSelection: clientDatafromDb.portraitFrameSelection || [],
       landscapeFrameSelection: clientDatafromDb.landscapeFrameSelection || [],
-      coverSelection: clientDatafromDb.coverSelection || []
+      coverSelection: clientDatafromDb.coverSelection || [],
+      passCode:'',
+      createdBy:'',
+      accessLink:'',
+      updatedBy:'',
     };
 
     this.clientDataService.updateData(updated);
@@ -70,11 +76,13 @@ export class Albumstratpage implements OnInit {
         console.log('API Response:', data);
         this.formLatestData = data;
         this.updateClinetData(this.formLatestData);
-        // this.isLoading = false;
+        this.isLoading = false;
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
         console.error('There was an error!', error);
+        this.isLoading = false;
+
       },
       complete: () => { },
     });

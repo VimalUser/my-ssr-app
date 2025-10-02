@@ -14,7 +14,8 @@
             class="fw-bold text-orange ms-1 cursor-pointer"
             style="font-size: 1.08rem"
             (click)="nextStep()"
-          >Next</a>
+            >Next</a>
+          
         </div>
       </div>
     </div>
@@ -37,17 +38,23 @@
               src="assets/frame.png"
               alt="Portrait Frame"
               class="frame-img"
-              style="max-width: 130px; height: auto"
-            />
+              style="max-width: 130px; height: auto" />
           </div>
           <div class="fw-semibold align-self-center" style="font-size: 1.2rem">
             Portrait Frame<br />
-            <a (click)="showGallery(true)">Select image</a> <br />            
+            <a (click)="showGallery(true)">Select image</a> <br />
             <section *ngIf="hasPortraitType">
               <button
                 class="btn btn-sm btn-outline-secondary"
-                (click)="openPreviewFrame('portrait'); $event.stopPropagation()"
-                title="Preview">Preview
+                (click)="
+                  openPreview(
+                    pagelatestData.portraitFrameSelection[0].url,
+                    true
+                  );
+                  $event.stopPropagation()
+                "
+                title="Preview">
+                Preview
                 <i class="bi bi-eye"></i>
               </button>
             </section>
@@ -62,18 +69,24 @@
               src="assets/frame.png"
               alt="Landscape Frame"
               class="frame-img"
-              style="max-width: 130px; height: auto"
-            />
+              style="max-width: 130px; height: auto" />
           </div>
           <div class="fw-semibold align-self-center" style="font-size: 1.2rem">
             Landscape Frame<br />
             <a (click)="showGallery(false)">Select image</a> <br />
-            
+
             <section *ngIf="hasLandscapeType">
               <button
                 class="btn btn-sm btn-outline-secondary"
-                (click)="openPreviewFrame('landscape'); $event.stopPropagation()"
-                title="Preview">Preview
+                (click)="
+                  openPreview(
+                    pagelatestData.landscapeFrameSelection[0].url,
+                    true
+                  );
+                  $event.stopPropagation()
+                "
+                title="Preview">
+                Preview
                 <i class="bi bi-eye"></i>
               </button>
             </section>
@@ -83,7 +96,6 @@
     </div>
   </div>
 </section>
-
 
 <section id="gallerySection" style="display: none">
   <div class="container py-4">
@@ -139,7 +151,7 @@
             </span>
             <button
               class="btn btn-sm btn-outline-secondary"
-              (click)="openPreview(img); $event.stopPropagation()"
+              (click)="openPreview(img, false); $event.stopPropagation()"
               title="Preview">
               <i class="bi bi-eye"></i>
             </button>
@@ -167,42 +179,50 @@
   </div>
 </section>
 
-  <!-- Fullscreen Preview -->
-  <div class="preview-overlay" *ngIf="previewImage">
-    <div class="preview-content">
-      <div class="preview-header">
-        <h6 class="mb-0">{{ previewFileName }}</h6>
-        <button
-          class="btn-close"
-          (click)="closePreview()"
-          aria-label="Close"></button>
+<!-- Fullscreen Preview -->
+<div class="preview-overlay" *ngIf="previewImage">
+  <div class="preview-content">
+    <div class="preview-header">
+      <h6 class="mb-0">{{ previewFileName }}</h6>
+      <button
+        class="btn-close"
+        (click)="closePreview()"
+        aria-label="Close"></button>
+    </div>
+
+    <div class="preview-body">
+      <div class="preview-loader" *ngIf="previewLoading">
+        <div class="spinner"></div>
+        <span class="ms-2">Loading preview…</span>
       </div>
 
-      <div class="preview-body">
-        <div class="preview-loader" *ngIf="previewLoading">
-          <div class="spinner"></div>
-          <span class="ms-2">Loading preview…</span>
-        </div>
-
-        <img
-          [src]="previewImage"
-          class="preview-img"
-          alt="preview"
-          (load)="onPreviewImageLoad()"
-          [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
-
-        <textarea
+      <img
+        [src]="previewImage"
+        class="preview-img"
+        alt="preview"
+        (load)="onPreviewImageLoad()"
+        [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
+      <div>
+        <textarea [hidden]="isVisible"
           class="form-control mt-3"
           [(ngModel)]="previewComment"
           maxlength="2000"
-          placeholder="Add comment… (2000 chracters allowed)"></textarea>
-      </div>
-
-      <div class="preview-footer">
-        <button class="btn btn-light" (click)="closePreview()">Close</button>
-        <button class="btn btn-primary" (click)="savePreviewComment()">
-          Save Comment
-        </button>
+          placeholder="Add comment… (2000 chracters allowed)"></textarea
+        >
       </div>
     </div>
+
+    <div class="preview-footer" [hidden]="isVisible">
+      <button class="btn btn-light" (click)="closePreview()">Close</button>
+      <button class="btn btn-primary" (click)="savePreviewComment()">
+        Save Comment
+      </button>
+    </div>
   </div>
+</div>
+
+<div *ngIf="loading" class="loading-container">
+   <img src="assets/loading-spinner.gif" alt="Uploading...">
+   <!-- <p>Uploading, please wait...</p> -->
+</div>
+

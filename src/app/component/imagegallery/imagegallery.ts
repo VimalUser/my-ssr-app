@@ -53,6 +53,8 @@ export class Imagegallery implements OnInit {
   }
 
   showGallery(folderName: string) {
+    this.loading = true;
+
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
     this.selectedFolderName = folderName;
@@ -87,6 +89,8 @@ export class Imagegallery implements OnInit {
 
       this.getImagesbyPath();
       // this.generateImages();
+          this.loading = false;
+
     }
   }
 
@@ -365,22 +369,7 @@ this.images = imageSource;
       let folderPath = this.isTraditional ? 'traditional' : 'candid';
 
        if (this.isTraditional) this.images = this.traditionalImages;
-           else this.images = this.candidImages;
-
-      // this.userservice.getImagesbyType('1', folderPath).subscribe({
-      //   next: (data) => {
-      //   this.images = data; 
-
-      //     // if (this.isTraditional) this.images = this.traditionalImages;
-      //     // else this.candidImages = this.candidImages;
-      //     alert('i ocmpelted');
-      //   },
-      //   error: (error) => {},
-      //   complete: () => {
-      //     // Optional: Executed when the Observable completes
-      //     console.log('Data fetching complete.');
-      //   },
-      // });
+           else this.images = this.candidImages; 
     
   }
 
@@ -406,15 +395,19 @@ this.images = imageSource;
   }
 
   apiCalltoSave(updateData:clientData) {
+        this.loading = true;
+
     console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
 
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);
+        this.loading = false;
         this.notify.success('Your Selection/unselection saved successfully!');
       },
       error: (error) => {
         console.log('Save Error:', error);
+        this.loading = false;
         this.notify.error('Failed to save your selection!');
       },
     });

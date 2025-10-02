@@ -4,35 +4,35 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlbumSelectionItem } from '../../model/album-selection-item.model';
 import { clientData } from '../../model/clientData';
-
+import { userserviceapi } from '../../services/userservice';
+import { Notificationservice } from '../../services/notificationservice';
 
 @Component({
   selector: 'app-coverpciture-selection',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './coverpciture-selection.html',
-  styleUrl: './coverpciture-selection.css'
+  styleUrl: './coverpciture-selection.css',
 })
 export class CoverpcitureSelection {
- constructor(private clientDataService: ClientDataService) {}
+  constructor(
+    private clientDataService: ClientDataService,
+    private userservice: userserviceapi,
+    private notify: Notificationservice
+  ) {}
   //folder selection logic
-  folderNames: string[] = ['Traditional Photos', 'Candid Photos'];
-  selectedFolderName: string = '';
-  allowedSelectedPhotos = 2; // Set your limit here
-  selectedImageUrl: string | null = null;
-  isPortait: boolean = true;
   showGallerySection = true;
 
   showGallery(isPortait: boolean) {
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
-
-    this.isPortait = isPortait;
-    this.selectedFolderName = isPortait ? 'Portrait Frame' : 'Landscape Frame';
+    this.selectedItems = [];
 
     if (gallerySection && selectionSection) {
       gallerySection.style.display = 'block';
       selectionSection.style.display = 'none'; // Show selection section
     }
+
+    this.selectedItems = [...this.pagelatestData.coverSelection];
   }
 
   gobackFolderSelection() {
@@ -51,8 +51,6 @@ export class CoverpcitureSelection {
       gallerySection.style.display = 'none';
       selectionSection.style.display = 'block'; // Show selection section
     }
-
-    this.selectedFolderName = '';
   }
 
   prevStep() {
@@ -60,6 +58,10 @@ export class CoverpcitureSelection {
   }
 
   nextStep() {
+    if (this.pagelatestData.coverPic.length < 1) {
+      this.notify.error('Please select 1 picture for album cover!');
+      return;
+    }
     this.clientDataService.triggerNextStep();
   }
 
@@ -77,52 +79,29 @@ export class CoverpcitureSelection {
   previewFileName = '';
   previewComment = '';
 
-  baseUrl = 'https://picsum.photos/seed/';
-  imageCount = 60;
-  thumbW = 600;
-  thumbH = 400;
+  pagelatestData: clientData = new clientData();
 
   ngOnInit(): void {
+    this.loading = true;
+    const data = this.clientDataService.getData();
+    this.pagelatestData = data;
     const selectedImagesSource = this.selectedImagesSource();
-
-    // Generate sample URLs
-    // for (let i = 1; i <= this.imageCount; i++) {
-
-    //   const imgUrl = `${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`;
-    //   if (selectedImagesSource.some(x => x.url === imgUrl)) {
-    //     this.images.push(imgUrl);
-    //   }
-
-    //   this.images.push(`${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`);
-    // }
-
-    for (let i = 1; i <= this.imageCount; i++) {
-      const imgUrl = `${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`;
-
-      if (
-        Array.isArray(selectedImagesSource) &&
-        selectedImagesSource.some(
-          (x) => typeof x !== 'string' && x.fileName === imgUrl
-        )
-      ) {
-        this.images.push(imgUrl);
-      }
-    }
-
+    this.images = this.selectedImagesSource();
     this.loading = false;
 
-    console.log('Initial Client Data in frameselectin source:', this.images);
+    console.log('Initial Client Data in cover source:', this.images);
   }
 
   selectedImagesSource() {
-    const data = this.clientDataService.getData();
     const mergedArray: AlbumSelectionItem[] =
-      data.tranditionalAlbumSelection.concat(data.candidAlbumSelection);
+      this.pagelatestData.tranditionalAlbumSelection.concat(
+        this.pagelatestData.candidAlbumSelection
+      );
 
-    const selectedPictureList: string[] = mergedArray.map(
-      (item: AlbumSelectionItem) => item.fileName
+    const frameimagesSource: string[] = mergedArray.map(
+      (item: AlbumSelectionItem) => item.url
     );
-    return mergedArray;
+    return frameimagesSource;
   }
 
   get totalPages(): number {
@@ -155,17 +134,15 @@ export class CoverpcitureSelection {
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
     } else {
-      if (this.checkMaxSelectedCountReached()) {
-        alert(
-          `You have already selected required ${this.allowedSelectedPhotos} photos.`
-        );
+      if (this.selectedItems.length >= 1) {
+        this.notify.error('You have already made required selction');
         return;
       }
 
       this.selectedItems.push({
         fileName,
         comment: '',
-        type: this.isPortait ? 'portrait' : 'landscape',
+        type: 'cover',
         url: imgUrl,
       });
     }
@@ -173,38 +150,8 @@ export class CoverpcitureSelection {
     console.log('selected photos', this.selectedItems);
   }
 
-  get hasPortraitType(): boolean {
-    return (
-      Array.isArray(this.selectedItems) &&
-      this.selectedItems.some((item) => item.type === 'portrait')
-    );
-  }
-
-  get hasLandscapeType(): boolean {
-    return (
-      Array.isArray(this.selectedItems) &&
-      this.selectedItems.some((item) => item.type === 'landscape')
-    );
-  }
-
+  
   openPreview(imgUrl: string) {
-    this.previewImage = imgUrl;
-    this.previewFileName = this.fileNameFromUrl(imgUrl);
-    const existing = this.selectedItems.find(
-      (x) => x.fileName === this.previewFileName
-    );
-    this.previewComment = existing?.comment ?? '';
-    this.previewLoading = true;
-  }
-
-  openPreviewFrame(inputType: string) {
-    const imgUrl = this.selectedItems.find(
-      (item) => item.type === inputType
-    )?.url;
-    if (!imgUrl) {
-      alert('No landscape image selected for preview.');
-      return;
-    }
     this.previewImage = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
     const existing = this.selectedItems.find(
@@ -223,11 +170,7 @@ export class CoverpcitureSelection {
     this.previewFileName = '';
     this.previewComment = '';
     this.previewLoading = false;
-  }
-
-  checkMaxSelectedCountReached() {
-    return this.selectedItems.length >= this.allowedSelectedPhotos;
-  }
+  } 
 
   savePreviewComment() {
     const fileName = this.previewFileName;
@@ -237,57 +180,14 @@ export class CoverpcitureSelection {
       item = {
         fileName,
         comment: '',
-        type: this.isPortait ? 'portrait' : 'landscape',
+        type: 'cover',
         url: this.previewImage || '',
       };
-
-      if (
-        this.selectedItems.length > 0 &&
-        this.selectedItems.some((item) => item.type === 'portrait')
-      ) {
-        alert('Portrait photo selected');
-        return;
-      }
-
-      if (
-        this.selectedItems.length > 0 &&
-        this.selectedItems.some((item) => item.type === 'landscape')
-      ) {
-        alert('Landscape photo selected');
-        return;
-      }
 
       this.selectedItems.push(item);
     }
     item.comment = this.previewComment;
     this.closePreview();
-  }
-
-  saveSelection() {
-    const data: clientData = this.clientDataService.getData();
-
-    const updated: clientData = {
-      ...data,
-      coverSelection: this.selectedItems,
-    };
-
-    this.clientDataService.updateData(updated);
-    console.log('Saved to ClientDataService:', updated);
-  }
-
-  saveSelection2() {
-    // const data: clientData = this.clientDataService.getData();
-    // // const propertyToUpdate = this.isTraditional
-    // //   ? 'tranditionalAlbumSelection'
-    // //   : 'candidAlbumSelection';
-    // const updated: clientData = {
-    //   ...data,
-    //   [propertyToUpdate]: [...this.selectedItems],
-    // };
-    // this.clientDataService.updateData(updated);
-    // // this.clientDataload = updated;
-    // alert('Your Selection/unselection saved successfully!');
-    // console.log('Saved to ClientDataService:', updated);
   }
 
   private mergeByFileName(
@@ -305,4 +205,39 @@ export class CoverpcitureSelection {
     return Array.from(map.values());
   }
 
+  saveSelection() {
+    this.apiCalltoSave(this.updateModelWithLatestData());
+  }
+
+  updateModelWithLatestData() {
+    const existingData: clientData = this.clientDataService.getData();
+
+    const updated: clientData = {
+      ...existingData,
+      coverSelection: [...this.selectedItems],
+    };
+
+    this.clientDataService.updateData(updated);
+    this.pagelatestData = updated;
+    return updated;
+    console.log('Saved to ClientDataService: cover', updated);
+  }
+
+  apiCalltoSave(updateData: clientData) {
+    this.loading =true;
+    console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
+
+    this.userservice.saveUserAlbumDetails(updateData).subscribe({
+      next: (response) => {
+        console.log('Save Response:', response);
+         this.loading =false;
+        this.notify.success('Your Selection/unselection saved successfully!');
+      },
+      error: (error) => {
+        console.log('Save Error:', error);
+        this.loading =false;
+        this.notify.error('Failed to save your selection!');
+      },
+    });
+  }
 }

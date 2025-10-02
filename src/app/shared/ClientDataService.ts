@@ -32,7 +32,11 @@ export class ClientDataService {
     frameSizeId: 0,
     eventType: '',
     albumSize: '',
-    frameSize: '',
+    frameSize: '',    
+    passCode :'',
+    createdBy: '',
+    updatedBy:'',
+    accessLink:''
   });
 
   // Observable to subscribe to data changes

@@ -21,4 +21,9 @@ export class clientData {
   portraitFrameSelection: AlbumSelectionItem[] = []; // Define proper type if possible
   landscapeFrameSelection: AlbumSelectionItem[] = []; // Define proper type if possible
   coverSelection: AlbumSelectionItem[] = []; // Define proper type if possible
+  passCode :string = '';
+  createdBy:string = '';
+  updatedBy:string = '';
+  accessLink:string = '';
+
 }

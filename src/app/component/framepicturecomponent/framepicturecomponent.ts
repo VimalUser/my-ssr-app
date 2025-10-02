@@ -39,6 +39,11 @@ export class Framepicturecomponent {
       gallerySection.style.display = 'block';
       selectionSection.style.display = 'none'; // Show selection section
     }
+    if (isPortait) {
+      this.selectedItems = [...this.pagelatestData.portraitFrameSelection];
+    } else {
+      this.selectedItems = [...this.pagelatestData.landscapeFrameSelection];
+    }
   }
 
   gobackFolderSelection() {
@@ -66,6 +71,11 @@ export class Framepicturecomponent {
   }
 
   nextStep() {
+    if(this.pagelatestData.portraitFrameSelection.length + this.pagelatestData.landscapeFrameSelection.length < 2)
+    {
+      this.notify.error('Please select 1 picture for portrait/landsape frame!')
+      return;
+    }
     this.clientDataService.triggerNextStep();
   }
 
@@ -82,6 +92,7 @@ export class Framepicturecomponent {
   previewImage: string | null = null;
   previewFileName = '';
   previewComment = '';
+  isVisible = true;
 
   baseUrl = 'https://picsum.photos/seed/';
   imageCount = 60;
@@ -142,10 +153,8 @@ export class Framepicturecomponent {
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
     } else {
-      if (this.checkMaxSelectedCountReached()) {
-        alert(
-          `You have already selected required ${this.allowedSelectedPhotos} photos.`
-        );
+      if (this.selectedItems.length >= 1) {
+        this.notify.error('You have already made required selction');
         return;
       }
 
@@ -168,7 +177,9 @@ export class Framepicturecomponent {
     return this.pagelatestData.landscapeFrameSelection.length > 0;
   }
 
-  openPreview(imgUrl: string) {
+  openPreview(imgUrl: string, mainFrame: boolean) {
+    this.isVisible = mainFrame;
+
     this.previewImage = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
     const existing = this.selectedItems.find(
@@ -178,22 +189,23 @@ export class Framepicturecomponent {
     this.previewLoading = true;
   }
 
-  openPreviewFrame(inputType: string) {
-    const imgUrl = this.selectedItems.find(
-      (item) => item.type === inputType
-    )?.url;
-    if (!imgUrl) {
-      alert('No image selected for preview.');
-      return;
-    }
-    this.previewImage = imgUrl;
-    this.previewFileName = this.fileNameFromUrl(imgUrl);
-    const existing = this.selectedItems.find(
-      (x) => x.fileName === this.previewFileName
-    );
-    this.previewComment = existing?.comment ?? '';
-    this.previewLoading = true;
-  }
+  // openPreviewFrame(inputType: string) {
+  //   let imgUrl: any;
+
+  //   imgUrl = this.selectedItems.find((item) => item.type === inputType)?.url;
+  //   if (!imgUrl) {
+  //     alert('No image selected for preview.');
+  //     return;
+  //   }
+
+  //   this.previewImage = imgUrl;
+  //   this.previewFileName = this.fileNameFromUrl(imgUrl);
+  //   const existing = this.selectedItems.find(
+  //     (x) => x.fileName === this.previewFileName
+  //   );
+  //   this.previewComment = existing?.comment ?? '';
+  //   this.previewLoading = true;
+  // }
 
   onPreviewImageLoad() {
     this.previewLoading = false;
@@ -276,6 +288,7 @@ export class Framepicturecomponent {
     };
 
     this.clientDataService.updateData(updated);
+    this.pagelatestData = updated;
     return updated;
     console.log('Saved to ClientDataService: frame', updated);
   }
