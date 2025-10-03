@@ -6,6 +6,7 @@ import { newclientapi } from '../../services/newclient';
 import { UserLogin } from '../../model/userlogin';
 import { LoggingService } from '../../shared/logging.service';
 import { Notificationservice } from '../../services/notificationservice';
+import { AdminDataService } from '../../shared/admin-data-service';
 
 @Component({
   selector: 'app-adminloginpage',
@@ -25,9 +26,10 @@ export class Adminloginpage {
   private apiService = inject(newclientapi);
 
   constructor(private fb: FormBuilder,
-     private router: Router,
-     private loggingService: LoggingService, 
-    private notificationService: Notificationservice) {
+    private router: Router,
+    private loggingService: LoggingService,
+    private notificationService: Notificationservice,
+    private adminDataService: AdminDataService) {
     this.loginForm = this.fb.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
@@ -62,7 +64,8 @@ export class Adminloginpage {
         console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
         console.log('Parsed Response:', this.apiResponse);
-        if (this.apiResponse.accessToken!= null && this.apiResponse.accessToken!=undefined) {
+        this.adminDataService.setUserName(this.apiResponse.username);
+        if (this.apiResponse.accessToken != null && this.apiResponse.accessToken != undefined) {
           this.router.navigate(['/admindashboard']);
           this.loading = false;
         }

@@ -46,4 +46,18 @@ export class AdminDataService {
     this.dataSubject.next(newData);
   }
 
+  // Admin user name
+
+  // Initialize with a default name (e.g., 'Dashboard')
+  private adminNameSource = new BehaviorSubject<string>('Admin');
+  
+  // Public observable stream for components to subscribe to
+  adminName$ = this.adminNameSource.asObservable();
+
+  /**
+   * Method for child components to call to update the name.
+   */
+  setUserName(name: string): void {
+    this.adminNameSource.next(name);
+  }
 }

@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router  } from '@angular/router';
 import { RouterOutlet,RouterModule } from '@angular/router';
 import { NotificationComponent } from '../../notification/notification';
+import { map, Observable } from 'rxjs';
+import { AdminDataService } from '../../shared/admin-data-service';
+import { AdminData } from '../../model/AdminData';
 
 @Component({
   selector: 'app-adminlayout',
@@ -12,8 +15,13 @@ import { NotificationComponent } from '../../notification/notification';
   standalone: true,
 })
 export class Adminlayout {
-  
-  constructor(private router: Router) { }
+  // Hold the Observable stream
+  currentUserName$: Observable<string>;
+  constructor(private router: Router,
+    private adminDataService: AdminDataService,
+  ) {
+    this.currentUserName$ = this.adminDataService.adminName$;
+  }
 
 createnew() {
     this.router.navigate(['admindashboard/newclient']);
