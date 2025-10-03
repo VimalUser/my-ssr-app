@@ -5,10 +5,11 @@ import { newclientapi } from '../../services/newclient';
 import { AdminDataService } from '../../shared/admin-data-service';
 import { AdminData } from '../../model/AdminData';
 import { Notificationservice } from '../../services/notificationservice';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-download-selection',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './admin-download-selection.html',
   styleUrl: './admin-download-selection.css'
 })

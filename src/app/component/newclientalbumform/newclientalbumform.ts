@@ -22,8 +22,8 @@ export class Newclientalbumform implements OnInit {
   errorMessage: string | null = null;
   isLoading: boolean = false;
   id: string = '';
-  showAccessLink = false;  
-  isDisableAccessLink : boolean = false;
+  showAccessLink = false;
+  isDisableAccessLink: boolean = false;
 
   get f() {
     return this.clientForm.controls;
@@ -39,7 +39,7 @@ export class Newclientalbumform implements OnInit {
       this.enableEdit();
       this.fetchData();
     }
-    
+
   }
 
   // This is the single, combined constructor
@@ -66,6 +66,10 @@ export class Newclientalbumform implements OnInit {
       status: ['Yet to Start'],
       accessLink: [''],
       passcode: [''],
+      createDate: [null],
+      createdBy: [''],
+      updatedDate: [null],
+      updatedBy: [''],
     });
   }
 
@@ -103,6 +107,7 @@ export class Newclientalbumform implements OnInit {
         this.clientForm.patchValue(data);
         console.log('Form Values:', this.clientForm.value);
         this.isLoading = false;
+
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
@@ -130,6 +135,9 @@ export class Newclientalbumform implements OnInit {
           this.apiResponse = response;
           this.isLoading = false;
           alert('Client album details saved successfully!');
+          console.log('ID:', this.id);
+          if (this.id == '')
+            this.router.navigate(['/admindashboard']);
         },
         error: (error) => {
           console.error('Save Error:', error);
@@ -152,5 +160,33 @@ export class Newclientalbumform implements OnInit {
         this.errorMessage = err.message;
       }
     });
+  }
+
+  // --- NEW FUNCTION TO COPY TO CLIPBOARD ---
+  copyToClipboard(inputControlName: string, event: MouseEvent): void {
+    event.preventDefault(); // Prevent form submission/navigation if the button is inside a form
+
+    // 1. Get the value from the form control
+    const valueToCopy = this.clientForm.get(inputControlName)?.value;
+
+    if (valueToCopy) {
+      // 2. Use the modern Clipboard API
+      navigator.clipboard.writeText(valueToCopy).then(() => {
+        console.log(`Copied ${inputControlName} successfully:`, valueToCopy);
+
+        // Optional: Provide visual feedback (e.g., a toast or temporary icon change)
+        const button = (event.target as HTMLElement).closest('button');
+        if (button) {
+          button.classList.add('btn-success');
+          setTimeout(() => {
+            button.classList.remove('btn-success');
+          }, 1000);
+        }
+
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+        // Fallback or error handling
+      });
+    }
   }
 }

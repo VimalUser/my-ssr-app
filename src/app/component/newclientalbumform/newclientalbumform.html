@@ -1,153 +1,162 @@
-<section class="form-section">
-  <h2 class="form-title">New client form</h2>
-  <button class="save-btn" (click)="onSave()">Save</button>
-  <form [formGroup]="clientForm" autocomplete="off" novalidate>
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label>Order no</label>
-        <input formControlName="orderNumber" type="text" placeholder="Enter Order No" />
-        <div *ngIf="f['orderNumber']?.touched && f['orderNumber']?.hasError('required')" class="text-danger">
-          Order number is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Client name</label>
-        <input formControlName="clientName" type="text" placeholder="Enter Client Name" />
-        <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('required')" class="text-danger">
-          Client name is required.
-        </div>
-        <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('minlength')" class="text-danger">
-          Client name must be at least 3 characters.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Date of Event</label>
-        <input formControlName="eventDate" type="date" />
-        <div *ngIf="f['eventDate']?.touched && f['eventDate']?.hasError('required')" class="text-danger">
-          Event date is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Type of event</label>
-        <select formControlName="eventTypeId">
-          <option value="" disabled>Select</option>
-          <option *ngFor="let ev of dropdowns?.eventTypes" [value]="ev.id">
-            {{ ev.name }}
-          </option>
-        </select>
-        <div *ngIf="f['eventTypeId']?.touched && f['eventTypeId']?.hasError('required')" class="text-danger">
-          Event type is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Mobile no</label>
-        <input formControlName="mobileNumber" type="text" placeholder="Enter Mobile no" />
-        <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('required')" class="text-danger">
-          Mobile number is required.
-        </div>
-        <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('pattern')" class="text-danger">
-          Mobile number must be exactly 10 digits.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Type of album</label>
-        <select formControlName="albumMaterialTypeId">
-          <option value="" disabled>Select</option>
-          <option *ngFor="let am of dropdowns?.albumMaterialTypes" [value]="am.id">
-            {{ am.name }}
-          </option>
-        </select>
-        <div *ngIf="f['albumMaterialTypeId']?.touched && f['albumMaterialTypeId']?.hasError('required')" class="text-danger">
-          Album material type is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>No of albums</label>
-        <input formControlName="noOfAlbums" placeholder="Enter No of Albums" />
-        <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('required')" class="text-danger">
-          Number of albums is required.
-        </div>
-        <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('min')" class="text-danger">
-          Must be at least 1 album.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Album size</label>
-        <select formControlName="albumSizeId">
-          <option value="" disabled>Select</option>
-          <option *ngFor="let al of dropdowns?.albumSizes" [value]="al.id">
-            {{ al.name }}
-          </option>
-        </select>
-        <div *ngIf="f['albumSizeId']?.touched && f['albumSizeId']?.hasError('required')" class="text-danger">
-          Album size is required.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>No of Sheets</label>
-        <input formControlName="noOfSheets" placeholder="Enter No of Sheets" />
-        <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('required')" class="text-danger">
-          Number of sheets is required.
-        </div>
-        <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('min')" class="text-danger">
-          Must be at least 1 sheet.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>No of pics</label>
-        <input formControlName="noOfPics" placeholder="Enter No of Pics" />
-        <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('required')" class="text-danger">
-          Number of pics is required.
-        </div>
-        <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('min')" class="text-danger">
-          Must be at least 1 pic.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>No of Frame</label>
-        <input formControlName="noOfFrame" placeholder="Enter No of Frame" />
-        <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('required')" class="text-danger">
-          Number of frames is required.
-        </div>
-        <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('min')" class="text-danger">
-          Must be at least 1 frame.
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Frame Size</label>
-        <select formControlName="frameSizeId">
-          <option value="" disabled>Select</option>
-          <option *ngFor="let fr of dropdowns?.frameSizes" [value]="fr.id">
-            {{ fr.name }}
-          </option>
-        </select>
-        <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')" class="text-danger">
-          Frame size is required.
-        </div>
-      </div>
-
-      <div class="form-group" *ngIf="showAccessLink">
-        <label>Access Link</label>
-        <input formControlName="accessLink" />
-      </div>
-
-      <div class="form-group" *ngIf="showAccessLink">
-        <label>Passcode</label>
-        <input formControlName="passcode" />
-      </div>
-
+<div class="container py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="form-title fw-bold text-dark">New Client Setup</h2>
+        <button class="btn btn-warning fw-bold text-dark px-4" [disabled]="!clientForm.valid" (click)="onSave()">
+            <i class="bi bi-save-fill me-2"></i> Save Client
+        </button>
     </div>
-  </form>
-</section>
+
+    <div class="card shadow-lg border-0 rounded-3">
+        <form [formGroup]="clientForm" autocomplete="off" novalidate class="card-body p-4 p-md-5">
+
+            <div class="row g-4">
+
+                <div class="col-12 mb-4">
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-person-lines-fill me-2"></i> Client & Event Details</h5>
+                    <div class="row g-4">
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Order No</label>
+                            <input formControlName="orderNumber" type="text" class="form-control" placeholder="Enter Order No" maxlength="50" />
+                            <div *ngIf="f['orderNumber']?.touched && f['orderNumber']?.hasError('required')" class="text-danger small mt-1">Order number is required.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Client Name</label>
+                            <input formControlName="clientName" type="text" class="form-control" placeholder="Enter Client Name" maxlength="100" />
+                            <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('required')" class="text-danger small mt-1">Client name is required.</div>
+                            <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('minlength')" class="text-danger small mt-1">Client name must be at least 3 characters.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Date of Event</label>
+                            <input formControlName="eventDate" type="date" class="form-control" />
+                            <div *ngIf="f['eventDate']?.touched && f['eventDate']?.hasError('required')" class="text-danger small mt-1">Event date is required.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Type of event</label>
+                            <select formControlName="eventTypeId" class="form-select">
+                                <option value="" disabled>Select Event Type</option>
+                                <option *ngFor="let ev of dropdowns?.eventTypes" [value]="ev.id">{{ ev.name }}</option>
+                            </select>
+                            <div *ngIf="f['eventTypeId']?.touched && f['eventTypeId']?.hasError('required')" class="text-danger small mt-1">Event type is required.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Mobile No</label>
+                            <input formControlName="mobileNumber" type="text" class="form-control" maxlength="10" placeholder="Enter Mobile no" />
+                            <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('required')" class="text-danger small mt-1">Mobile number is required.</div>
+                            <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('pattern')" class="text-danger small mt-1">Mobile number must be exactly 10 digits.</div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-book-half me-2"></i> Album Specifications</h5>
+                    <div class="row g-4">
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Type of album</label>
+                            <select formControlName="albumMaterialTypeId" class="form-select">
+                                <option value="" disabled>Select Album Type</option>
+                                <option *ngFor="let am of dropdowns?.albumMaterialTypes" [value]="am.id">{{ am.name }}</option>
+                            </select>
+                            <div *ngIf="f['albumMaterialTypeId']?.touched && f['albumMaterialTypeId']?.hasError('required')" class="text-danger small mt-1">Album material type is required.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Album Size</label>
+                            <select formControlName="albumSizeId" class="form-select">
+                                <option value="" disabled>Select Size</option>
+                                <option *ngFor="let al of dropdowns?.albumSizes" [value]="al.id">{{ al.name }}</option>
+                            </select>
+                            <div *ngIf="f['albumSizeId']?.touched && f['albumSizeId']?.hasError('required')" class="text-danger small mt-1">Album size is required.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">No of Albums</label>
+                            <input formControlName="noOfAlbums" type="number" class="form-control" min="0" placeholder="Enter No of Albums" />
+                            <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('required')" class="text-danger small mt-1">Number of albums is required.</div>
+                            <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 album.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">No of Sheets</label>
+                            <input formControlName="noOfSheets" type="number" class="form-control" min="0" placeholder="Enter No of Sheets" />
+                            <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('required')" class="text-danger small mt-1">Number of sheets is required.</div>
+                            <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 sheet.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">No of Pics</label>
+                            <input formControlName="noOfPics" type="number" class="form-control" min="0" placeholder="Enter No of Pics" />
+                            <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('required')" class="text-danger small mt-1">Number of pics is required.</div>
+                            <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 pic.</div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i> Frame & Access</h5>
+                    <div class="row g-4">
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">No of Frame</label>
+                            <input formControlName="noOfFrame" type="number" class="form-control" min="0" placeholder="Enter No of Frame" />
+                            <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('required')" class="text-danger small mt-1">Number of frames is required.</div>
+                            <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 frame.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">Frame Size</label>
+                            <select formControlName="frameSizeId" class="form-select">
+                                <option value="" disabled>Select Size</option>
+                                <option *ngFor="let fr of dropdowns?.frameSizes" [value]="fr.id">{{ fr.name }}</option>
+                            </select>
+                            <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')" class="text-danger small mt-1">Frame size is required.</div>
+                        </div>
+
+                        <div class="col-12" *ngIf="showAccessLink">
+                            <label class="form-label fw-semibold">Access Link</label>
+                            <div class="input-group">
+                                <input formControlName="accessLink" class="form-control bg-light" readonly />
+                                <button 
+                                    class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    title="Copy Access Link"
+                                    (click)="copyToClipboard('accessLink', $event)"
+                                >
+                                    <i class="bi bi-clipboard-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-12" *ngIf="showAccessLink">
+                            <label class="form-label fw-semibold">Passcode</label>
+                            <div class="input-group">
+                                <input formControlName="passcode" class="form-control bg-light" readonly />
+                                <button 
+                                    class="btn btn-outline-secondary" 
+                                    type="button" 
+                                    title="Copy Passcode"
+                                    (click)="copyToClipboard('passcode', $event)"
+                                >
+                                    <i class="bi bi-clipboard-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+<div *ngIf="isLoading" class="loading-container">
+    <img src="assets/loading-spinner.gif" alt="Uploading...">
+</div>
