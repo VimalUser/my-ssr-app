@@ -1,19 +1,20 @@
 <header
-  class="d-flex align-items-center border-bottom p-2 px-3"
-  style="background-color: #f6ecdb">
+  class="d-flex align-items-center border-bottom p-2 px-3 sticky-top" 
+  style="background-color: #f6ecdb; z-index: 1020;"> 
   <div class="container-fluid">
     <div class="row w-100 align-items-center">
-      <!-- Logo: 80% width -->
-      <div class="col-8 col-lg-10 d-flex align-items-center">
+      <div class="col-8 col-lg-3 d-flex align-items-center">
         <img
           src="assets/logo.png"
           (click)="homePage()"
           alt="Candy Express Photography"
           class="img-fluid"
-          style="cursor: pointer" />
+          style="cursor: pointer; max-height: 40px;" /> 
       </div>
 
-      <!-- Hamburger: 20% width only visible on mobile, aligned right -->
+      <div class="col-lg-7 d-none d-lg-block">
+        </div>
+      
       <div class="col-4 col-lg-2 d-flex justify-content-end d-lg-none">
         <button
           class="btn btn-outline-primary"
@@ -30,66 +31,60 @@
   </div>
 </header>
 
-<!-- Sidebar as Offcanvas -->
-<div
-  class="offcanvas offcanvas-start sidebar-custom"
-  tabindex="-1"
-  id="sidebarMenu"
-  aria-labelledby="sidebarMenuLabel"
->
-  <div class="offcanvas-header border-bottom">
-    <h5 class="offcanvas-title text-white" id="sidebarMenuLabel">Menu</h5>
-    <button
-      type="button"
-      class="btn-close btn-close-white"
-      data-bs-dismiss="offcanvas"
-      aria-label="Close"
-    ></button>
-  </div>
-  <div class="offcanvas-body p-3">
-    <button
-      class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3"
-      (click)="createnew()">
-      + Create new
-    </button>
+<div class="d-flex flex-grow-1" style="min-height: 100vh;">
+  
+  <div
+    class="offcanvas offcanvas-start sidebar-custom d-lg-block flex-shrink-0" 
+    tabindex="-1"
+    id="sidebarMenu"
+    aria-labelledby="sidebarMenuLabel"
+  >
+    <div class="offcanvas-header border-bottom d-lg-none"> <h5 class="offcanvas-title text-white" id="sidebarMenuLabel">Menu</h5>
+      <button
+        type="button"
+        class="btn-close btn-close-white"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    
+    <div class="offcanvas-body p-3 d-flex flex-column h-100"> 
+      <button style="text-align: left;"
+        class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3"
+        (click)="createnew()">
+        + Create new client
+      </button>
 
-    <ul class="nav nav-pills flex-column">
-      <li class="nav-item mb-2">
-        <a
-          [routerLink]="['/admindashboard']"
-          class="nav-link sidebar-link d-flex align-items-center"
-          routerLinkActive="sidebar-active"
-          [routerLinkActiveOptions]="{ exact: true }">
-          <i class="bi bi-house-door me-2"></i> Home
-        </a>
-      </li>
-      <!-- Add other items as needed -->
-    </ul>
+      <ul class="nav nav-pills flex-column mb-auto"> 
+        <li class="nav-item mb-2">
+          <a
+            [routerLink]="['/admindashboard']"
+            class="nav-link sidebar-link d-flex align-items-center"
+            routerLinkActive="sidebar-active"
+            [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-house-door me-2"></i> Home
+          </a>
+        </li>
+        </ul>
 
-    <div
-      class="sidebar-footer mt-auto pt-3 border-top d-flex align-items-center text-white"
-    >
-      <span>
-        Kavin S...
-        <br />
-        <button
-          class="btn btn-warning fw-bold"
-          style="border-radius: 8px"
-          (click)="logout()">
-          Logout
-        </button>
-      </span>
+      <div
+        class="sidebar-footer mt-auto pt-3 border-top d-flex align-items-center text-white"
+      >
+        <span>
+          Kavin S...
+          <br />
+          <button
+            class="btn btn-warning fw-bold mt-2"
+            style="border-radius: 8px"
+            (click)="logout()">
+            Logout
+          </button>
+        </span>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Main content -->
-<div class="container-fluid">
-  <div class="row">
-    <main class="col px-4 py-3">
-      <router-outlet></router-outlet>
-      <!-- <app-notification></app-notification> -->
+  <main class="col p-4 overflow-auto">
+    <router-outlet></router-outlet>
     </main>
-  </div>
 </div>
-

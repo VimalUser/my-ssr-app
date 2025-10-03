@@ -1,57 +1,59 @@
-  /* Offcanvas sidebar base */
-  .sidebar-custom {
-    background-color: #222831;
-    width: 250px; /* width of offcanvas */
-    color: white;
-  }
+/* Offcanvas sidebar base */
+ .sidebar-custom {
+   background-color: #222831;
+   width: 250px; /* width of offcanvas */
+   color: white;
+ }
 
-  /* Menu links styling */
-  .sidebar-link {
-    color: #fff;
-    font-weight: 500;
-    border-radius: 8px;
-    padding: 0.7rem 1rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    user-select: none;
-  }
+ /* Menu links styling */
+ .sidebar-link {
+   color: #fff;
+   font-weight: 500;
+   border-radius: 8px;
+   padding: 0.7rem 1rem;
+   transition: background-color 0.2s ease, color 0.2s ease;
+   user-select: none;
+ }
 
-  .sidebar-link:hover {
-    background-color: #cc8400;
-    color: #fff !important;
-    text-decoration: none;
-  }
+ .sidebar-link:hover {
+   background-color: #cc8400;
+   color: #fff !important;
+   text-decoration: none;
+ }
 
-  .sidebar-active {
-    background-color: #ffa500 !important;
-    color: #fff !important;
-  }
+ .sidebar-active {
+   background-color: #ffa500 !important;
+   color: #fff !important;
+ }
 
-  .sidebar-footer {
-    font-weight: 600;
-    font-size: 1rem;
-  }
+ .sidebar-footer {
+   font-weight: 600;
+   font-size: 1rem;
+ }
 
-  .sidebar-link i {
-    font-size: 1.1rem;
-  }
+ .sidebar-link i {
+   font-size: 1.1rem;
+ }
 
-  /* Desktop sidebar as static sidebar */
-  @media (min-width: 992px) {
-    .offcanvas {
-      position: static !important;
-      transform: none !important;
-      visibility: visible !important;
-      border: none !important;
-      width: 200px !important;
-      height: 100vh !important;
-      overflow-y: auto !important;
-    }
+ /* Desktop sidebar as static sidebar */
+ @media (min-width: 992px) {
+   .offcanvas {
+     /* These Bootstrap overrides make the offcanvas element a static sidebar */
+     position: sticky !important; /* Use sticky or fixed for static sidebar */
+     top: 0; /* Align to the top of the viewport */
+     transform: none !important;
+     visibility: visible !important;
+     border: none !important;
+     width: 250px !important; /* Match mobile width for consistency */
+     height: 100vh !important;
+     overflow-y: auto !important;
+   }
 
-    .offcanvas-body {
-      padding: 0 !important;
-    }
+   .offcanvas-body {
+     /* Ensure offcanvas body content is visible and takes up space */
+     padding: 0.5rem 0.5rem !important; 
+   }
 
-    main.col {
-      margin-left: 200px;
-    }
-  }
+   /* REMOVED: main.col { margin-left: 200px; } */
+   /* We now rely on the 'col' and 'flex-shrink-0' classes for proper side-by-side layout */
+ }
