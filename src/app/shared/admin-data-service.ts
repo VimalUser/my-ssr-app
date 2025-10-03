@@ -34,7 +34,7 @@ export class AdminDataService {
   
   // Getter for current value
   getData(): any {
-    return this.dataSubject.value;
+    return this.dataSubject.getValue();
   }
   // Update the entire data object
   updateData(data: any) {

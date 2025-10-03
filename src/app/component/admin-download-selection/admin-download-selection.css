@@ -1,0 +1,138 @@
+    /* Clean White Background */
+    body {
+        background-color: #ffffff;
+        /* Clean white background */
+        color: #333;
+        min-height: 100vh;
+    }
+
+    /* Card Style: Orange Border and Subtle Shadow (Main Cards) */
+    .styled-card {
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        border: 1px solid #FFD590;
+        /* Very light orange border */
+        /* Subtle shadow with an orange tint */
+        box-shadow: 0 4px 10px rgba(255, 152, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .styled-card:hover {
+        box-shadow: 0 6px 15px rgba(255, 152, 0, 0.3);
+        /* Stronger shadow on hover */
+    }
+
+    /* Summary Item Style: Enlarged with Box Shadow Accent (Updated) */
+    .summary-item-accent {
+        background-color: #FFFDF8;
+        /* Off-white for contrast */
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        /* Increased vertical padding for height */
+        text-align: center;
+        /* Key style: Light box shadow */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eee;
+        /* Very subtle light border */
+        transition: all 0.2s ease;
+    }
+
+    /* Hover effect for interactivity */
+    .summary-item-accent:hover {
+        box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+        /* Orange shadow on hover */
+        transform: translateY(-1px);
+    }
+
+    /* Orange Accent Color */
+    .text-orange-bold {
+        color: #FF9800 !important;
+        font-weight: 700;
+    }
+
+    /* Large font size for the count number */
+    .count-number {
+        font-size: 1.8rem;
+        /* Significantly larger font size for the number */
+        line-height: 1;
+        /* Adjust line height for better spacing */
+        display: block;
+    }
+
+    /* Larger font for the descriptive label */
+    .count-label {
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* Primary Orange Button */
+    .btn-orange-primary {
+        background-color: #FF9800;
+        color: #ffffff;
+        font-weight: bold;
+        border: none;
+        border-radius: 0.5rem;
+        box-shadow: 0 3px 6px rgba(255, 152, 0, 0.4);
+    }
+
+    .btn-orange-primary:hover {
+        background-color: #F57C00;
+        box-shadow: 0 4px 8px rgba(255, 152, 0, 0.6);
+    }
+
+    /* Input Style: Orange Focus */
+    .form-control:focus {
+        border-color: #FF9800;
+        box-shadow: 0 0 0 0.25rem rgba(255, 152, 0, 0.25);
+    }
+
+    .loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of other content */
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* semi-transparent black overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.loading-overlay img.spinner {
+  width: 80px;   /* increase size */
+  height: 80px;  /* increase size */
+}

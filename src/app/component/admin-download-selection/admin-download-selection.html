@@ -1,43 +1,91 @@
-<p>admin-download-selection works!</p>
-
-<div class="container py-4">
-  <!-- Header Row -->
-  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-    <span class="fw-bold h5 mb-0">Meena siva sudhan</span>
-    <button class="btn btn-warning btn-sm d-flex align-items-center" (click)="download()">
-      <span class="me-1">Download</span>
-      <i class="bi bi-cloud-arrow-down"></i>
-    </button>
-  </div>
-<img src="https://candyimages.blob.core.windows.net/client-1-photos/candid/tiger.jpg">
-
-  <img src="https://candyimages.blob.core.windows.net/client-1-photos/traditional/dog.jpg?sv=2025-07-05&se=2025-09-27T10%3A37%3A34Z&sr=b&sp=r&sig=Do43KusXsmkvtIN36I0QH8nIQelczJLmWN%2FpwBtP6qI%3D">
-
-  <!-- Photo Type List -->
-  <ul class="list-unstyled ms-1 mb-4">
-    <li class="mb-1">Traditional photos <span class="text-muted">(250)</span></li>
-    <li class="mb-1">Candid photos <span class="text-muted">(250)</span></li>
-    <li class="mb-1">Cover photos <span class="text-muted">(02)</span></li>
-    <li class="mb-1">Frame photos <span class="text-muted">(02)</span></li>
-  </ul>
-
-  <!-- Re-submission Link -->
-  <div class="mb-3 ms-1">
-    <a href="#" class="link-primary" style="text-decoration: underline;">Send it for re-Submission</a>
-  </div>
-
-  <!-- Approval Row -->
-  <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 ms-1">
-    <input 
-      type="text" 
-      class="form-control flex-grow-1" 
-      placeholder="Do you need to approve this Client…?" 
-      [(ngModel)]="approvalComment"
-    />
-    <div class="d-flex gap-2 mt-2 mt-md-0">
-      <button class="btn btn-outline-secondary btn-sm">Deny</button>
-      <button class="btn btn-warning btn-sm">Approve</button>
+<div class="container py-4 py-lg-5">
+    
+    <div class="styled-card mb-4 p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        
+        <div>
+            <h2 class="fw-bolder mb-0 text-dark">{{ clientName }}</h2>
+            <h5 class="text-muted mb-0">Photos Count - {{noOfPics}}</h5>
+        </div>
+        
+        <button class="btn btn-orange-primary d-flex align-items-center justify-content-center" (click)="download()">
+            <i class="bi bi-cloud-arrow-down-fill me-2 fs-5"></i>
+            Download Album
+        </button>
     </div>
-  </div>
-</div>
+    
+    <div class="styled-card mb-4 p-4">
+        <h5 class="mb-4 text-dark fw-bold border-bottom pb-2">Photo Summary by Type</h5>
+        
+        <div class="row row-cols-2 row-cols-md-3 g-3 g-md-4">
+            
+            <div class="col">
+                <div class="summary-item-accent h-100">
+                    <span class="text-muted small mb-1 count-label">Traditional Photos</span>
+                    <span class="fw-bold text-orange-bold count-number">{{ traditionalCount }}</span>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="summary-item-accent h-100">
+                    <span class="text-muted small mb-1 count-label">Candid Photos</span>
+                    <span class="fw-bold text-orange-bold count-number">{{ candidCount }}</span>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="summary-item-accent h-100">
+                    <span class="text-muted small mb-1 count-label">Cover Photos</span>
+                    <span class="fw-bold text-orange-bold count-number">{{ coverCount }}</span>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="summary-item-accent h-100">
+                    <span class="text-muted small mb-1 count-label">Portrait Frames</span>
+                    <span class="fw-bold text-orange-bold count-number">{{ portraitFrameCount }}</span>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="summary-item-accent h-100">
+                    <span class="text-muted small mb-1 count-label">Landscape Frames</span>
+                    <span class="fw-bold text-orange-bold count-number">{{ landscapeFrameCount }}</span>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="styled-card p-4">
+        
+        <div class="mb-4 d-grid">
+            <button class="btn btn-link text-decoration-none text-orange-bold fw-semibold fs-5" style="box-shadow: none;" >
+                <i class="bi bi-arrow-clockwise me-2"></i> Send for Re-Submission
+            </button>
+        </div>
 
+        <h5 class="fw-bold mb-3 text-dark">Final Approval</h5>
+        
+        <div class="d-flex flex-column flex-md-row align-items-stretch gap-3">
+            
+            <input
+                type="text"
+                class="form-control form-control-lg flex-grow-1"
+                placeholder="Add a comment before Deny/Approve..."
+                [(ngModel)]="approvalComment"
+            />
+            
+            <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+                <button class="btn btn-outline-secondary flex-fill flex-sm-grow-0 py-2">
+                    <i class="bi bi-x-circle me-1"></i> Deny
+                </button>
+                <button class="btn btn-orange-primary flex-fill flex-sm-grow-0 py-2">
+                    <i class="bi bi-check-circle-fill me-1"></i> Approve
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="loading" class="loading-container">
+    <img src="assets/loading-spinner.gif" alt="Uploading...">
+</div>

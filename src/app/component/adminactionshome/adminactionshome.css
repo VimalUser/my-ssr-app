@@ -1,3 +1,59 @@
+.classic-card {
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
+        background-color: #fff;
+        cursor: pointer;
+        /* Animation properties */
+        opacity: 0; 
+        transform: translateY(15px); 
+        animation-fill-mode: forwards;
+    }
+    .classic-card:hover {
+        border-color: #007bff; /* Primary color border on hover */
+        transform: translateY(-5px); /* Stronger lift on hover */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+    }
+    .icon-large {
+        font-size: 3.5rem;
+        transition: transform 0.2s ease-out; /* Add transition for icon pulse */
+    }
+    .classic-card:hover .icon-large {
+        /* Subtle jump/pulse effect on icon when card is hovered */
+        transform: scale(1.1); 
+    }
+    .card-title {
+        font-weight: 600;
+    }
+    .card-text {
+        font-size: 0.9rem;
+    }
+
+    /* THEME COLORS (kept from the previous version) */
+    .text-action { color: #007bff !important; }
+    .text-upload { color: #28a745 !important; }
+    .text-download { color: #17a2b8 !important; }
+    .text-comment { color: #ffc107 !important; }
+
+    /* ENTRY ANIMATION */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Apply animation with staggered delay */
+    .animated-card {
+        animation-name: fadeInUp;
+        animation-duration: 0.5s;
+        /* The delay will be set inline in the HTML to stagger the entrance */
+    }
+
 .loading-container {
   position: fixed;
   top: 0;

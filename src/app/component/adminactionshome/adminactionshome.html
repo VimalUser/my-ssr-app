@@ -1,86 +1,68 @@
-<div class="container my-5">
-  <div class="row row-cols-1 row-cols-md-5 g-4">
+<div class="container py-5">
+    
+    <h3 class="mb-4 text-dark fw-bold border-bottom pb-2">Client Management Tools</h3>
 
-    <!-- Edit Client -->
-    <div class="col">
-      <div
-        class="card h-100 shadow-sm text-center p-4"
-        [routerLink]="['/admindashboard/newclient', clientId]"
-        style="cursor: pointer;"
-      >
-        <i class="fas fa-heart fa-3x text-danger mb-3"></i>
-        <div class="card-body p-0">
-          <h5 class="card-title">Generate  Client Details</h5>
-          <p class="card-text text-muted">A short description here.</p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+
+        <div class="col">
+            <div
+                class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/newclient', clientId]"
+                style="animation-delay: 0s;" 
+            >
+                <i class="bi bi-pencil-square icon-large text-action mb-3"></i> 
+                <div class="card-body p-0">
+                    <h5 class="card-title">Edit Client Details</h5>
+                    <p class="card-text text-muted">Update client information</p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Edit Client -->
-    <div class="col">
-      <div
-        class="card h-100 shadow-sm text-center p-4"
-        [routerLink]="['/admindashboard/newclient', clientId]"
-        style="cursor: pointer;"
-      >
-        <i class="fas fa-heart fa-3x text-danger mb-3"></i>
-        <div class="card-body p-0">
-          <h5 class="card-title">Edit Client Details</h5>
-          <p class="card-text text-muted">A short description here.</p>
+        <div class="col">
+            <div
+                class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/uploadpictures', clientId]"
+                style="animation-delay: 0.1s;" 
+            >
+                <i class="bi bi-cloud-arrow-up-fill icon-large text-upload mb-3"></i> 
+                <div class="card-body p-0">
+                    <h5 class="card-title">Upload Photos</h5>
+                    <p class="card-text text-muted">Upload function photos for user selection.</p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Upload Pictures -->
-    <div class="col">
-      <div
-        class="card h-100 shadow-sm text-center p-4"
-        [routerLink]="['/admindashboard/uploadpictures', clientId]"
-        style="cursor: pointer;"
-      >
-        <i class="fas fa-box fa-3x text-primary mb-3"></i>
-        <div class="card-body p-0">
-          <h5 class="card-title">Upload Pictures</h5>
-          <p class="card-text text-muted">upload function photos for the users to select from</p>
+        <div class="col">
+            <div
+                class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/download', clientId]"
+                style="animation-delay: 0.2s;" 
+            >
+                <i class="bi bi-archive-fill icon-large text-download mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">Download Final Album</h5>
+                    <p class="card-text text-muted">Package and download all final selected photos.</p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Example more cards -->
-    <div class="col">
-      <div
-        class="card h-100 shadow-sm text-center p-4"
-        [routerLink]="['/admindashboard/download', clientId]"
-        style="cursor: pointer;"
-      >
-        <i class="fas fa-users fa-3x text-success mb-3"></i>
-        <div class="card-body p-0">
-          <h5 class="card-title">download pics</h5>
-          <p class="card-text text-muted">See the user comments on the selected photos and Download them</p>
+        <div class="col">
+            <div
+                class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/comments', clientId]"
+                style="animation-delay: 0.3s;" 
+            >
+                <i class="bi bi-chat-dots-fill icon-large text-comment mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">View Comments</h5>
+                    <p class="card-text text-muted">See the user comments on selected photos.</p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Example more cards -->
-    <div class="col">
-      <div
-        class="card h-100 shadow-sm text-center p-4"
-        [routerLink]="['/admindashboard/comments', clientId]"
-        style="cursor: pointer;"
-      >
-        <i class="fas fa-users fa-3x text-success mb-3"></i>
-        <div class="card-body p-0">
-          <h5 class="card-title">Comments </h5>
-          <p class="card-text text-muted">See the user comments on the selected photos and Download them</p>
-        </div>
-      </div>
     </div>
-
-  </div>
 </div>
+
 <div *ngIf="loading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Uploading...">
-    <!-- <p>Uploading, please wait...</p> -->
+    <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>
-
-
