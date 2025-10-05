@@ -69,7 +69,7 @@
           </thead>
 
           <tbody>
-            <tr *ngFor="let client of filteredData">
+            <tr *ngFor="let client of filteredData" (click)="viewClientInfo(client.clientId)">
               <td class="fw-semibold">{{ client.orderNumber }}</td>
               <td>{{ client.clientName }}</td>
               <td>

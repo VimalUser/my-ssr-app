@@ -1,14 +1,16 @@
 .loading-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.5); /* dimmed background */
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it's on top of other content */
+  justify-content: center;
+  z-index: 5000; /* must be higher than all content */
+}
+
+.loading-container img {
+  width: 80px;  /* adjust as needed */
+  height: 80px;
 }
 
 .loading-spinner {

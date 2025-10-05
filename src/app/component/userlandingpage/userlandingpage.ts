@@ -2,11 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api';
-import { Router, RouterOutlet, RouterModule,NavigationEnd  } from '@angular/router';
+import {
+  Router,
+  RouterOutlet,
+  RouterModule,
+  NavigationEnd,
+} from '@angular/router';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { filter } from 'rxjs/operators';
-
-
 
 @Component({
   selector: 'app-userlandingpage',
@@ -28,57 +31,66 @@ export class Userlandingpage implements OnInit {
   private apiService = inject(Api);
 
   ngOnInit(): void {
+    this.ClientDataService.nextStep$.subscribe((menuItem: number) =>
+      this.nextStep(menuItem)
+    );
+    // this.ClientDataService.nextStep$.subscribe(() => this.nextStep());
 
-    this.ClientDataService.nextStep$.subscribe(() => this.nextStep());
-    this.ClientDataService.prevStep$.subscribe(() => this.prevStep());
+     this.ClientDataService.prevStep$.subscribe((menuItem: number) =>
+      this.prevStep(menuItem)
+    );
+    // this.ClientDataService.prevStep$.subscribe(() => this.prevStep(''));
 
-      this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         if (event.url === '/userhome/startpage') {
-          this.resetWizardFlow();
-         this.ClientDataService.resetClientDataOnly();
+          
+          this.ClientDataService.resetClientDataOnly();
         }
       });
-
-      
-  
   }
 
   currentStepIndex = 0; // 0-based index, first menu item enabled initially
 
   menuItems = [
     {
+      id: 0,
       name: 'Home',
       route: '/userhome/startpage',
       icon: 'bi-speedometer2',
       disabled: false,
     },
     {
+      id: 1,
       name: 'Album Name',
       route: '/userhome/albumname',
       icon: 'bi-pencil-square',
       disabled: true,
     },
     {
+      id: 2,
       name: 'Album Selection',
       route: '/userhome/gallery',
       icon: 'bi-calendar2-week',
       disabled: true,
     },
     {
+      id: 3,
       name: 'Frame Picture',
       route: '/userhome/framepicture',
       icon: 'bi-film',
       disabled: true,
     },
     {
+      id: 4,
       name: 'Cover Picture',
       route: '/userhome/coverpicture',
       icon: 'bi-bell',
       disabled: true,
     },
     {
+      id: 5,
       name: 'Submit Form',
       route: '/userhome/submitform',
       icon: 'bi-trophy',
@@ -86,15 +98,27 @@ export class Userlandingpage implements OnInit {
     },
   ];
 
-    nextStep() {
-    if (this.currentStepIndex < this.menuItems.length - 1) {
-      this.currentStepIndex++;
-      this.menuItems[this.currentStepIndex].disabled = false;
-      this.router.navigate([this.menuItems[this.currentStepIndex].route]);
-    }
+  nextStep(menuItem: number) {
+    console.log('currentStepIndex', this.currentStepIndex);
+    this.activateMenuByName(menuItem);
+    // if (this.currentStepIndex < this.menuItems.length - 1) {
+    //   this.currentStepIndex++;
+    //   this.menuItems[this.currentStepIndex].disabled = false;
+    //   this.router.navigate([this.menuItems[this.currentStepIndex].route]);
+    // }
   }
 
-  prevStep() {
+  activateMenuByName(menuItemIndex: number) {
+  this.currentStepIndex = menuItemIndex;
+  this.menuItems.forEach(item => item.disabled = item.id > menuItemIndex);
+  const activeItem = this.menuItems.find(item => item.id === menuItemIndex);
+  if (activeItem) {
+    this.router.navigate([activeItem.route]);
+  }
+}
+
+
+  prevStep(menuItem: number) {
     if (this.currentStepIndex > 0) {
       this.currentStepIndex--;
       this.menuItems[this.currentStepIndex].disabled = false;
@@ -102,14 +126,13 @@ export class Userlandingpage implements OnInit {
     }
   }
 
-
-  resetWizardFlow() {
-    this.currentStepIndex = 0;
-    this.menuItems.forEach((item, i) => {
-      item.disabled = i !== 0;
-    });
-    console.log('🔄 Wizard flow reset');
-  }
+  // resetWizardFlow() {
+  //   this.currentStepIndex = 0;
+  //   this.menuItems.forEach((item, i) => {
+  //     item.disabled = i !== 0;
+  //   });
+  //   console.log('🔄 Wizard flow reset');
+  // }
 
   isLightTheme = false; // false = dark (black) by default
 

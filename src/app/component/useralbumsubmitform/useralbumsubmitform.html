@@ -1,75 +1,132 @@
 <div class="container py-4">
-  <section id="submitFormSection">
-  <div class="row justify-content-left">
-    <div class="col-12 col-md-12 col-lg-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h3 class="mb-3 fw-bold">Submit form</h3>
-          <p class="mb-4">
-            Dear <span class="fw-semibold"> {{clientData.clientName}}</span>,
-          </p>
-          <p>
-            Your presence in the photos, along with your selections, will be featured in the final album and printed frames.
-             
-          </p>
-          <ul>
-            <li *ngIf="clientData && clientData.tranditionalAlbumSelection.length > 0">
-              Traditional Photos: {{ clientData.tranditionalAlbumSelection.length }} images selected
-            </li>         
-            <li *ngIf="clientData && clientData.candidAlbumSelection.length > 0">
-              Candid Photos: {{ clientData.candidAlbumSelection.length }} images selected
-            </li> 
-            <li *ngIf="clientData && clientData.portraitFrameSelection.length > 0">
-              Number of Frames: {{ clientData.portraitFrameSelection.length  + clientData.landscapeFrameSelection.length}} frames selected
-            </li>
-            <li *ngIf="clientData && clientData.coverSelection.length > 0">
-              Cover picture: {{ clientData.coverSelection.length }} image selected
-            </li>
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <button
+        class="btn btn-link fs-4 text-white p-0"
+        aria-label="Back"
+        (click)="prevStep()">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+      <div></div>
+    </div>
+  </div>
 
-          </ul>
-           
-          <p>
-            We kindly request you to review everything carefully before submitting your choices to the company, as these will be used for the final production. Thank you for your attention and cooperation.
-          </p>
-          <div class="mt-4">
-            <p>Warm regards,</p>
-            <p class="mb-0 fw-semibold">{{clientData.createdBy}},</p>
-            <p class="mb-1 text-muted small">CRM</p>
-            <p class="mb-3">Candy Express Photography.</p>
-            <button class="btn btn-warning px-4"  (click)="submissionForm()" >Submit</button>
+  <section id="submitFormSection">
+    <div class="row justify-content-left">
+      <div class="col-12 col-md-12 col-lg-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3 class="mb-3 fw-bold">Submit form</h3>
+            <p class="mb-4">
+              Dear <span class="fw-semibold"> {{ clientData.clientName }}</span
+              >,
+            </p>
+            <p>
+              Your presence in the photos, along with your selections, will be
+              featured in the final album and printed frames.
+            </p>
+            <ul>
+              <li
+                *ngIf="
+                  clientData && clientData.tranditionalAlbumSelection.length > 0
+                ">
+                Traditional Photos:
+                {{ clientData.tranditionalAlbumSelection.length }} images
+                selected
+              </li>
+              <li
+                *ngIf="
+                  clientData && clientData.candidAlbumSelection.length > 0
+                ">
+                Candid Photos:
+                {{ clientData.candidAlbumSelection.length }} images selected
+              </li>
+              <li
+                *ngIf="
+                  clientData && clientData.portraitFrameSelection.length > 0
+                ">
+                Number of Frames:
+                {{
+                  clientData.portraitFrameSelection.length +
+                    clientData.landscapeFrameSelection.length
+                }}
+                frames selected
+              </li>
+              <li *ngIf="clientData && clientData.coverSelection.length > 0">
+                Cover picture: {{ clientData.coverSelection.length }} image
+                selected
+              </li>
+            </ul>
+
+            <p>
+              We kindly request you to review everything carefully before
+              submitting your choices to the company, as these will be used for
+              the final production. Thank you for your attention and
+              cooperation.
+            </p>
+            <div class="mt-4">
+              <p>Warm regards,</p>
+              <p class="mb-0 fw-semibold">{{ clientData.createdBy }},</p>
+              <p class="mb-1 text-muted small">CRM</p>
+              <p class="mb-3">Candy Express Photography.</p>
+              <button class="btn btn-warning px-4" (click)="submissionForm()">
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </section>
 
-
-  <section id="submissionConfirmation" style="display: none;">
-
+  <section id="submissionConfirmation" style="display: none">
     <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6 text-center">
-      <div class="mb-4">
-        <!-- Bootstrap "check" icon SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="mx-auto">
-          <circle cx="12" cy="12" r="10" stroke-width="2" stroke="#222" fill="none"/>
-          <path stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/>
-        </svg>
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 text-center">
+          <div class="mb-4">
+            <!-- Bootstrap "check" icon SVG -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="72"
+              height="72"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="mx-auto">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke-width="2"
+                stroke="#222"
+                fill="none" />
+              <path
+                stroke="#222"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12l2 2l4-4" />
+            </svg>
+          </div>
+          <p class="mb-3 fs-5">
+            Selected image and details has been sent to the company, You will
+            receive a mail shorty......
+          </p>
+          <p class="mb-3 fs-6">
+            Thank you for choosing Candy Express Photography
+          </p>
+          <a
+            [routerLink]="['/userhome/startpage']"
+            class="btn btn-link fs-5 text-primary"
+            >Go to Home</a
+          >
+        </div>
       </div>
-      <p class="mb-3 fs-5">
-        Selected image and details has been sent to the company, You will receive a mail shorty......
-      </p>
-      <p class="mb-3 fs-6">Thank you for choosing Candy Express Photography</p>
-      <a [routerLink]="['/userhome/startpage']" class="btn btn-link fs-5 text-primary">Go to Home</a>
     </div>
-  </div>
-</div>
   </section>
 </div>
 
 <div *ngIf="loading" class="loading-container">
-   <img src="assets/loading-spinner.gif" alt="Uploading...">
-   <!-- <p>Uploading, please wait...</p> -->
+  <img src="assets/loading-spinner.gif" alt="Uploading..." />
+  <!-- <p>Uploading, please wait...</p> -->
 </div>
-

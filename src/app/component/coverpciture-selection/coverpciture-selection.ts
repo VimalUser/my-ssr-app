@@ -54,7 +54,7 @@ export class CoverpcitureSelection {
   }
 
   prevStep() {
-    this.clientDataService.triggerPrevStep();
+    this.clientDataService.triggerNextStep(3);
   }
 
   nextStep() {
@@ -62,7 +62,7 @@ export class CoverpcitureSelection {
       this.notify.error('Please select 1 picture for album cover!');
       return;
     }
-    this.clientDataService.triggerNextStep();
+    this.clientDataService.triggerNextStep(5);
   }
 
   // Image gallery logic
@@ -82,6 +82,8 @@ export class CoverpcitureSelection {
   pagelatestData: clientData = new clientData();
 
   ngOnInit(): void {
+      this.clientDataService.triggerNextStep(4);
+
     this.loading = true;
     const data = this.clientDataService.getData();
     this.pagelatestData = data;

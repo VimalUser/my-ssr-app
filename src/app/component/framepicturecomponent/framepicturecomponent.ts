@@ -67,7 +67,7 @@ export class Framepicturecomponent {
   }
 
   prevStep() {
-    this.clientDataService.triggerPrevStep();
+    this.clientDataService.triggerNextStep(2);
   }
 
   nextStep() {
@@ -76,7 +76,7 @@ export class Framepicturecomponent {
       this.notify.error('Please select 1 picture for portrait/landsape frame!')
       return;
     }
-    this.clientDataService.triggerNextStep();
+    this.clientDataService.triggerNextStep(4);
   }
 
   // Image gallery logic
@@ -101,6 +101,7 @@ export class Framepicturecomponent {
   pagelatestData: clientData = new clientData();
 
   ngOnInit(): void {
+    this.clientDataService.triggerNextStep(3);
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
     const selectedImagesSource = this.selectedImagesSource();

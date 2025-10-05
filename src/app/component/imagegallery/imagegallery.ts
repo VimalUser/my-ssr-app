@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AlbumSelectionItem } from '../../model/album-selection-item.model';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { clientData } from '../../model/clientData';
-import { Notificationservice} from '../../services/notificationservice';
+import { Notificationservice } from '../../services/notificationservice';
 import { userserviceapi } from '../../services/userservice';
 
 @Component({
@@ -27,6 +27,7 @@ export class Imagegallery implements OnInit {
   selectedItems: AlbumSelectionItem[] = [];
 
   loading = true;
+  galleryOpen =false;
   previewLoading = false;
 
   previewImage: string | null = null;
@@ -37,11 +38,13 @@ export class Imagegallery implements OnInit {
 
   constructor(
     private clientDataService: ClientDataService,
-    private userservice: userserviceapi,
+    private userService: userserviceapi,
     private notify: Notificationservice
   ) {}
 
   ngOnInit(): void {
+    this.clientDataService.triggerNextStep(2);
+
     this.loading = false;
     const data = this.clientDataService.getData();
     this.clientDataload = data;
@@ -62,10 +65,10 @@ export class Imagegallery implements OnInit {
     this.selectedItems = [];
     const data = this.clientDataService.getData();
     this.clientDataload = data;
+      this.galleryOpen =true;
 
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'block';
-      selectionSection.style.display = 'none'; // Hide selection section
+      // gallerySection.style.display = 'block';
+      // selectionSection.style.display = 'none'; // Hide selection section
 
       if (folderName === this.folderNames[0]) {
         this.isTraditional = true;
@@ -89,9 +92,8 @@ export class Imagegallery implements OnInit {
 
       this.getImagesbyPath();
       // this.generateImages();
-          this.loading = false;
-
-    }
+      this.loading = false;
+    
   }
 
   generateImages() {
@@ -105,7 +107,7 @@ export class Imagegallery implements OnInit {
       // this.baseUrl = 'https://picsum.photos/seed/';
       imageSource = this.candidImages;
     }
-this.images = imageSource;
+    this.images = imageSource;
 
     // imageSource.forEach((element) => {
     //   this.images.push(element);
@@ -231,10 +233,12 @@ this.images = imageSource;
       return;
     }
 
+    this.galleryOpen =false;
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
 
     if (gallerySection && selectionSection) {
+
       gallerySection.style.display = 'none';
       selectionSection.style.display = 'block'; // Show selection section
     }
@@ -243,7 +247,7 @@ this.images = imageSource;
   }
 
   prevStep() {
-    this.clientDataService.triggerPrevStep();
+    this.clientDataService.triggerNextStep(1);
   }
 
   nextStep() {
@@ -265,7 +269,7 @@ this.images = imageSource;
     // Logic to proceed to the next step
     console.log('Proceeding to the next step...');
     // Notify other components to move to next step
-    this.clientDataService.triggerNextStep();
+    this.clientDataService.triggerNextStep(3);
   }
 
   get totalPages(): number {
@@ -364,16 +368,38 @@ this.images = imageSource;
   }
 
   getImagesbyPath() {
-    
-      console.log('Fetching data from API...');
-      let folderPath = this.isTraditional ? 'traditional' : 'candid';
+    console.log('Fetching data from API...');
+    let folderPath = this.isTraditional ? 'traditional' : 'candid';
 
-       if (this.isTraditional) this.images = this.traditionalImages;
-           else this.images = this.candidImages; 
-    
+    this.fetchData(this.clientDataload.clientId.toString() ?? "",folderPath);
+    // if (this.isTraditional) this.images = this.traditionalImages;
+    // else this.images = this.candidImages;
   }
 
-  saveSelection() {    
+
+  fetchData(clientId : string,folderPath: string): void {
+    this.loading = true;
+    console.log('Fetching data from API...');
+    this.userService.getImagesbyType(clientId,folderPath)
+      .subscribe({
+        next: (data) => {
+          // This is where you process the successful response
+          console.log('API Response:', data); 
+          this.images  = data;
+          // this.formLatestData = data;
+          // this.updateClinetData(this.formLatestData);
+          this.loading = false;
+        },
+        error: (error) => {
+          // This is executed if the request fails (e.g., 404, 500)
+          console.log('There was an error!', error);
+          this.loading = false;
+        },
+        complete: () => {},
+      });
+  }
+
+  saveSelection() {
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
@@ -386,7 +412,7 @@ this.images = imageSource;
     const updated: clientData = {
       ...existingData,
       [propertyToUpdate]: [...this.selectedItems],
-      status:'Inprogress'
+      status: 'Inprogress',
     };
 
     this.clientDataService.updateData(updated);
@@ -395,12 +421,12 @@ this.images = imageSource;
     console.log('Saved to ClientDataService:', updated);
   }
 
-  apiCalltoSave(updateData:clientData) {
-        this.loading = true;
+  apiCalltoSave(updateData: clientData) {
+    this.loading = true;
 
     console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
 
-    this.userservice.saveUserAlbumDetails(updateData).subscribe({
+    this.userService.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);
         this.loading = false;
@@ -412,5 +438,5 @@ this.images = imageSource;
         this.notify.error('Failed to save your selection!');
       },
     });
-  } 
+  }
 }

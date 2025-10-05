@@ -29,6 +29,8 @@ export class Useralbumsubmitform implements OnInit {
 
 
  ngOnInit(): void {
+    this.clientDataService.triggerNextStep(5);
+
   this.loading =true;
     const data = this.clientDataService.getData();  
     this.clientData = data;
@@ -83,7 +85,11 @@ export class Useralbumsubmitform implements OnInit {
   }
 
   prevStep() {
-    this.clientDataService.triggerPrevStep();
+    this.clientDataService.triggerNextStep(4);
+  }
+
+  nextStep() {
+    this.clientDataService.triggerNextStep(4);
   }
   
   //  redirectToHome() {

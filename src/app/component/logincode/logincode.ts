@@ -1,15 +1,22 @@
 import { Component } from '@angular/core';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
-import { ClientDataService, LoggedInUser } from '../../shared/ClientDataService';
+import {
+  ClientDataService,
+  LoggedInUser,
+} from '../../shared/ClientDataService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Notificationservice } from '../../services/notificationservice';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { newclientapi } from '../../services/newclient';
 import { ClientLogin } from '../../model/userlogin';
 import { CommonModule } from '@angular/common';
-
 
 @Component({
   selector: 'app-logincode',
@@ -24,7 +31,9 @@ export class Logincode {
   userInfo: any;
   userLogin: ClientLogin = {} as ClientLogin;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient,
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
     private userService: userserviceapi,
     private notify: Notificationservice,
     private fb: FormBuilder,
@@ -33,11 +42,12 @@ export class Logincode {
     private clientService: ClientDataService
   ) {
     this.loginForm = this.fb.group({
-      passcode: ['', Validators.required]
+      passcode: ['', Validators.required],
     });
   }
   user: string | null = null;
   ngOnInit() {
+    localStorage.removeItem('clientData');
     this.loading = true;
     this.user = this.route.snapshot.queryParamMap.get('user');
     console.log('Login Code:', this.user);
@@ -52,25 +62,27 @@ export class Logincode {
       next: (res: any) => {
         this.userInfo = res; // will be undefined for errors
         console.log('User Info from API:', this.userInfo);
-        const loggedInUser: LoggedInUser = { clientId: this.userInfo.clientId, clientName: this.userInfo.clientName };
+        const loggedInUser: LoggedInUser = {
+          clientId: this.userInfo.clientId,
+          clientName: this.userInfo.clientName,
+        };
         console.log(this.userInfo.loginCoverUrl);
-        if(this.userInfo.loginCoverUrl && this.userInfo.loginCoverUrl.trim() !=='')
+        if (
+          this.userInfo.loginCoverUrl &&
+          this.userInfo.loginCoverUrl.trim() !== ''
+        )
           this.bgImage = this.userInfo.loginCoverUrl;
-        
 
         // 1. Store user in service
         this.clientService.setCurrentUser(loggedInUser);
         this.loading = false;
       },
       error: (err) => {
-        if (err.status === 400)
-          this.notify.error(err.error.message);
-        else if (err.status === 404)
-          this.notify.error(err.error.message);
+        if (err.status === 400) this.notify.error(err.error.message);
+        else if (err.status === 404) this.notify.error(err.error.message);
         this.loading = false;
-      }
+      },
     });
-
   }
 
   validateClientLogin() {
@@ -90,11 +102,13 @@ export class Logincode {
     this.apiService.validateClientLogin(this.userLogin).subscribe({
       next: (apiResponse) => {
         this.loading = false;
-        if (apiResponse.accessToken != null && apiResponse.accessToken != undefined) {
+        if (
+          apiResponse.accessToken != null &&
+          apiResponse.accessToken != undefined
+        ) {
           this.router.navigate(['/userhome/startpage']);
           // this.loading = false;
-        }
-        else {
+        } else {
           this.loading = false;
           this.notify.error(apiResponse.message || 'Invalid passcode');
         }
@@ -102,10 +116,9 @@ export class Logincode {
       error: (err) => {
         if (err.status === 400 || err.status === 404)
           this.notify.error(err.error.message || 'Invalid passcode');
-        else
-          this.notify.error('Something went wrong');
+        else this.notify.error('Something went wrong');
         this.loading = false;
-      }
+      },
     });
   }
 }

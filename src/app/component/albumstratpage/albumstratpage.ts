@@ -1,10 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ClientDataService, LoggedInUser } from '../../shared/ClientDataService';
+import {
+  ClientDataService,
+  LoggedInUser,
+} from '../../shared/ClientDataService';
 import { CommonModule } from '@angular/common';
 import { clientData } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-albumstratpage',
   imports: [CommonModule],
@@ -14,14 +17,15 @@ import { ClientAlbum } from '../../model/ClientAlbum';
 })
 export class Albumstratpage implements OnInit {
   user: LoggedInUser | null = null;
-  isLoading:boolean =false;
+  isLoading: boolean = false;
 
   formLatestData: clientData = new clientData();
 
   constructor(
     private clientDataService: ClientDataService,
     private userService: userserviceapi,
-  ) { }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -35,11 +39,11 @@ export class Albumstratpage implements OnInit {
   }
 
   nextStep() {
-    // Notify other components to move to next step
-    this.clientDataService.triggerNextStep();
+     this.clientDataService.triggerNextStep(1);
+    // this.router.navigate(['userhome/albumname']);
   }
 
- get hasSubmitted(): boolean {
+  get hasSubmitted(): boolean {
     return this.formLatestData.status.toLowerCase().trim() == 'completed';
   }
 
@@ -62,15 +66,16 @@ export class Albumstratpage implements OnInit {
       eventType: '',
       albumSize: '',
       frameSize: '',
-      tranditionalAlbumSelection: clientDatafromDb.tranditionalAlbumSelection || [],
+      tranditionalAlbumSelection:
+        clientDatafromDb.tranditionalAlbumSelection || [],
       candidAlbumSelection: clientDatafromDb.candidAlbumSelection || [],
       portraitFrameSelection: clientDatafromDb.portraitFrameSelection || [],
       landscapeFrameSelection: clientDatafromDb.landscapeFrameSelection || [],
       coverSelection: clientDatafromDb.coverSelection || [],
-      passCode:'',
-      createdBy:clientDatafromDb.createdBy || '',
-      accessLink:'',
-      updatedBy:'',
+      passCode: '',
+      createdBy: clientDatafromDb.createdBy || '',
+      accessLink: '',
+      updatedBy: '',
     };
 
     this.clientDataService.updateData(updated);
@@ -79,21 +84,22 @@ export class Albumstratpage implements OnInit {
 
   fetchData(): void {
     console.log('Fetching data from API...');
-    this.userService.getClientAlbumSelectionDetails(String(this.user?.clientId)).subscribe({
-      next: (data) => {
-        // This is where you process the successful response
-        console.log('API Response:', data);
-        this.formLatestData = data;
-        this.updateClinetData(this.formLatestData);
-        this.isLoading = false;
-      },
-      error: (error) => {
-        // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
-        this.isLoading = false;
-
-      },
-      complete: () => { },
-    });
+    this.userService
+      .getClientAlbumSelectionDetails(String(this.user?.clientId))
+      .subscribe({
+        next: (data) => {
+          // This is where you process the successful response
+          console.log('API Response:', data);
+          this.formLatestData = data;
+          this.updateClinetData(this.formLatestData);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          // This is executed if the request fails (e.g., 404, 500)
+          console.error('There was an error!', error);
+          this.isLoading = false;
+        },
+        complete: () => {},
+      });
   }
 }
