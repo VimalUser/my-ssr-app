@@ -28,27 +28,19 @@
       <li>Select single image for cover page</li>
     </ul>
 
-    <button  class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
+     <button *ngIf="!hasSubmitted" class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
       Start the process <i class="bi bi-arrow-right ms-2"></i>
     </button>
 
-     <div  class="btn btn-info text-dark fw-bold rounded-pill px-4">
+     <div *ngIf="hasSubmitted"  class="btn btn-info text-dark fw-bold rounded-pill px-4">
       Your selection were already submitted
      </div>
-    <!-- <button *ngIf="!hasSubmitted" class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
-      Start the process <i class="bi bi-arrow-right ms-2"></i>
-    </button>
-
-     <div *ngIf="!hasSubmitted"  class="btn btn-info text-dark fw-bold rounded-pill px-4">
-      Your selection were already submitted
-     </div> -->
 
   </div>
 </div>
 
   <div *ngIf="isLoading" class="loading-container">
     <img src="assets/loading-spinner.gif" alt="Uploading...">
-    <!-- <p>Uploading, please wait...</p> -->
 </div>
 
 

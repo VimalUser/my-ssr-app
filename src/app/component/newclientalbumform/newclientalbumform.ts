@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownResponse, newclientapi } from '../../services/newclient';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Logincode } from '../logincode/logincode';
+import { Notificationservice } from '../../services/notificationservice';
 
 @Component({
   selector: 'app-newclientalbumform',
@@ -46,7 +46,8 @@ export class Newclientalbumform implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notify:Notificationservice
   ) {
     // Logic from the FormBuilder constructor
     this.clientForm = this.fb.group({
@@ -85,10 +86,8 @@ export class Newclientalbumform implements OnInit {
       this.clientForm.markAllAsTouched(); // highlight errors
       return;
     }
-    alert('Save button clicked!');
     if (this.clientForm.valid) {
       // Implement your save logic here
-      alert('Client saved!\n' + JSON.stringify(this.clientForm.value, null, 2));
       console.log(this.clientForm.value);
       this.savedetails();
     }
@@ -134,18 +133,20 @@ export class Newclientalbumform implements OnInit {
           console.log('Save Response:', response);
           this.apiResponse = response;
           this.isLoading = false;
-          alert('Client album details saved successfully!');
+          this.notify.success('Client album details saved successfully!');
           console.log('ID:', this.id);
           if (this.id == '')
             this.router.navigate(['/admindashboard']);
         },
         error: (error) => {
           console.error('Save Error:', error);
+          this.notify.error('Failed to save client album details.');
           this.errorMessage = 'Failed to save client album details.';
           this.isLoading = false;
         },
       });
     } else {
+      this.notify.error('Please fill all required fields correctly.');
       this.errorMessage = 'Please fill all required fields correctly.';
     }
   }

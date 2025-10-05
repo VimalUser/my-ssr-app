@@ -164,7 +164,6 @@ export class Admindashboard implements OnInit {
 
 
   viewClientInfo(id: number | null) {
-    alert('View order functionality to be implemented for order ID: ' + id?.toString());
     this.router.navigate(['admindashboard/adminactions', id?.toString()]);
   }
 

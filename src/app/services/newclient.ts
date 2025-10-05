@@ -108,13 +108,11 @@ export class newclientapi {
 
   // Fetch client with folder counts
   getClientFolderCounts(clientId: number): Observable<any> {
-    alert('Fetching folder counts for clientId: ' + clientId);
     return this.http.get(`${this.blobUrl}getClientFolderCount?clientId=${clientId}`);
   }
 
   // download pictures
   downloadpictures1(clientId: number): Observable<any> {
-    alert('download clientId: ' + clientId);
     return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`);
   }
 

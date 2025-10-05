@@ -27,18 +27,13 @@ export class Framepicturecomponent {
   isPortait: boolean = true;
   showGallerySection = true;
 
-  showGallery(isPortait: boolean) {
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
+  showGallery(isPortait: boolean) {   
     this.selectedItems = [];
 
     this.isPortait = isPortait;
     this.selectedFolderName = isPortait ? 'Portrait Frame' : 'Landscape Frame';
-
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'block';
-      selectionSection.style.display = 'none'; // Show selection section
-    }
+    this.galleryOpen= true;
+    
     if (isPortait) {
       this.selectedItems = [...this.pagelatestData.portraitFrameSelection];
     } else {
@@ -55,14 +50,7 @@ export class Framepicturecomponent {
       return;
     }
 
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
-
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'none';
-      selectionSection.style.display = 'block'; // Show selection section
-    }
-
+    this.galleryOpen = false;
     this.selectedFolderName = '';
   }
 
@@ -71,9 +59,12 @@ export class Framepicturecomponent {
   }
 
   nextStep() {
-    if(this.pagelatestData.portraitFrameSelection.length + this.pagelatestData.landscapeFrameSelection.length < 2)
-    {
-      this.notify.error('Please select 1 picture for portrait/landsape frame!')
+    if (
+      this.pagelatestData.portraitFrameSelection.length +
+        this.pagelatestData.landscapeFrameSelection.length <
+      2
+    ) {
+      this.notify.error('Please select 1 picture for portrait/landsape frame!');
       return;
     }
     this.clientDataService.triggerNextStep(4);
@@ -94,10 +85,7 @@ export class Framepicturecomponent {
   previewComment = '';
   isVisible = true;
 
-  baseUrl = 'https://picsum.photos/seed/';
-  imageCount = 60;
-  thumbW = 600;
-  thumbH = 400;
+  galleryOpen = false;
   pagelatestData: clientData = new clientData();
 
   ngOnInit(): void {
@@ -139,7 +127,7 @@ export class Framepicturecomponent {
   }
 
   public fileNameFromUrl(url: string): string {
-    return url; // treat whole URL as unique
+    return url.split('?')[0].split('/').pop() || '';
   }
 
   isSelected(imgUrl: string): boolean {
@@ -160,7 +148,7 @@ export class Framepicturecomponent {
       }
 
       this.selectedItems.push({
-        fileName,
+        fileName: fileName,
         comment: '',
         type: this.isPortait ? 'portrait' : 'landscape',
         url: imgUrl,
@@ -190,25 +178,7 @@ export class Framepicturecomponent {
     this.previewLoading = true;
   }
 
-  // openPreviewFrame(inputType: string) {
-  //   let imgUrl: any;
-
-  //   imgUrl = this.selectedItems.find((item) => item.type === inputType)?.url;
-  //   if (!imgUrl) {
-  //     alert('No image selected for preview.');
-  //     return;
-  //   }
-
-  //   this.previewImage = imgUrl;
-  //   this.previewFileName = this.fileNameFromUrl(imgUrl);
-  //   const existing = this.selectedItems.find(
-  //     (x) => x.fileName === this.previewFileName
-  //   );
-  //   this.previewComment = existing?.comment ?? '';
-  //   this.previewLoading = true;
-  // }
-
-  onPreviewImageLoad() {
+   onPreviewImageLoad() {
     this.previewLoading = false;
   }
 
@@ -229,7 +199,7 @@ export class Framepicturecomponent {
 
     if (!item) {
       item = {
-        fileName,
+        fileName: this.fileNameFromUrl(fileName),
         comment: '',
         type: this.isPortait ? 'portrait' : 'landscape',
         url: this.previewImage || '',
@@ -239,7 +209,7 @@ export class Framepicturecomponent {
         this.selectedItems.length > 0 &&
         this.selectedItems.some((item) => item.type === 'portrait')
       ) {
-        alert('Portrait photo selected');
+        this.notify.error('1 Portrait photo already selected');
         return;
       }
 
@@ -247,7 +217,7 @@ export class Framepicturecomponent {
         this.selectedItems.length > 0 &&
         this.selectedItems.some((item) => item.type === 'landscape')
       ) {
-        alert('Landscape photo selected');
+        this.notify.error('1 Landscape photo already selected');
         return;
       }
 
@@ -286,7 +256,7 @@ export class Framepicturecomponent {
     const updated: clientData = {
       ...existingData,
       [propertyToUpdate]: [...this.selectedItems],
-      status : 'Inprogress'
+      status: 'Inprogress',
     };
 
     this.clientDataService.updateData(updated);

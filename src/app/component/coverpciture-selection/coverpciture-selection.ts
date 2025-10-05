@@ -20,17 +20,13 @@ export class CoverpcitureSelection {
     private notify: Notificationservice
   ) {}
   //folder selection logic
-  showGallerySection = true;
+  galleryOpen = false;
 
   showGallery(isPortait: boolean) {
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
     this.selectedItems = [];
-
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'block';
-      selectionSection.style.display = 'none'; // Show selection section
-    }
+   this.galleryOpen =true;
 
     this.selectedItems = [...this.pagelatestData.coverSelection];
   }
@@ -43,14 +39,7 @@ export class CoverpcitureSelection {
       // User pressed Cancel, stop execution here
       return;
     }
-
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
-
-    if (gallerySection && selectionSection) {
-      gallerySection.style.display = 'none';
-      selectionSection.style.display = 'block'; // Show selection section
-    }
+    this.galleryOpen =false;    
   }
 
   prevStep() {
@@ -121,7 +110,7 @@ export class CoverpcitureSelection {
   }
 
   public fileNameFromUrl(url: string): string {
-    return url; // treat whole URL as unique
+    return url.split('?')[0].split('/').pop() || '';
   }
 
   isSelected(imgUrl: string): boolean {
@@ -142,7 +131,7 @@ export class CoverpcitureSelection {
       }
 
       this.selectedItems.push({
-        fileName,
+        fileName:fileName,
         comment: '',
         type: 'cover',
         url: imgUrl,
@@ -180,7 +169,7 @@ export class CoverpcitureSelection {
 
     if (!item) {
       item = {
-        fileName,
+        fileName:this.fileNameFromUrl(fileName),
         comment: '',
         type: 'cover',
         url: this.previewImage || '',

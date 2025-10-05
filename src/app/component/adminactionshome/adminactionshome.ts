@@ -36,8 +36,6 @@ export class Adminactionshome implements OnInit {
       this.username = name;
     });
     this.fetchData();
-
-    alert(`Welcome ${this.username}`);
   }
 
   updateAdminData(adminDatafromDb: AdminData) {

@@ -1,10 +1,10 @@
 <!-- Loader for full page -->
 <div *ngIf="loading" class="loading-container">
-   <img src="assets/loading-spinner.gif" alt="Uploading...">
-   <!-- <p>Uploading, please wait...</p> -->
+  <img src="assets/loading-spinner.gif" alt="Uploading..." />
+  <!-- <p>Uploading, please wait...</p> -->
 </div>
 
-<section id="selctionSection">
+<section id="selctionSection" *ngIf="!galleryOpen">
   <div class="container py-4">
     <!-- <div class="row mb-4">
       <div class="col-12">
@@ -19,107 +19,87 @@
       </div>
     </div> -->
 
-      <div class="row mb-3">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <button class="btn btn-link fs-4 text-white p-0" aria-label="Back" (click)="prevStep()" >
-        <i class="bi bi-arrow-left"></i>
-      </button>
-      <div>
-        <a class="fw-bold text-orange ms-1 cursor-pointer" style="font-size:1.08rem;"  (click)="nextStep()"  >Next</a>
+    <div class="row mb-3">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <button class="btn btn-link fs-4 text-white p-0" aria-label="Back" (click)="prevStep()">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <div>
+          <a class="fw-bold text-orange ms-1 cursor-pointer" style="font-size: 1.08rem" (click)="nextStep()">Next</a>
+        </div>
       </div>
     </div>
-  </div>
 
-   <div class="row">
-    <div class="col-12">
-      <h3 class="fw-bold mb-2 text-white">Album Pictures</h3>
-      <div class="mb-3 text-secondary">Select your favorite images to proceed in your album...</div>
+    <div class="row">
+      <div class="col-12">
+        <h3 class="fw-bold mb-2 text-white">Album Pictures</h3>
+        <div class="mb-3 text-secondary">Select your favorite images to proceed in your album...</div>
+      </div>
     </div>
-  </div>
-
 
     <div class="row justify-content-start gx-3 gy-4">
-      <div
-        class="col-6 col-md-4 col-lg-3 text-center"
-        (click)="showGallery(folderNames[0])">
+      <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(folderNames[0])">
         <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
         <div class="fw-semibold mt-2" style="font-size: 1.06rem">
-          Traditional Photos <br />           
+          Traditional Photos <br />
           {{ clientDataload.tranditionalAlbumSelection.length }} Selected <br />
         </div>
       </div>
-      <div
-        class="col-6 col-md-4 col-lg-3 text-center"
-        (click)="showGallery(folderNames[1])">
+      <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(folderNames[1])">
         <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
         <div class="fw-semibold mt-2" style="font-size: 1.06rem">
-          Candid Photos <br>
-          {{ clientDataload.candidAlbumSelection.length }}  selected<br />
+          Candid Photos <br />
+          {{ clientDataload.candidAlbumSelection.length }} selected<br />
         </div>
       </div>
     </div>
 
-       <div class="row">
-    <div class="col-12">
-      <h6 class="fw-bold mb-2 text-white">   
-</h6>
-      <div class="mb-3 text-secondary"> You have already selected {{clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length}} /{{clientDataload.noOfPics}} images..</div>
+    <div class="row">
+      <div class="col-12">
+        <h6 class="fw-bold mb-2 text-white"></h6>
+        <div class="mb-3 text-secondary">
+          You have already selected
+          {{ clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length }} /{{
+            clientDataload.noOfPics
+          }}
+          images..
+        </div>
+      </div>
     </div>
-  </div>
-
   </div>
 </section>
 
-<section id="gallerySection" ngif="!loading" style="display: none">
-  <div class="container py-4">
-    <div class="row mb-4">
-      <div class="col-12">
-        <span
-          class="bi bi-arrow-left-circle fs-5 me-2"
-          (click)="gobackFolderSelection()"></span>
-        <h4
-          class="fw-bold d-inline-block align-middle m-0"
-          (click)="gobackFolderSelection()">
-          {{ selectedFolderName }}
-        </h4>
-        <div class="text-secondary mt-2" style="font-size: 1.09rem">
-          {{ selectedFolderName }}
+<section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper">
+  <div class="container-fluid py-4">
+    <div class="row mb-3">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+          <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
+          <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
+            {{ selectedFolderName }}
+          </h4>
         </div>
+        <button class="btn btn-primary btn-sm" (click)="saveSelection()">Save Selection</button>
       </div>
     </div>
-    <div class="row justify-content-start gx-3 gy-4"></div>
-  </div>
 
-  <div class="container-fluid mt-3" *ngIf="!loading">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Selected: {{ selectedItems.length }}</h5>
-      <button class="btn btn-primary btn-sm" (click)="saveSelection()">
-        Save Selection
-      </button>
+    <div class="row mb-2">
+      <div class="col-12">
+        <h5 class="mb-3 text-white">Selected: {{ selectedItems.length }}</h5>
+      </div>
     </div>
 
-    <!-- Grid -->
     <div class="row">
-      <div class="col-6 col-md-3 mb-3" *ngFor="let img of paginatedImages">
-        <div
-          class="card h-100 shadow-sm position-relative"
-          [class.selected-card]="isSelected(img)"
-          (click)="toggleSelection(img)">
-          <!-- Image -->
-          <img [src]="img" class="card-img-top img-fluid" alt="thumbnail" />
+      <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
+        <div class="card custom-img-card" [class.selected-card]="isSelected(img)" (click)="toggleSelection(img)">
+          <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
 
-          <!-- Checkmark overlay if selected -->
           <div class="checkmark-overlay" *ngIf="isSelected(img)">
             <i class="bi bi-check-lg"></i>
           </div>
 
-          <!-- Bottom bar with filename + preview button -->
-          <div
-            class="card-footer d-flex justify-content-between align-items-center small">
-            <span
-              class="text-truncate"
-              [title]="fileNameFromUrl(img)"
-              style="max-width: 70%">
+          <div class="card-footer d-flex justify-content-between align-items-center small">
+            <span class="text-truncate" [title]="fileNameFromUrl(img)" style="max-width: 70%">
               {{ fileNameFromUrl(img) }}
             </span>
             <button
@@ -135,10 +115,7 @@
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center my-3">
-      <button
-        class="btn btn-outline-secondary btn-sm me-2"
-        (click)="changePage(-1)"
-        [disabled]="currentPage === 1">
+      <button class="btn btn-outline-secondary btn-sm me-2" (click)="changePage(-1)" [disabled]="currentPage === 1">
         Prev
       </button>
       <span>Page {{ currentPage }} / {{ totalPages }}</span>
@@ -151,44 +128,41 @@
     </div>
   </div>
 
-  <!-- Fullscreen Preview -->
+  <!-- Preview Section (unchanged if already implemented well) -->
   <div class="preview-overlay" *ngIf="previewImage">
     <div class="preview-content">
       <div class="preview-header">
         <h6 class="mb-0">{{ previewFileName }}</h6>
-        <button
-          class="btn-close"
-          (click)="closePreview()"
-          aria-label="Close"></button>
+        <button class="btn-close" (click)="closePreview()" aria-label="Close"></button>
       </div>
-
       <div class="preview-body">
         <div class="preview-loader" *ngIf="previewLoading">
           <div class="spinner"></div>
           <span class="ms-2">Loading preview…</span>
         </div>
-
         <img
           [src]="previewImage"
           class="preview-img"
           alt="preview"
           (load)="onPreviewImageLoad()"
           [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
-
-        <textarea
-          class="form-control mt-3"
-          [(ngModel)]="previewComment"
-          maxlength="2000"
-          placeholder="Add comment…(2000 characters allowed)"></textarea>
       </div>
+        <div class="container my-3">
+        <div class="row">
+          <div class="col-12">
+            <div class="mb-3">
+              <textarea [(ngModel)]="previewComment" class="form-control" rows="3" placeholder="Add comment... (2000 characters allowed)"></textarea>
+            </div>
+          </div>
+        </div>
 
-      <div class="preview-footer">
-        <button class="btn btn-light" (click)="closePreview()">Close</button>
-        <button class="btn btn-primary" (click)="savePreviewComment()">
-          Save Comment
-        </button>
+        <div class="row">
+          <div class="col-12 d-flex justify-content-end gap-2">
+            <button class="btn btn-light" (click)="closePreview()">Close</button>
+            <button class="btn btn-primary" (click)="savePreviewComment()">Save Comment</button>
+          </div>
+        </div>
       </div>
-    </div>
+      </div>
   </div>
 </section>
-

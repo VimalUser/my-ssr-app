@@ -59,7 +59,7 @@ download() {
         console.log('Data received from API:', data);
         this.notify.success(data.message);
         this.loading = false;
-        alert("download ocmpelted");
+        this.notify.success("Download completed");
       },
       error: (error) => {
         console.error('Error fetching data from API:', error);

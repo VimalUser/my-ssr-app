@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,Inject,PLATFORM_ID } from '@angular/core';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import {
@@ -16,7 +16,8 @@ import {
 } from '@angular/forms';
 import { newclientapi } from '../../services/newclient';
 import { ClientLogin } from '../../model/userlogin';
-import { CommonModule } from '@angular/common';
+import { CommonModule,isPlatformBrowser } from '@angular/common';
+
 
 @Component({
   selector: 'app-logincode',
@@ -39,7 +40,8 @@ export class Logincode {
     private fb: FormBuilder,
     private apiService: newclientapi,
     private router: Router,
-    private clientService: ClientDataService
+    private clientService: ClientDataService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loginForm = this.fb.group({
       passcode: ['', Validators.required],
@@ -47,7 +49,10 @@ export class Logincode {
   }
   user: string | null = null;
   ngOnInit() {
+     if (isPlatformBrowser(this.platformId)) {
     localStorage.removeItem('clientData');
+    console.log("retreivng from storage");
+     }
     this.loading = true;
     this.user = this.route.snapshot.queryParamMap.get('user');
     console.log('Login Code:', this.user);

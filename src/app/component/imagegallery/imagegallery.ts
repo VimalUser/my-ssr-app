@@ -69,10 +69,9 @@ export class Imagegallery implements OnInit {
 
       // gallerySection.style.display = 'block';
       // selectionSection.style.display = 'none'; // Hide selection section
-
+      this.galleryOpen =true;
       if (folderName === this.folderNames[0]) {
         this.isTraditional = true;
-        // this.generateImages();
         this.selectedItems = [...data.tranditionalAlbumSelection];
         console.log('traditional photos', this.selectedItems);
         console.log(
@@ -81,7 +80,6 @@ export class Imagegallery implements OnInit {
         );
       } else {
         this.isTraditional = false;
-        // this.generateImages();
         this.selectedItems = [...data.candidAlbumSelection];
         console.log('candid photos', this.selectedItems);
         console.log(
@@ -91,33 +89,9 @@ export class Imagegallery implements OnInit {
       }
 
       this.getImagesbyPath();
-      // this.generateImages();
-      this.loading = false;
-    
+      this.loading = false;    
   }
-
-  generateImages() {
-    // Generate sample URLs
-
-    let imageSource = [];
-    if (this.isTraditional) {
-      // this.baseUrl = 'https://picsum.photos/seed/';
-      imageSource = this.traditionalImages;
-    } else {
-      // this.baseUrl = 'https://picsum.photos/seed/';
-      imageSource = this.candidImages;
-    }
-    this.images = imageSource;
-
-    // imageSource.forEach((element) => {
-    //   this.images.push(element);
-    // });
-
-    // for (let i = 1; i <= this.imageCount; i++) {
-    //   this.images.push(`${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`);
-    //   this.images.push(`${this.baseUrl}${i}/${this.thumbW}/${this.thumbH}`);
-    // }
-  }
+  
 
   // Set 1: Example URLs of random images (different categories)
   traditionalImages: string[] = [
@@ -234,15 +208,6 @@ export class Imagegallery implements OnInit {
     }
 
     this.galleryOpen =false;
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
-
-    if (gallerySection && selectionSection) {
-
-      gallerySection.style.display = 'none';
-      selectionSection.style.display = 'block'; // Show selection section
-    }
-
     this.selectedFolderName = '';
   }
 
@@ -287,7 +252,7 @@ export class Imagegallery implements OnInit {
   }
 
   public fileNameFromUrl(url: string): string {
-    return url; // treat whole URL as unique
+  return url.split('?')[0].split('/').pop() || '';
   }
 
   isSelected(imgUrl: string): boolean {
@@ -303,7 +268,7 @@ export class Imagegallery implements OnInit {
       this.selectedItems.splice(idx, 1);
     } else {
       this.selectedItems.push({
-        fileName,
+        fileName : this.fileNameFromUrl(imgUrl),
         comment: '',
         type: 'image',
         url: imgUrl,
@@ -340,7 +305,7 @@ export class Imagegallery implements OnInit {
     let item = this.selectedItems.find((x) => x.fileName === fileName);
     if (!item) {
       item = {
-        fileName,
+        fileName: this.fileNameFromUrl(fileName),
         comment: '',
         type: 'image',
         url: this.previewImage || '',
@@ -370,8 +335,8 @@ export class Imagegallery implements OnInit {
   getImagesbyPath() {
     console.log('Fetching data from API...');
     let folderPath = this.isTraditional ? 'traditional' : 'candid';
-
-    this.fetchData(this.clientDataload.clientId.toString() ?? "",folderPath);
+    // this.images = this.traditionalImages;
+     this.fetchData(this.clientDataload.clientId.toString() ?? "",folderPath);
     // if (this.isTraditional) this.images = this.traditionalImages;
     // else this.images = this.candidImages;
   }
@@ -386,6 +351,7 @@ export class Imagegallery implements OnInit {
           // This is where you process the successful response
           console.log('API Response:', data); 
           this.images  = data;
+          // this.images = this.traditionalImages;
           // this.formLatestData = data;
           // this.updateClinetData(this.formLatestData);
           this.loading = false;

@@ -1,27 +1,53 @@
-.frame-img {
-  max-height: 110PX; /* limit image max height */
-  width: auto;
-  height: auto;
-  object-fit: contain; /* preserve aspect ratio without crop */
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 16%);
-  background: #fff;
+/* Wrap everything so the page doesn't expand */
+
+.gallery-wrapper,
+.gallery-grid-scroll,
+.card,
+.card-img-top {
+max-width: 100%;
+  box-sizing: border-box;
 }
 
-/* Cards */
-.card {
+body {
+  overflow-x: hidden;
+}
+
+
+/* Fixed scrollable grid height */
+.gallery-grid-scroll {
+  max-height: calc(100vh - 220px); /* Adjust depending on your header height */
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Card fixed size */
+.custom-img-card {
+  height: 250px;
+  overflow: hidden;
   cursor: pointer;
-  transition: transform .2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s;
 }
-.card:hover {
-  transform: scale(1.02);
+
+.custom-img-card:hover {
+  transform: scale(1.03);
 }
+
+.fixed-img {
+  height: 180px;
+  width: 100%;
+  object-fit: cover;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Highlight selected */
 .selected-card {
   border: 3px solid #0d6efd !important;
-  position: relative;
 }
 
-/* Checkmark overlay */
+/* Overlay checkmark */
 .checkmark-overlay {
   position: absolute;
   top: 8px;
@@ -31,95 +57,84 @@
   border-radius: 50%;
   padding: 4px 6px;
   font-size: 1.2rem;
+  z-index: 10;
 }
 
-/* Eye icon overlay */
-.preview-icon {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  padding: 6px 9px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background 0.2s;
-}
-.preview-icon:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-.preview-icon i {
-  pointer-events: none;
+/* Fix Save Selection button */
+.btn-save-selection {
+  position: fixed;
+  top: 100px;
+  right: 30px;
+  z-index: 1000;
 }
 
-/* Full page loader */
-.page-loader {
+/* Preview Styles */
+.preview-overlay {
   position: fixed; inset: 0;
-  background: rgba(255,255,255,.85);
+  background: rgba(0, 0, 0, 0.6);
   display: flex; align-items: center; justify-content: center;
-  z-index: 2000; gap: .75rem; font-size: 1rem;
+  z-index: 9999;
+  padding: 20px;
 }
 
-/* Spinner */
+.preview-content {
+  width: 100%; max-width: 900px; max-height: 95vh;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-header, .preview-footer {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-body {
+  padding: 14px;
+  overflow-y: auto;
+  max-height: 60vh; /* Match image max height */
+  display: flex;
+  justify-content: center; /* Center image horizontally */
+  align-items: center;     /* Center image vertically */
+}
+
+.preview-img {
+  width: 100%;       /* Make image take full width of container */
+  height: auto;      /* Maintain aspect ratio */
+  max-height: 60vh;  /* Keep max height to viewport */
+  object-fit: contain; /* Ensure whole image fits inside without cropping */
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+  
+
+.preview-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(240,240,240,.5);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  font-size: 1rem;
+}
+
 .spinner {
-  width: 44px; height: 44px;
+  width: 44px;
+  height: 44px;
   border: 5px solid #ddd;
   border-top: 5px solid #0d6efd;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Preview overlay */
-.preview-overlay {
-  position: fixed; inset: 0; padding: 12px;
-  background: rgba(0,0,0,.6);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 3000;
-}
-
-/* Glassy modal */
-.preview-content {
-  width: 100%; max-width: 900px; max-height: 95vh;
-  display: flex; flex-direction: column; overflow: hidden;
-
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.28);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.4);
-}
-
-.preview-header, .preview-footer {
-  padding: 10px 14px; 
-  border-bottom: 1px solid rgba(255,255,255,.25);
-}
-.preview-footer {
-  border-top: 1px solid rgba(255,255,255,.25);
-  border-bottom: none;
-  display: flex; justify-content: flex-end; gap: 8px;
-}
-.preview-body { padding: 14px; position: relative; overflow-y: auto; }
-
-.preview-img {
-  max-width: 100%; max-height: 60vh;
-  display: block; margin: 0 auto; border-radius: 10px;
-}
-
-/* Loader inside preview */
-.preview-loader {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(240,240,240,.45);
-  z-index: 2; gap: .5rem;
-}
-
-/* Mobile */
-@media (max-width: 576px) {
-  .col-6 { flex: 0 0 50%; max-width: 50%; }
-  .preview-content { border-radius: 10px; max-width: 100%; max-height: 100vh; }
-  .preview-img { max-height: 50vh; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-
 body, .sidebar, .main-content, .card, .btn, ul, li, h1, h2, h3, h4, h5, h6, p, span, input, label {
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
 }
