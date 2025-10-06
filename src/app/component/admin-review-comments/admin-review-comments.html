@@ -1,1 +1,113 @@
-<p>admin-review-comments works!</p>
+<div class="container mt-5">
+  <h2 class="mb-4 fw-bold card-style p-3">Comments Sections
+    <h5>{{ this.pageLatestAdminData.clientName }}</h5>
+
+    
+  </h2>
+     
+  <div class="accordion card-style p-3" id="commentsAccordion">
+    <!-- Section 1 -->
+    <div class="accordion-item mb-3 card-style">
+      <h2 class="accordion-header" id="headingOne">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseOne"
+          aria-expanded="false"
+          aria-controls="collapseOne">
+          Traditional Photos Comments
+        </button>
+      </h2>
+      <div
+        id="collapseOne"
+        class="accordion-collapse collapse"
+        aria-labelledby="headingOne"
+        data-bs-parent="#commentsAccordion">
+        <div class="accordion-body">
+          <div class="row">
+            <div class="col-md-4" *ngFor="let item of pageLatestAdminData.tranditionalAlbumSelection">
+              <div class="comment-card p-3" *ngIf="item.comment">
+                <span class="comment-filename">{{ item.fileName }}</span>
+                <hr class="my-1" />
+                <span class="comment-text">{{ item.comment }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Section 2 -->
+    <div class="accordion-item mb-3 card-style">
+      <h2 class="accordion-header" id="headingTwo">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseTwo"
+          aria-expanded="false"
+          aria-controls="collapseTwo">
+          Candid Photos Comments
+        </button>
+      </h2>
+      <div
+        id="collapseTwo"
+        class="accordion-collapse collapse"
+        aria-labelledby="headingTwo"
+        data-bs-parent="#commentsAccordion">
+        <div class="accordion-body">
+           <div class="row">
+            <div class="col-md-4" *ngFor="let item of pageLatestAdminData.candidAlbumSelection">
+              <div class="comment-card p-3" *ngIf="item.comment">
+                <span class="comment-filename">{{ item.fileName }}</span>
+                <hr class="my-1" />
+                <span class="comment-text">{{ item.comment }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Section 3 -->
+    <div class="accordion-item mb-3 card-style">
+      <h2 class="accordion-header" id="headingThree">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseThree"
+          aria-expanded="false"
+          aria-controls="collapseThree">
+          Frame images Comments
+        </button>
+      </h2>
+      <div
+        id="collapseThree"
+        class="accordion-collapse collapse"
+        aria-labelledby="headingThree"
+        data-bs-parent="#commentsAccordion">
+        <div class="accordion-body">
+            <div class="row">
+            <div class="col-md-4" *ngFor="let item of pageLatestAdminData.portraitFrameSelection">
+              <div class="comment-card p-3" *ngIf="item.comment">
+                <span class="comment-filename"> Portrait Frame selection - {{item.fileName }}</span>
+                <hr class="my-1" />
+                <span class="comment-text">{{item.comment }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4" *ngFor="let item of pageLatestAdminData.landscapeFrameSelection">
+              <div class="comment-card p-3" *ngIf="item.comment">
+                <span class="comment-filename"> Landscape Frame selection - {{item.fileName }}</span>
+                <hr class="my-1" />
+                <span class="comment-text">{{item.comment }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

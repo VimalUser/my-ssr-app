@@ -1,0 +1,31 @@
+ 
+        body {
+            background: #fff8f1;
+        }
+        .card-style {
+            border-radius: 1rem;
+            box-shadow: 0 4px 16px rgba(204, 173, 103, 0.13), 0 1.5px 8px rgba(231, 133, 23, 0.09);
+            border: 1px solid #fae1bc;
+            background: #fffdf8;
+        }
+        .comment-card {
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(204, 173, 103, 0.11);
+            border: 1px solid #eee2ce;
+            background: #fbf5e7;
+            margin: 8px 0;
+            min-width: 160px;
+            min-height: 100px;
+        }
+        .comment-filename {
+            font-weight: 500;
+            color: #8d6b31;
+        }
+        .comment-text {
+            color: #444;
+            font-size: 0.97rem;
+        }
+        .accordion-button:not(.collapsed) {
+            color: #f27807;
+            background-color: #fce6c9;
+        }
