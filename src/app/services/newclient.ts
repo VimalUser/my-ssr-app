@@ -34,7 +34,7 @@ export class newclientapi {
     var finalUrl = this.authUrl + 'clientLogin';
     return this.http.post<{ accessToken: string }>(
       `${finalUrl}`, data,
-      { withCredentials: true } // send HttpOnly cookie automatically
+      // send HttpOnly cookie automatically
     ).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.accessToken);
@@ -46,7 +46,7 @@ export class newclientapi {
     var finalUrl = this.authUrl + 'login';
     return this.http.post<{ accessToken: string }>(
       `${finalUrl}`, data,
-      { withCredentials: true } // send HttpOnly cookie automatically
+      // send HttpOnly cookie automatically
     ).pipe(
       tap(response => {
         localStorage.setItem('accessToken', response.accessToken);
@@ -58,7 +58,7 @@ export class newclientapi {
     return this.http.post<{ message: string }>(
       'https://api.example.com/register',
       { username, email, password },
-      { withCredentials: true } // in case backend sets cookies
+      // in case backend sets cookies
     );
   }
 

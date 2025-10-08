@@ -94,14 +94,16 @@ export class ClientDataService {
   }
 
   restoreUserFromStorage() {
-    const stored = localStorage.getItem('loggedInUser');
-    if (stored) {
-      try {
-        const user: LoggedInUser = JSON.parse(stored);
-        this.currentUserSubject.next(user);
-      } catch (e) {
-        console.error('Failed to parse stored user', e);
-        localStorage.removeItem('loggedInUser');
+    if (isPlatformBrowser(this.platformId)) {
+      const stored = localStorage.getItem('loggedInUser');
+      if (stored) {
+        try {
+          const user: LoggedInUser = JSON.parse(stored);
+          this.currentUserSubject.next(user);
+        } catch (e) {
+          console.error('Failed to parse stored user', e);
+          localStorage.removeItem('loggedInUser');
+        }
       }
     }
   }
