@@ -20,7 +20,7 @@ import { AdminReviewComments } from './component/admin-review-comments/admin-rev
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
-  { path: '', redirectTo: 'adminlogin', pathMatch: 'full' },
+  { path: '', component: Adminloginpage },
   { path: 'logincode', component: Logincode },
   // { path: 'userhome', component: Userlandingpage },
   { path: 'adminlogin', component: Adminloginpage },

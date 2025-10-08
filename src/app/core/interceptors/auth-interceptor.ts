@@ -35,8 +35,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
       if (err.status === 401 && !isRefresh && !isLogin) {
         return http.post<{ accessToken: string }>(
           API_BASE_URL + 'refresh',
-          {},
-          { withCredentials: true }
+          {}
         ).pipe(
           switchMap(res => {
             localStorage.setItem('accessToken', res.accessToken);
