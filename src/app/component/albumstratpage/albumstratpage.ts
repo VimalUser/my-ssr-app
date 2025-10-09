@@ -33,6 +33,7 @@ export class Albumstratpage implements OnInit {
     // this.clientDataService.triggerResetMenu();
     this.clientDataService.restoreUserFromStorage();
     this.clientDataService.resetClientDataOnly();
+     this.clientDataService.triggerNextStep(0);
 
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();

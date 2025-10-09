@@ -39,13 +39,13 @@ export class Userlandingpage implements OnInit {
      this.ClientDataService.prevStep$.subscribe((menuItem: number) =>
       this.prevStep(menuItem)
     );
+    
     // this.ClientDataService.prevStep$.subscribe(() => this.prevStep(''));
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
-        if (event.url === '/userhome/startpage') {
-          
+        if (event.url === '/userhome/startpage') {          
           this.ClientDataService.resetClientDataOnly();
         }
       });
