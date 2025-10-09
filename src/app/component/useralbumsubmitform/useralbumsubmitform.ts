@@ -43,7 +43,7 @@ export class Useralbumsubmitform implements OnInit {
    const data: clientData = this.clientDataService.getData();
     const updated: clientData = {
       ...data,
-      status: 'completed',
+      status: 'Completed',
     };
 
     this.clientDataService.updateData(updated);

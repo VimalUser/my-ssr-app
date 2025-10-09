@@ -106,10 +106,10 @@
               <td>
 
                 <span class="badge-status" [ngClass]="{
-                    'completed': client.progress === 'Completed',
-                    'inprogress': client.progress === 'Inprogress',
-                    'yettostart': client.progress === 'Yet to Start'
-                  }">
+                        'completed': client.progress.toLowerCase() === 'completed',
+                        'inprogress': client.progress.toLowerCase() === 'inprogress',
+                        'yettostart': client.progress.toLowerCase() === 'yet to start'
+                      }">
                   {{ client.progress }}
                 </span>
 
