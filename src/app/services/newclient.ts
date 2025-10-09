@@ -111,13 +111,15 @@ export class newclientapi {
     return this.http.get(`${this.blobUrl}getClientFolderCount?clientId=${clientId}`);
   }
 
-  // download pictures
-  downloadpictures1(clientId: number): Observable<any> {
-    return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`);
+  downloadpictures1(clientId: number): Observable<Blob> {
+    return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`, {
+      responseType: 'blob' // <-- Must be 'blob' for binary file
+    });
   }
 
+
   getClientManagementData(pageNumber: number, pageSize: number): Observable<ClientManagement> {
-    return this.http.get<ClientManagement>(this.clientAlbumUrl 
+    return this.http.get<ClientManagement>(this.clientAlbumUrl
       + 'getClientManagementData' + `?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }
 

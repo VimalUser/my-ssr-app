@@ -1,29 +1,18 @@
-<header
-  class="d-flex align-items-center border-bottom p-2 px-3 sticky-top" 
-  style="background-color: #f6ecdb; z-index: 1020;"> 
+<header class="d-flex align-items-center border-bottom p-2 px-3 sticky-top"
+  style="background-color: #f6ecdb; z-index: 1020;">
   <div class="container-fluid">
     <div class="row w-100 align-items-center">
       <div class="col-8 col-lg-3 d-flex align-items-center">
-        <img
-          src="assets/logo.png"
-          (click)="homePage()"
-          alt="Candy Express Photography"
-          class="img-fluid"
-          style="cursor: pointer; max-height: 40px;" /> 
+        <img src="assets/logo.png" (click)="homePage()" alt="Candy Express Photography" class="img-fluid"
+          style="cursor: pointer; max-height: 40px;" />
       </div>
 
       <div class="col-lg-7 d-none d-lg-block">
-        </div>
-      
+      </div>
+
       <div class="col-4 col-lg-2 d-flex justify-content-end d-lg-none">
-        <button
-          class="btn btn-outline-primary"
-          type="button"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#sidebarMenu"
-          aria-controls="sidebarMenu"
-          aria-expanded="false"
-          aria-label="Toggle navigation">
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu"
+          aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
           &#9776;
         </button>
       </div>
@@ -32,30 +21,21 @@
 </header>
 
 <div class="d-flex flex-grow-1" style="min-height: 100vh;">
-  
-  <div
-    class="offcanvas offcanvas-start sidebar-custom d-lg-block flex-shrink-0" 
-    tabindex="-1"
-    id="sidebarMenu"
-    aria-labelledby="sidebarMenuLabel"
-  >
-    <div class="offcanvas-header border-bottom d-lg-none"> <h5 class="offcanvas-title text-white" id="sidebarMenuLabel">Menu</h5>
-      <button
-        type="button"
-        class="btn-close btn-close-white"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button>
+
+  <div class="offcanvas offcanvas-start sidebar-custom d-lg-block flex-shrink-0" tabindex="-1" id="sidebarMenu"
+    aria-labelledby="sidebarMenuLabel">
+    <div class="offcanvas-header border-bottom d-lg-none">
+      <h5 class="offcanvas-title text-white" id="sidebarMenuLabel">Menu</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    
-    <div class="offcanvas-body p-3 d-flex flex-column h-100"> 
-      <button style="text-align: left;"
-        class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3"
+
+    <div class="offcanvas-body p-3 d-flex flex-column h-100">
+      <button style="text-align: left;" class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3"
         (click)="createnew()">
         + Create new client
       </button>
 
-      <ul class="nav nav-pills flex-column mb-auto"> 
+      <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item mb-2">
           <a
             [routerLink]="['/admindashboard']"
@@ -65,26 +45,31 @@
             <i class="bi bi-house-door me-2"></i> Home - Dashboard
           </a>
         </li>
-        </ul>
+      </ul>
 
-      <div
-        class="sidebar-footer mt-auto pt-3 border-top d-flex align-items-center text-white"
-      >
+      <!-- <div class="sidebar-footer mt-auto pt-3 border-top d-flex align-items-center text-white">
         <span>
           {{currentUserName$ | async}}
           <br />
-          <button
-            class="btn btn-warning fw-bold mt-2"
-            style="border-radius: 8px"
-            (click)="logout()">
+          <button class="btn btn-warning fw-bold mt-2" style="border-radius: 8px" (click)="logout()">
             Logout
           </button>
         </span>
+      </div> -->
+      <div class="sidebar-footer mt-auto pt-3 border-top d-flex flex-column text-white">
+        <div class="d-flex align-items-center mb-2">
+          <i class="bi bi-person-circle me-3 fs-3"></i>
+          <span class="fw-bold">{{currentUserName$ | async}}</span>
+        </div>
+
+        <button class="btn btn-warning fw-bold align-self-start" style="border-radius: 8px" (click)="logout()">
+          <i class="bi bi-box-arrow-right me-1"></i> Logout
+        </button>
       </div>
     </div>
   </div>
 
   <main class="col p-4 overflow-auto">
     <router-outlet></router-outlet>
-    </main>
+  </main>
 </div>

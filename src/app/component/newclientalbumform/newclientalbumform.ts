@@ -77,6 +77,7 @@ export class Newclientalbumform implements OnInit {
   enableEdit() {
     this.showAccessLink = true;
     this.isDisableAccessLink = true;
+    this.clientForm.get('orderNumber')?.disable(); // disable while editing
     this.clientForm.get('accessLink')?.disable(); // disable while editing
     this.clientForm.get('passcode')?.disable(); // disable while editing
   }
