@@ -39,7 +39,6 @@ export class Userlandingpage implements OnInit {
      this.ClientDataService.prevStep$.subscribe((menuItem: number) =>
       this.prevStep(menuItem)
     );
-    
     // this.ClientDataService.prevStep$.subscribe(() => this.prevStep(''));
 
     this.router.events
