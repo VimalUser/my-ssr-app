@@ -76,7 +76,7 @@ export class Adminloginpage {
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
         this.loading = false;
-        this.notificationService.error(error.error || 'Login failed');
+        this.notificationService.error(error.error.message || 'Login failed');
       },
       complete: () => {
         // Optional: Executed when the Observable completes
