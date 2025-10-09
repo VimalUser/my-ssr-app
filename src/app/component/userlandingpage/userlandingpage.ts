@@ -44,8 +44,7 @@ export class Userlandingpage implements OnInit {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
-        if (event.url === '/userhome/startpage') {
-          
+        if (event.url === '/userhome/startpage') {          
           this.ClientDataService.resetClientDataOnly();
         }
       });
