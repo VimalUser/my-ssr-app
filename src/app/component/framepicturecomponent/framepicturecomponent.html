@@ -10,12 +10,10 @@
           <i class="bi bi-arrow-left"></i>
         </button>
         <div>
-          <a
-            class="fw-bold text-orange ms-1 cursor-pointer"
-            style="font-size: 1.08rem"
-            (click)="nextStep()"
-            >Next</a>
-          
+           <button class="btn btn-success rounded-pill fw-bold px-4 me-2"
+          (click)="nextStep()">
+          Next  <i class="bi bi-arrow-right-circle"></i>
+        </button>                
         </div>
       </div>
     </div>
@@ -37,15 +35,14 @@
             <img
               src="assets/frame.png"
               alt="Portrait Frame"
-              class="frame-img"
+              class="frame-img" (click)="showGallery(true)"
               style="max-width: 130px; height: auto" />
           </div>
           <div class="fw-semibold align-self-center">
-            Portrait Frame<br />
-            <a (click)="showGallery(true)">Select image</a> <br />
-             <p>
-              {{pagelatestData.portraitFrameSelection.length}} portrait frame selected
-            </p>
+            <p>Portrait Frame</p>
+           <button class="btn btn-info" (click)="showGallery(true)"> Select image</button><br> 
+            <!-- <a (click)="showGallery(true)">Select image</a> <br /> -->             
+              {{pagelatestData.portraitFrameSelection.length}} selected            
             <!-- <section *ngIf="hasPortraitType">
               <button
                 class="btn btn-sm btn-outline-secondary"
@@ -71,15 +68,15 @@
             <img
               src="assets/frame.png"
               alt="Landscape Frame"
-              class="frame-img"
+              class="frame-img" (click)="showGallery(true)"
               style="max-width: 130px; height: auto" />
           </div>
           <div class="fw-semibold align-self-center">
-            Landscape Frame<br />
-            <a (click)="showGallery(false)">Select image</a> <br />
-              <p>
-              {{pagelatestData.landscapeFrameSelection.length}} Landscape frame selected
-            </p>
+            <p>Landscape Frame</p>
+           <button class="btn btn-info" (click)="showGallery(false)"> Select image</button><br>
+              
+             <span> {{pagelatestData.landscapeFrameSelection.length}} selected</span>
+            
 
             <!-- <section *ngIf="hasLandscapeType">
               <button

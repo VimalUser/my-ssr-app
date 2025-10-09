@@ -22,13 +22,14 @@ export class CoverpcitureSelection {
   //folder selection logic
   galleryOpen = false;
 
-  showGallery(isPortait: boolean) {
+  showGallery() {
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
     this.selectedItems = [];
-   this.galleryOpen =true;
-
+    this.galleryOpen = true;
     this.selectedItems = [...this.pagelatestData.coverSelection];
+     if (this.images.length == 0)
+      this.fetchData(this.pagelatestData.clientId.toString());
   }
 
   gobackFolderSelection() {
@@ -39,7 +40,7 @@ export class CoverpcitureSelection {
       // User pressed Cancel, stop execution here
       return;
     }
-    this.galleryOpen =false;    
+    this.galleryOpen = false;
   }
 
   prevStep() {
@@ -69,30 +70,20 @@ export class CoverpcitureSelection {
   previewComment = '';
 
   pagelatestData: clientData = new clientData();
+ apiImageResponse: any;
 
   ngOnInit(): void {
-      this.clientDataService.triggerNextStep(4);
-
+    this.clientDataService.triggerNextStep(4);
     this.loading = true;
     const data = this.clientDataService.getData();
-    this.pagelatestData = data;
-    const selectedImagesSource = this.selectedImagesSource();
-    this.images = this.selectedImagesSource();
+    this.pagelatestData = data; 
     this.loading = false;
-
     console.log('Initial Client Data in cover source:', this.images);
   }
-
-  selectedImagesSource() {
-    const mergedArray: AlbumSelectionItem[] =
-      this.pagelatestData.tranditionalAlbumSelection.concat(
-        this.pagelatestData.candidAlbumSelection
-      );
-
-    const frameimagesSource: string[] = mergedArray.map(
-      (item: AlbumSelectionItem) => item.url
-    );
-    return frameimagesSource;
+ 
+  getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {
+    this.apiImageResponse = data;
+    this.images = data ? data.map((item) => item.imageUrl) : [];
   }
 
   get totalPages(): number {
@@ -109,8 +100,13 @@ export class CoverpcitureSelection {
     if (next >= 1 && next <= this.totalPages) this.currentPage = next;
   }
 
-  public fileNameFromUrl(url: string): string {
-    return url.split('?')[0].split('/').pop() || '';
+  fileNameFromUrl(url: string): string {
+    const filename = url.split('?')[0].split('/').pop() || '';
+    return decodeURIComponent(filename);
+  }
+
+    fileTypeFromUrl(url: string): string {
+    return url.split('?')[0].split('/').slice(-2, -1)[0] || '';
   }
 
   isSelected(imgUrl: string): boolean {
@@ -131,9 +127,9 @@ export class CoverpcitureSelection {
       }
 
       this.selectedItems.push({
-        fileName:fileName,
+        fileName: fileName,
         comment: '',
-        type: 'cover',
+        type: this.fileTypeFromUrl(imgUrl)+'_cover',
         url: imgUrl,
       });
     }
@@ -141,7 +137,6 @@ export class CoverpcitureSelection {
     console.log('selected photos', this.selectedItems);
   }
 
-  
   openPreview(imgUrl: string) {
     this.previewImage = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
@@ -161,7 +156,26 @@ export class CoverpcitureSelection {
     this.previewFileName = '';
     this.previewComment = '';
     this.previewLoading = false;
-  } 
+  }
+
+  fetchData(clientId: string): void {
+    this.loading = true;
+    console.log('Fetching data from API...');
+    this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
+      next: (data) => {
+        // This is where you process the successful response
+        console.log('API Response:', data);
+        this.getImageUrls(data);
+        this.loading = false;
+      },
+      error: (error) => {
+        // This is executed if the request fails (e.g., 404, 500)
+        console.log('There was an error!', error);
+        this.loading = false;
+      },
+      complete: () => {},
+    });
+  }
 
   savePreviewComment() {
     const fileName = this.previewFileName;
@@ -169,9 +183,9 @@ export class CoverpcitureSelection {
 
     if (!item) {
       item = {
-        fileName:this.fileNameFromUrl(fileName),
+        fileName: this.fileNameFromUrl(fileName),
         comment: '',
-        type: 'cover',
+        type: this.fileTypeFromUrl(fileName)+'_cover',
         url: this.previewImage || '',
       };
 
@@ -206,7 +220,7 @@ export class CoverpcitureSelection {
     const updated: clientData = {
       ...existingData,
       coverSelection: [...this.selectedItems],
-      status : 'Inprogress'
+      status: 'Inprogress',
     };
 
     this.clientDataService.updateData(updated);
@@ -216,18 +230,19 @@ export class CoverpcitureSelection {
   }
 
   apiCalltoSave(updateData: clientData) {
-    this.loading =true;
+    this.loading = true;
     console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
 
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);
-         this.loading =false;
+        this.loading = false;
         this.notify.success('Your Selection/unselection saved successfully!');
+        this.galleryOpen =false;
       },
       error: (error) => {
         console.log('Save Error:', error);
-        this.loading =false;
+        this.loading = false;
         this.notify.error('Failed to save your selection!');
       },
     });

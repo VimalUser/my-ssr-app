@@ -251,8 +251,9 @@ export class Imagegallery implements OnInit {
     if (next >= 1 && next <= this.totalPages) this.currentPage = next;
   }
 
-  public fileNameFromUrl(url: string): string {
-  return url.split('?')[0].split('/').pop() || '';
+    fileNameFromUrl(url: string): string {
+    const filename = url.split('?')[0].split('/').pop() || ''
+   return decodeURIComponent(filename);    
   }
 
   isSelected(imgUrl: string): boolean {
@@ -397,6 +398,8 @@ export class Imagegallery implements OnInit {
         console.log('Save Response:', response);
         this.loading = false;
         this.notify.success('Your Selection/unselection saved successfully!');
+         this.galleryOpen =false;
+         this.selectedFolderName = '';
       },
       error: (error) => {
         console.log('Save Error:', error);

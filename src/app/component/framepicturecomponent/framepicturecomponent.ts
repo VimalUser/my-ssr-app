@@ -24,21 +24,22 @@ export class Framepicturecomponent {
   selectedFolderName: string = '';
   allowedSelectedPhotos = 2; // Set your limit here
   selectedImageUrl: string | null = null;
-  isPortait: boolean = true;
+  isPortrait: boolean = true;
   showGallerySection = true;
 
-  showGallery(isPortait: boolean) {   
+  showGallery(isPortrait: boolean) {
     this.selectedItems = [];
+    this.isPortrait = isPortrait;
+    this.selectedFolderName = isPortrait ? 'Portrait Frame' : 'Landscape Frame';
+    this.galleryOpen = true;
 
-    this.isPortait = isPortait;
-    this.selectedFolderName = isPortait ? 'Portrait Frame' : 'Landscape Frame';
-    this.galleryOpen= true;
-    
-    if (isPortait) {
+    if (isPortrait) {
       this.selectedItems = [...this.pagelatestData.portraitFrameSelection];
     } else {
       this.selectedItems = [...this.pagelatestData.landscapeFrameSelection];
     }
+    if (this.images.length == 0)
+      this.fetchData(this.pagelatestData.clientId.toString());
   }
 
   gobackFolderSelection() {
@@ -46,7 +47,6 @@ export class Framepicturecomponent {
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
-      // User pressed Cancel, stop execution here
       return;
     }
 
@@ -64,7 +64,9 @@ export class Framepicturecomponent {
         this.pagelatestData.landscapeFrameSelection.length <
       2
     ) {
-      this.notify.error('Please select 1 picture for portrait/landsape frame!');
+      this.notify.error(
+        'Please select 1 picture for portrait/landscape frame!'
+      );
       return;
     }
     this.clientDataService.triggerNextStep(4);
@@ -88,29 +90,36 @@ export class Framepicturecomponent {
   galleryOpen = false;
   pagelatestData: clientData = new clientData();
 
+  apiImageResponse: any;
+
+  getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {
+    this.apiImageResponse = data;
+    this.images = data ? data.map((item) => item.imageUrl) : [];
+  }
+
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(3);
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
-    const selectedImagesSource = this.selectedImagesSource();
-    this.images = this.selectedImagesSource();
+    // const selectedImagesSource = this.selectedImagesSource();
+    // this.images = this.selectedImagesSource();
     console.log('image source - 2', this.images);
     this.loading = false;
 
     console.log('Initial Client Data in frameselectin source:', this.images);
   }
 
-  selectedImagesSource() {
-    const mergedArray: AlbumSelectionItem[] =
-      this.pagelatestData.tranditionalAlbumSelection.concat(
-        this.pagelatestData.candidAlbumSelection
-      );
+  // selectedImagesSource() {
+  //   const mergedArray: AlbumSelectionItem[] =
+  //     this.pagelatestData.tranditionalAlbumSelection.concat(
+  //       this.pagelatestData.candidAlbumSelection
+  //     );
 
-    const frameimagesSource: string[] = mergedArray.map(
-      (item: AlbumSelectionItem) => item.url
-    );
-    return frameimagesSource;
-  }
+  //   const frameimagesSource: string[] = mergedArray.map(
+  //     (item: AlbumSelectionItem) => item.url
+  //   );
+  //   return frameimagesSource;
+  // }
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.images.length / this.pageSize));
@@ -126,8 +135,13 @@ export class Framepicturecomponent {
     if (next >= 1 && next <= this.totalPages) this.currentPage = next;
   }
 
-  public fileNameFromUrl(url: string): string {
-    return url.split('?')[0].split('/').pop() || '';
+  fileNameFromUrl(url: string): string {
+    const filename = url.split('?')[0].split('/').pop() || '';
+    return decodeURIComponent(filename);
+  }
+
+  fileTypeFromUrl(url: string): string {
+    return url.split('?')[0].split('/').slice(-2, -1)[0] || '';
   }
 
   isSelected(imgUrl: string): boolean {
@@ -150,7 +164,9 @@ export class Framepicturecomponent {
       this.selectedItems.push({
         fileName: fileName,
         comment: '',
-        type: this.isPortait ? 'portrait' : 'landscape',
+        type: this.isPortrait
+          ? this.fileTypeFromUrl(imgUrl) + '_portrait'
+          : this.fileTypeFromUrl(imgUrl) + '_landscape',
         url: imgUrl,
       });
     }
@@ -178,7 +194,7 @@ export class Framepicturecomponent {
     this.previewLoading = true;
   }
 
-   onPreviewImageLoad() {
+  onPreviewImageLoad() {
     this.previewLoading = false;
   }
 
@@ -201,7 +217,9 @@ export class Framepicturecomponent {
       item = {
         fileName: this.fileNameFromUrl(fileName),
         comment: '',
-        type: this.isPortait ? 'portrait' : 'landscape',
+        type: this.isPortrait
+          ? this.fileTypeFromUrl(fileName) + '+portrait'
+          : 'landscape',
         url: this.previewImage || '',
       };
 
@@ -242,6 +260,25 @@ export class Framepicturecomponent {
     return Array.from(map.values());
   }
 
+  fetchData(clientId: string): void {
+    this.loading = true;
+    console.log('Fetching data from API...');
+    this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
+      next: (data) => {
+        // This is where you process the successful response
+        console.log('API Response:', data);
+        this.getImageUrls(data);
+        this.loading = false;
+      },
+      error: (error) => {
+        // This is executed if the request fails (e.g., 404, 500)
+        console.log('There was an error!', error);
+        this.loading = false;
+      },
+      complete: () => {},
+    });
+  }
+
   saveSelection() {
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
@@ -249,7 +286,7 @@ export class Framepicturecomponent {
   updateModelWithLatestData() {
     const existingData: clientData = this.clientDataService.getData();
 
-    const propertyToUpdate = this.isPortait
+    const propertyToUpdate = this.isPortrait
       ? 'portraitFrameSelection'
       : 'landscapeFrameSelection';
 
@@ -272,6 +309,8 @@ export class Framepicturecomponent {
       next: (response) => {
         console.log('Save Response:', response);
         this.notify.success('Your Selection/unselection saved successfully!');
+        this.galleryOpen =false;
+        this.selectedFolderName = '';
       },
       error: (error) => {
         console.log('Save Error:', error);

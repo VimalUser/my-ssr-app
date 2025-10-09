@@ -10,8 +10,8 @@
 <body  class="background" [style.background-image]="'url(' + bgImage + ')'">
   <form [formGroup]="loginForm" (ngSubmit)="validateClientLogin()">
     <div class="card">
-      <h2>Welcome {{this.userInfo?.clientName }}</h2>
-      <label class="label" for="code">Please enter you code to proceed</label>
+      <h2 class="fw-bold">Welcome {{this.userInfo?.clientName }}</h2>
+      <label class="label fw-bold" for="code">Please enter you code to proceed</label>
       <input class="code-input" id="code" formControlName="passcode" type="text" maxlength="6" autocomplete="off"
         placeholder="- - - - - -" />
       <button class="submit-btn">Submit</button>

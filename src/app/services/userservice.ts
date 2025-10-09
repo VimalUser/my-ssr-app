@@ -35,6 +35,13 @@ export class userserviceapi {
     );
   }
 
+  getSelectedImagesbyClientId(clientId: string): Observable<any> {
+    var finalUrl = this.blobUrl + 'get-files-from-db-with-sas';
+    return this.http.get(
+      `${finalUrl}?clientId=${clientId}`
+    );
+  }
+
    getClientAlbumSelectionDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'getClientInfoWithImages';
     return this.http.get(`${finalUrl}?clientId=${id}`);

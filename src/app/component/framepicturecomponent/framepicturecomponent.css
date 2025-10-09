@@ -11,7 +11,14 @@ max-width: 100%;
 body {
   overflow-x: hidden;
 }
-
+.frame-img:hover{
+  cursor:pointer
+}
+.btn-info{
+border-radius: 5px;
+padding:0px 4px 2px 4px;
+background-color: white;
+}
 
 /* Fixed scrollable grid height */
 .gallery-grid-scroll {

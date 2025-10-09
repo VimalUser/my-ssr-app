@@ -128,7 +128,7 @@ export class Uploadalbumpics implements OnInit {
       this.apiService.uploadImages(formData, category, +(this.clientId)).subscribe({
         next: (response: any) => {
           this.loading = false;
-          this.notify.success(`Upload successful for ${category}:`);
+          this.notify.success(`Upload successful for ${category}`);
           console.log(`Upload successful for ${category}:`, response);
           // Clear the selection ONLY after a successful upload
           this.clearSelection(category);

@@ -51,3 +51,7 @@
   width: 80px;   /* increase size */
   height: 80px;  /* increase size */
 }
+
+a:hover {
+  cursor: pointer;
+}
