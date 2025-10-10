@@ -52,7 +52,7 @@
         <!-- Send WhatsApp Message -->
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
-                (click)="sendWhatsAppMessage()"
+                [routerLink]="['/admindashboard/sendCredentials', clientId]"
                 style="animation-delay: 0.4s; cursor:pointer;">
                 <i class="bi bi-whatsapp icon-large text-success mb-3"></i>
                 <div class="card-body p-0">

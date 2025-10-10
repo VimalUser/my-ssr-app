@@ -4,7 +4,7 @@ export const environment = {
   authUrl: 'https://apicandyimagesdev.azurewebsites.net/api/auth/',
   clientAlbumUrl: 'https://apicandyimagesdev.azurewebsites.net/Api/ClientAlbum/',
   blobUrl: 'https://apicandyimagesdev.azurewebsites.net/Api/Blob/',
-  allowedImageTypes : ['jpg', 'jpeg', 'png', 'gif']
+  allowedImageTypes: ['.jpg', '.jpeg', '.png', '.gif']
 };
 
 // export const environment = {
@@ -13,6 +13,6 @@ export const environment = {
 //   authUrl: 'https://localhost:44313/Api/Auth/',
 //   clientAlbumUrl: 'https://localhost:44313/Api/ClientAlbum/',
 //   blobUrl: 'https://localhost:44313/Api/Blob/',
-//   allowedImageTypes : ['jpg', 'jpeg', 'png', 'gif']
+//   allowedImageTypes: ['.jpg', '.jpeg', '.png', '.gif']
 // };
 

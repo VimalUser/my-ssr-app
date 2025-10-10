@@ -45,6 +45,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
+    path: 'admindashboard/sendCredentials/:id',
+    renderMode: RenderMode.Client
+  },
+  {
     path: 'admindashboard/adminactions/:id',
     renderMode: RenderMode.Client
   },
