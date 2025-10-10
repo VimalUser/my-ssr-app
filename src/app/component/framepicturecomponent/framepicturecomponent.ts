@@ -146,12 +146,15 @@ export class Framepicturecomponent {
 
   isSelected(imgUrl: string): boolean {
     const fileName = this.fileNameFromUrl(imgUrl);
-    return this.selectedItems.some((x) => x.fileName === fileName);
+    return this.selectedItems.some((x) => x.fileName === fileName
+     && x.type === (this.isPortrait ? this.fileTypeFromUrl(imgUrl) + '_portrait' : this.fileTypeFromUrl(imgUrl) + '_landscape'));
   }
 
   toggleSelection(imgUrl: string) {
     const fileName = this.fileNameFromUrl(imgUrl);
-    const idx = this.selectedItems.findIndex((x) => x.fileName === fileName);
+    const idx = this.selectedItems.findIndex((x) => x.fileName === fileName
+    && x.type === (this.isPortrait ? this.fileTypeFromUrl(imgUrl) + '_portrait' : this.fileTypeFromUrl(imgUrl) + '_landscape'));
+  
 
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
@@ -211,7 +214,8 @@ export class Framepicturecomponent {
 
   savePreviewComment() {
     const fileName = this.previewFileName;
-    let item = this.selectedItems.find((x) => x.fileName === fileName);
+    let item = this.selectedItems.find((x) => x.fileName === fileName && 
+  x.type === (this.isPortrait ? this.fileTypeFromUrl(this.previewImage || '') + '_portrait' : this.fileTypeFromUrl(this.previewImage || '') + '_landscape'));
 
     if (!item) {
       item = {
@@ -224,20 +228,13 @@ export class Framepicturecomponent {
       };
 
       if (
-        this.selectedItems.length > 0 &&
-        this.selectedItems.some((item) => item.type === 'portrait')
-      ) {
-        this.notify.error('1 Portrait photo already selected');
+        this.selectedItems.length > 0 )
+       {
+        this.notify.error('Require photo already selected');
         return;
       }
 
-      if (
-        this.selectedItems.length > 0 &&
-        this.selectedItems.some((item) => item.type === 'landscape')
-      ) {
-        this.notify.error('1 Landscape photo already selected');
-        return;
-      }
+  
 
       this.selectedItems.push(item);
     }

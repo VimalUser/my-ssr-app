@@ -79,34 +79,37 @@
 
     <div class="row mb-2">
       <div class="col-12">
-        <h5 class="mb-3 text-white">Selected: {{ clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length }} 
+        <h5 class="mb-3 text-white">Traditional Selected  = {{ clientDataload.tranditionalAlbumSelection.length }} Candid Selected  {{clientDataload.candidAlbumSelection.length }} 
           / {{clientDataload.noOfPics}}</h5>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
-        <div class="card custom-img-card" [class.selected-card]="isSelected(img)" (click)="toggleSelection(img)">
-          <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
+  <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
+    <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)" (click)="toggleSelection(img)">
+      <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
 
-          <div class="checkmark-overlay" *ngIf="isSelected(img)">
-            <i class="bi bi-check-lg"></i>
-          </div>
+      <!-- Checkmark overlay -->
+      <div class="checkmark-overlay" *ngIf="isSelected(img)">
+        <i class="bi bi-check-lg"></i>
+      </div>
 
-          <div class="card-footer d-flex justify-content-between align-items-center small">
-            <span class="text-truncate" [title]="fileNameFromUrl(img)" style="max-width: 70%">
-              {{ fileNameFromUrl(img) }}
-            </span>
-            <button
-              class="btn btn-sm btn-outline-secondary"
-              (click)="openPreview(img); $event.stopPropagation()"
-              title="Preview">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-        </div>
+      <!-- Floating footer overlay -->
+      <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
+        <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
+          {{ fileNameFromUrl(img) }}
+        </span>
+        <button
+          class="btn btn-sm btn-light p-1"
+          (click)="openPreview(img); $event.stopPropagation()"
+          title="Preview">
+          <i class="bi bi-eye"></i>
+        </button>
       </div>
     </div>
+  </div>
+</div>
+
 
       <div class="row"  style="text-align: center;" *ngIf="images.length==0">     
     <p>No images were uploaded in this section, Kindly reach out our team! </p>

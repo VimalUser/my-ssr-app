@@ -21,7 +21,7 @@ export class Imagegallery implements OnInit {
 
   // Image gallery logic
   images: string[] = [];
-  pageSize = 12;
+  pageSize = 6;
   currentPage = 1;
 
   selectedItems: AlbumSelectionItem[] = [];
@@ -49,14 +49,12 @@ export class Imagegallery implements OnInit {
     const data = this.clientDataService.getData();
     this.clientDataload = data;
     console.log('Initial Client Data in ImageGallery:', data);
-
-    // if (data.tranditionalAlbumSelection.length > 0) {
-    //   this.selectedItems = [...data.tranditionalAlbumSelection];
-    // }
   }
-resetPagination() {
+
+  resetPagination() {
     this.currentPage = 1;
   }
+  
   showGallery(folderName: string) {
     this.loading = true;
 
@@ -70,7 +68,7 @@ resetPagination() {
     this.galleryOpen = true;
     this.resetPagination();
     this.galleryOpen = true;
-    
+
     if (folderName === this.folderNames[0]) {
       this.isTraditional = true;
       this.selectedItems = [...data.tranditionalAlbumSelection];
@@ -254,8 +252,27 @@ resetPagination() {
   }
 
   toggleSelection(imgUrl: string) {
+    let overAllSelectedCount = this.selectedItems.length;
+    if (this.isTraditional) {
+      overAllSelectedCount =
+        overAllSelectedCount + this.clientDataload.candidAlbumSelection.length;
+    } else {
+      overAllSelectedCount =
+        overAllSelectedCount +
+        this.clientDataload.tranditionalAlbumSelection.length;
+    }
+
     const fileName = this.fileNameFromUrl(imgUrl);
     const idx = this.selectedItems.findIndex((x) => x.fileName === fileName);
+
+    if (idx >= 0) {
+      this.selectedItems.splice(idx, 1);
+    } else {
+      if (overAllSelectedCount >= this.clientDataload.noOfPics) {
+        this.notify.error('You have already made required selction');
+        return;
+      } 
+    }
 
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
@@ -335,9 +352,9 @@ resetPagination() {
     this.loading = true;
     console.log('Fetching data from API...');
     this.userService.getImagesbyType(clientId, folderPath).subscribe({
-      next: (data) => {    
+      next: (data) => {
         console.log('API Response:', data);
-        this.images = data;       
+        this.images = data;
         this.loading = false;
       },
       error: (error) => {

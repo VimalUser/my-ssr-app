@@ -24,14 +24,14 @@ body {
   padding-right: 10px;
 }
 
-/* Card fixed size */
 .custom-img-card {
+  position: relative;
   height: 250px;
   overflow: hidden;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   transition: transform 0.2s;
 }
 
@@ -39,17 +39,31 @@ body {
   transform: scale(1.03);
 }
 
+
 .fixed-img {
-  height: 180px;
   width: 100%;
-  object-fit: cover;
-  border-bottom: 1px solid #ccc;
+  height: 100%;
+  object-fit: cover; /* Ensures the image fills the card */
 }
 
 /* Highlight selected */
 .selected-card {
-  border: 3px solid #0d6efd !important;
+  border: 3px solid #32ef5e !important;
 }
+
+/* Floating footer overlay */
+.card-footer-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background:rgb(0 0 0 / 9%);
+  font-weight: bold;
+  color: white;
+  font-size: 0.85rem;
+  z-index: 5;
+}
+
 
 /* Overlay checkmark */
 .checkmark-overlay {
