@@ -1,4 +1,4 @@
-import { Component,Inject,PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@angular/forms';
 import { newclientapi } from '../../services/newclient';
 import { ClientLogin } from '../../model/userlogin';
-import { CommonModule,isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 
 @Component({
@@ -49,44 +49,50 @@ export class Logincode {
   }
   user: string | null = null;
   ngOnInit() {
-     if (isPlatformBrowser(this.platformId)) {
-    localStorage.removeItem('clientData');
-    console.log("retreivng from storage");
-     }
-    this.loading = true;
-    this.user = this.route.snapshot.queryParamMap.get('user');
-    console.log('Login Code:', this.user);
-    if (!this.user || this.user.trim() === '') {
-      this.loading = false;
-      this.notify.error('Please enter the exact url you recieved to proceed');
-      return;
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('clientData');
+      console.log("retreivng from storage");
     }
+    this.loading = true;
+    // Subscribe to query params
+    this.route.queryParamMap.subscribe((params) => {
+      this.user = params.get('user');
+      console.log('Login Code:', this.user);
 
-    // Call API to validate
-    this.userService.checkClientUrlInfo(this.user).subscribe({
-      next: (res: any) => {
-        this.userInfo = res; // will be undefined for errors
-        console.log('User Info from API:', this.userInfo);
-        const loggedInUser: LoggedInUser = {
-          clientId: this.userInfo.clientId,
-          clientName: this.userInfo.clientName,
-        };
-        console.log(this.userInfo.loginCoverUrl);
-        if (
-          this.userInfo.loginCoverUrl &&
-          this.userInfo.loginCoverUrl.trim() !== ''
-        )
-          this.bgImage = this.userInfo.loginCoverUrl;
+      if (!this.user || this.user.trim() === '') {
+        this.loading = false;
+        this.notify.error('Please enter the exact URL you received to proceed');
+        return;
+      }
 
-        // 1. Store user in service
-        this.clientService.setCurrentUser(loggedInUser);
-        this.loading = false;
-      },
-      error: (err) => {
-        if (err.status === 400) this.notify.error(err.error.message);
-        else if (err.status === 404) this.notify.error(err.error.message);
-        this.loading = false;
-      },
+      // Call API to validate
+      this.userService.checkClientUrlInfo(this.user).subscribe({
+        next: (res: any) => {
+          this.userInfo = res;
+          console.log('User Info from API:', this.userInfo);
+          const loggedInUser: LoggedInUser = {
+            clientId: this.userInfo.clientId,
+            clientName: this.userInfo.clientName,
+          };
+
+          if (
+            this.userInfo.loginCoverUrl &&
+            this.userInfo.loginCoverUrl.trim() !== ''
+          ) {
+            this.bgImage = this.userInfo.loginCoverUrl;
+          }
+
+          // 1. Store user in service
+          this.clientService.setCurrentUser(loggedInUser);
+          this.loading = false;
+        },
+        error: (err) => {
+          if (err.status === 400 || err.status === 404) {
+            this.notify.error(err.error.message);
+          }
+          this.loading = false;
+        },
+      });
     });
   }
 

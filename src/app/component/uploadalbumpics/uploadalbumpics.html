@@ -1,7 +1,8 @@
 <div class="main-container" *ngIf="!loading">
   <div class="header-section">
     <button class="back-button">
-      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()" style="width: 40px; height: 40px; cursor: pointer;" />
+      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+        style="width: 40px; height: 40px; cursor: pointer;" />
     </button>
     <div class="header-info">
       <span>Client : {{clientData.clientName}}</span>
@@ -11,55 +12,87 @@
   </div>
 
   <div class="upload-sections">
-    
+
+    <!-- Traditional Section -->
     <div class="category-block">
       <div class="header-group">
-        <h3>Traditional photos:</h3>
+        <h3>Traditional Photos</h3>
         <span class="uploaded-count">{{ traditionalPhotosCount }} images uploaded</span>
       </div>
+
       <div class="upload-group">
-        <div class="upload-controls">
-          <input type="file" multiple (change)="onFileSelected($event, 'traditional')" class="file-input" #traditionalFileInput />
-          <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="traditionalFileInput.click()">Add images</button>
-          <span class="file-count">{{ selectedTraditionalFiles.length }} images selected</span>
-          <button class="upload-button" (click)="onUpload('traditional')">Upload</button>
+        <input type="file" multiple (change)="onFileSelected($event, 'traditional')" class="file-input"
+          #traditionalFileInput />
+
+        <div class="button-row">
+          <!-- Add Images -->
+          <button class="btn-modern add-btn" (click)="traditionalFileInput.click()"><i class="fa fa-folder-open fav-icon" ></i> Choose Images</button>
+
+          <!-- Wide Upload Button -->
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('traditional')"><i class="fa fa-upload fav-icon"></i> Upload</button>
+
+          <!-- Wide Delete All Button -->
+          <button [disabled]="traditionalPhotosCount == 0" class="btn-modern delete-btn wide-btn" (click)="onDeleteAll('traditional')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+
+          <span class="files-supported">{{allowedTypesMessage}}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="file-count">{{ selectedTraditionalFiles.length }} images selected to upload</span>
         </div>
       </div>
     </div>
 
+    <!-- Repeat Candid Section -->
     <div class="category-block">
       <div class="header-group">
-        <h3>Candid photos:</h3>
+        <h3>Candid Photos</h3>
         <span class="uploaded-count">{{ candidPhotosCount }} images uploaded</span>
       </div>
+
       <div class="upload-group">
-        <div class="upload-controls">
-          <input type="file" multiple (change)="onFileSelected($event, 'candid')" class="file-input" #candidFileInput />
-          <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="candidFileInput.click()">Add images</button>
-          <span class="file-count">{{ selectedCandidFiles.length }} images selected</span>
-          <button class="upload-button" (click)="onUpload('candid')">Upload</button>
+        <input type="file" multiple (change)="onFileSelected($event, 'candid')" class="file-input" #candidFileInput />
+
+        <div class="button-row">
+          <button class="btn-modern add-btn" (click)="candidFileInput.click()"><i class="fa fa-folder-open fav-icon" ></i> Choose Images</button>
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('candid')"><i class="fa fa-upload fav-icon"></i> Upload</button>
+          <button [disabled]="candidPhotosCount == 0" class="btn-modern delete-btn wide-btn" (click)="onDeleteAll('candid')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+          <span class="files-supported">{{allowedTypesMessage}}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="file-count">{{ selectedCandidFiles.length }} images selected to upload</span>
         </div>
       </div>
     </div>
 
+    <!-- Login Cover Section -->
     <div class="category-block">
       <div class="header-group">
-        <h3>Login Cover picture:</h3>
+        <h3>Login Cover Picture</h3>
         <span class="uploaded-count">{{ loginCoverPhotosCount }} images uploaded</span>
       </div>
+
       <div class="upload-group">
-        <div class="upload-controls">
-          <input type="file" (change)="onFileSelected($event, 'loginCover')" class="file-input" #loginCoverFileInput />
-          <button class="btn btn-warning fw-bold" style="border-radius: 8px;" (click)="loginCoverFileInput.click()">Add images</button>
-          <span class="file-count">{{ selectedLoginCoverFiles.length }} images selected</span>
-          <button class="upload-button" (click)="onUpload('loginCover')">Upload</button>
+        <input type="file" (change)="onFileSelected($event, 'loginCover')" class="file-input" #loginCoverFileInput />
+
+        <div class="button-row">
+          <button class="btn-modern add-btn" (click)="loginCoverFileInput.click()"><i class="fa fa-folder-open fav-icon" ></i> Choose Images</button>
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('loginCover')"><i class="fa fa-upload fav-icon"></i> Upload</button>
+          <button [disabled]="loginCoverPhotosCount == 0" class="btn-modern delete-btn wide-btn" (click)="onDeleteAll('loginCover')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+          <span class="files-supported">{{allowedTypesMessage}}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="file-count">{{ selectedLoginCoverFiles.length }} images selected to upload</span>
         </div>
       </div>
     </div>
 
-    </div>
+  </div>
+
 </div>
 <div *ngIf="loading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Uploading...">
-    <!-- <p>Uploading, please wait...</p> -->
+  <img src="assets/loading-spinner.gif" alt="Uploading...">
+  <!-- <p>Uploading, please wait...</p> -->
 </div>

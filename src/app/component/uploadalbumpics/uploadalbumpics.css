@@ -35,34 +35,32 @@
   cursor: pointer;
 }
 
+/* General layout */
 .upload-sections {
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
+  padding: 20px;
 }
 
 .category-block {
-  border: 1px solid #ddd;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 15px; /* Space between header group and upload controls */
+  background-color: #FFFDF8;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(255, 153, 0, 0.205);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 152, 0, 0.15);
 }
 
 .header-group {
   display: flex;
-  align-items: baseline; /* Aligns h3 and span on the same baseline */
   justify-content: space-between;
-  gap: 20px;
-}
-
-.header-group h3 {
-  margin: 0;
-  font-size: 1.2em;
+  align-items: center;
+  margin-bottom: 15px;
   color: #333;
 }
 
@@ -72,43 +70,118 @@
   gap: 10px;
 }
 
-.upload-controls {
+.file-input {
+  display: none;
+}
+
+.button-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap; /* Allows controls to wrap on smaller screens */
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.file-input {
-  display: none; /* Hide the default file input button */
-}
-
-.add-button,
-.upload-button {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  border-radius: 5px;
+.btn-modern {
+  border: none;
+  border-radius: 50px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.25s ease;
+  padding: 12px 25px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.upload-button {
-  background-color: #007bff;
+/* Hover effect for enabled buttons only */
+.btn-modern:not([disabled]):hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Disabled state */
+.btn-modern[disabled] {
+  background-color: #da9999;
+  /* Dull gray */
   color: white;
-  border-color: #007bff;
-  
+  /* Dark gray text */
+  cursor: not-allowed;
+  /* Show not-allowed cursor */
+  box-shadow: none;
+  /* Remove shadow */
+  transform: none;
+  /* Disable hover transform */
 }
 
-.file-count {
-  font-weight: bold;
-  color: #007bff;
+
+.add-btn {
+  background-color: #efefef;
+  color: black;
+  min-width: 220px;
+  border-radius: 0;
+}
+
+.upload-btn {
+  background-color: #1dd1a1;
+  color: #fff;
+}
+
+.delete-btn {
+  background-color: #da3232;
+  color: #fff;
+}
+
+/* Make Upload and Delete All buttons wider */
+.wide-btn {
+  min-width: 150px;
+  /* Adjust as needed */
+  padding: 12px 30px;
+}
+
+.files-supported {
+  font-size: 0.85rem;
+  color: #555;
+  margin-left: auto;
+  font-style: italic;
+}
+
+.info-row {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 .uploaded-count {
-  color: #555;
-  font-style: italic;
+  font-size: 1.4rem;
   font-weight: bolder;
-  font-size: 1.2em;
+}
+
+.file-count {
+  font-size: 1.2rem;
+  font-weight: bolder;
+
+}
+
+.fav-icon {
+  margin-right: 8px;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .button-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .files-supported {
+    margin-left: 0;
+    margin-top: 5px;
+  }
+
+  .wide-btn {
+    width: 100%;
+  }
 }
 
 /* Responsive design for smaller screens */
@@ -125,11 +198,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent black overlay */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it's on top of other content */
+  z-index: 1000;
+  /* Ensure it's on top of other content */
 }
 
 .loading-spinner {
@@ -143,7 +218,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* semi-transparent black overlay */
+  background: rgba(0, 0, 0, 0.6);
+  /* semi-transparent black overlay */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -160,16 +236,24 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 
 .loading-overlay img.spinner {
-  width: 80px;   /* increase size */
-  height: 80px;  /* increase size */
+  width: 80px;
+  /* increase size */
+  height: 80px;
+  /* increase size */
 }
 
-h3{
-    font-weight: bolder;
-    font-size: 1.5em;}
+h3 {
+  font-weight: bolder;
+  font-size: 1.5em;
+}

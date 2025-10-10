@@ -1,0 +1,21 @@
+.logout-page {
+  background: url('/assets/clientlogout.jpg') no-repeat center center/cover;
+  position: relative;
+}
+
+/* Semi-transparent overlay so text is readable */
+.logout-page .overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+}
+
+.alert
+{
+    font-weight: 700;
+    color: black;
+}
+.text-light
+{
+    font-weight: 400;;
+}

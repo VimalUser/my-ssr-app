@@ -17,6 +17,7 @@ import { CoverpcitureSelection } from './component/coverpciture-selection/coverp
 import { Useralbumsubmitform } from './component/useralbumsubmitform/useralbumsubmitform';
 import { AdminDownloadSelection } from './component/admin-download-selection/admin-download-selection';
 import { AdminReviewComments } from './component/admin-review-comments/admin-review-comments';
+import { Clientlogout } from './component/clientlogout/clientlogout';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -25,6 +26,7 @@ export const routes: Routes = [
   // { path: 'userhome', component: Userlandingpage },
   { path: 'adminlogin', component: Adminloginpage },
   { path: 'userlogin', component: Userloginpage },
+  {path: 'clientlogout', component: Clientlogout},
 
   // A parent route for the admin layout
   {

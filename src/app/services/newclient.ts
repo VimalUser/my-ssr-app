@@ -106,6 +106,15 @@ export class newclientapi {
     return this.http.post(endpoint, formData);
   }
 
+    deleteImages(category: string, clientId: number): Observable<any> {
+    // Construct the endpoint URL with query parameters
+    const endpoint = `${this.blobUrl}deleteOtherImages?clientId=${clientId}&folderPath=${category}`;
+    console.log('Uploading to endpoint:', endpoint);
+
+    // The backend expects files in the FormData, so pass the formData object directly
+    return this.http.delete(endpoint);
+  }
+
   // Fetch client with folder counts
   getClientFolderCounts(clientId: number): Observable<any> {
     return this.http.get(`${this.blobUrl}getClientFolderCount?clientId=${clientId}`);

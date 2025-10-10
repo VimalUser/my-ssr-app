@@ -20,6 +20,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'logincode',
     renderMode: RenderMode.Prerender
   },
+  {
+    path: 'clientlogout',
+    renderMode: RenderMode.Prerender
+  },
 
   // 🧭 Admin dashboard main page - prerender for fast first load
   {
