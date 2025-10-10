@@ -24,6 +24,7 @@ export class Newclientalbumform implements OnInit {
   id: string = '';
   showAccessLink = false;
   isDisableAccessLink: boolean = false;
+  clientAlbumHeading : string = 'New Client Setup';
 
   get f() {
     return this.clientForm.controls;
@@ -36,6 +37,7 @@ export class Newclientalbumform implements OnInit {
     });
     this.loadDropdowns();
     if (this.id != '') {
+      this.clientAlbumHeading = 'Edit Client Details';
       this.enableEdit();
       this.fetchData();
     }

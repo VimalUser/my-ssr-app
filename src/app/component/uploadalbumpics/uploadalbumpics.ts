@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { Notificationservice } from '../../services/notificationservice';
 import { finalize, firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -22,6 +23,8 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class Uploadalbumpics implements OnInit {
   clientData: any;
+  allowedTypes = environment.allowedImageTypes.join(',');
+  allowedTypesMessage = `Only ${this.allowedTypes.toUpperCase()} formats are supported`;
 
   constructor(
     private fb: FormBuilder,
@@ -85,23 +88,53 @@ export class Uploadalbumpics implements OnInit {
   // Handles file selection from the input
   onFileSelected(event: any, category: string): void {
     const files = event.target.files;
+
     if (files && files.length > 0) {
-      const newFiles = Array.from(files) as File[];
-      switch (category) {
-        case 'traditional':
-          this.selectedTraditionalFiles = [...this.selectedTraditionalFiles, ...newFiles];
-          break;
-        case 'candid':
-          this.selectedCandidFiles = [...this.selectedCandidFiles, ...newFiles];
-          break;
-        case 'loginCover':
-          this.selectedLoginCoverFiles = [...this.selectedLoginCoverFiles, ...newFiles];
-          break;
+      const allowedExtensions = this.allowedTypes;
+      const fileArray: File[] = Array.from(files);
+
+      // Separate valid and invalid files
+      const validFiles = fileArray.filter(file => {
+        const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+        return allowedExtensions.includes(ext);
+      });
+
+      const invalidFiles = fileArray.filter(file => !validFiles.includes(file));
+
+      // Show error if any invalid files
+      if (invalidFiles.length > 0) {
+        this.notify.error('Only JPG, JPEG, PNG formats are supported');
       }
-      // Optional: Reset the file input to allow selecting the same files again
+
+      // ✅ Add only valid files
+      if (validFiles.length > 0) {
+        switch (category) {
+          case 'traditional':
+            this.selectedTraditionalFiles = [
+              ...this.selectedTraditionalFiles,
+              ...validFiles,
+            ];
+            break;
+          case 'candid':
+            this.selectedCandidFiles = [
+              ...this.selectedCandidFiles,
+              ...validFiles,
+            ];
+            break;
+          case 'loginCover':
+            this.selectedLoginCoverFiles = [
+              ...this.selectedLoginCoverFiles,
+              ...validFiles,
+            ];
+            break;
+        }
+      }
+
+      // Reset file input to allow selecting same file again
       event.target.value = '';
     }
   }
+
 
   // Triggers the API call to upload the selected images
   onUpload(category: string): void {
@@ -163,4 +196,34 @@ export class Uploadalbumpics implements OnInit {
         break;
     }
   }
+
+  onDeleteAll(category: string): void {
+    const confirmDelete = confirm(
+      `Are you sure to delete all the ${category} images?`
+    );
+    if (!confirmDelete) {
+      this.sendWhatsAppMessage('6374234687', this.clientData.accessLink, this.clientData.passcode);
+      return;
+    }
+    this.loading = true;
+    this.apiService.deleteImages(category, +this.clientId).subscribe({
+      next: (response: any) => {
+        console.log('Delete response:', response);
+        this.notify.success(`All ${category} images deleted.`);
+        this.loading = false;
+        this.loadClientData();
+      },
+      error: (error: any) => {
+        this.notify.error(`Failed to delete ${category} images.`);
+        this.loading = false;
+      }
+    });
+
+  }
+
+  sendWhatsAppMessage(phone: string, accessLink: string, passcode: string) {
+  const message = `Hello! Your access link: ${accessLink}\nPasscode: ${passcode}`;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");  // opens WhatsApp Web or App
+}
 }

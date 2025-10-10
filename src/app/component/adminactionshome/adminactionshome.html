@@ -1,16 +1,14 @@
 <div class="container py-5">
-    
+
     <h3 class="mb-4 text-dark fw-bold border-bottom pb-2">Client Management Tools</h3>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
 
+        <!-- Existing Tiles -->
         <div class="col">
-            <div
-                class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/newclient', clientId]"
-                style="animation-delay: 0s;" 
-            >
-                <i class="bi bi-pencil-square icon-large text-action mb-3"></i> 
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/newclient', clientId]" style="animation-delay: 0s;">
+                <i class="bi bi-pencil-square icon-large text-action mb-3"></i>
                 <div class="card-body p-0">
                     <h5 class="card-title">Edit Client Details</h5>
                     <p class="card-text text-muted">Update client information</p>
@@ -19,12 +17,9 @@
         </div>
 
         <div class="col">
-            <div
-                class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/uploadpictures', clientId]"
-                style="animation-delay: 0.1s;" 
-            >
-                <i class="bi bi-cloud-arrow-up-fill icon-large text-upload mb-3"></i> 
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/uploadpictures', clientId]" style="animation-delay: 0.1s;">
+                <i class="bi bi-cloud-arrow-up-fill icon-large text-upload mb-3"></i>
                 <div class="card-body p-0">
                     <h5 class="card-title">Upload Photos</h5>
                     <p class="card-text text-muted">Upload function photos for user selection.</p>
@@ -33,11 +28,8 @@
         </div>
 
         <div class="col">
-            <div
-                class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/download', clientId]"
-                style="animation-delay: 0.2s;" 
-            >
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/download', clientId]" style="animation-delay: 0.2s;">
                 <i class="bi bi-archive-fill icon-large text-download mb-3"></i>
                 <div class="card-body p-0">
                     <h5 class="card-title">Download Final Album</h5>
@@ -47,11 +39,8 @@
         </div>
 
         <div class="col">
-            <div
-                class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/comments', clientId]"
-                style="animation-delay: 0.3s;" 
-            >
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/comments', clientId]" style="animation-delay: 0.3s;">
                 <i class="bi bi-chat-dots-fill icon-large text-comment mb-3"></i>
                 <div class="card-body p-0">
                     <h5 class="card-title">View Comments</h5>
@@ -60,9 +49,23 @@
             </div>
         </div>
 
+        <!-- Send WhatsApp Message -->
+        <div class="col">
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                (click)="sendWhatsAppMessage()"
+                style="animation-delay: 0.4s; cursor:pointer;">
+                <i class="bi bi-whatsapp icon-large text-success mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">Send WhatsApp Message</h5>
+                    <p class="card-text text-muted">Send access link and passcode to the client via WhatsApp.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
+
 </div>
 
 <div *ngIf="loading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Uploading...">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>

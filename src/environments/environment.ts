@@ -3,7 +3,8 @@ export const environment = {
   apiUrl: 'https://apicandyimagesdev.azurewebsites.net',
   authUrl: 'https://apicandyimagesdev.azurewebsites.net/api/auth/',
   clientAlbumUrl: 'https://apicandyimagesdev.azurewebsites.net/Api/ClientAlbum/',
-  blobUrl: 'https://apicandyimagesdev.azurewebsites.net/Api/Blob/'
+  blobUrl: 'https://apicandyimagesdev.azurewebsites.net/Api/Blob/',
+  allowedImageTypes : ['jpg', 'jpeg', 'png', 'gif']
 };
 
 // export const environment = {
