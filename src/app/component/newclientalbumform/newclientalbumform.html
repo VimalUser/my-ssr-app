@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="col-12 mb-4">
-                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i> Frame & Access</h5>
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i> Frame</h5>
                     <div class="row g-4">
 
                         <div class="col-md-6 col-lg-3">
@@ -120,7 +120,7 @@
                             <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')" class="text-danger small mt-1">Frame size is required.</div>
                         </div>
 
-                        <div class="col-12" *ngIf="showAccessLink">
+                        <!-- <div class="col-12" *ngIf="showAccessLink">
                             <label class="form-label fw-semibold">Access Link</label>
                             <div class="input-group">
                                 <input formControlName="accessLink" class="form-control bg-light" readonly />
@@ -148,7 +148,7 @@
                                     <i class="bi bi-clipboard-fill"></i>
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>

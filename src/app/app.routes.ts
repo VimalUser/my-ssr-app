@@ -18,6 +18,8 @@ import { Useralbumsubmitform } from './component/useralbumsubmitform/useralbumsu
 import { AdminDownloadSelection } from './component/admin-download-selection/admin-download-selection';
 import { AdminReviewComments } from './component/admin-review-comments/admin-review-comments';
 import { Clientlogout } from './component/clientlogout/clientlogout';
+import { send } from 'process';
+import { SendClientCredentials } from './component/send-client-credentials/send-client-credentials';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -37,9 +39,10 @@ export const routes: Routes = [
       { path: 'newclient', component: Newclientalbumform },
       { path: 'newclient/:id', component: Newclientalbumform },
       { path: 'uploadpictures/:id', component: Uploadalbumpics },
+      { path: 'sendCredentials/:id', component: SendClientCredentials},
       { path: 'adminactions/:id', component: Adminactionshome },
-      {path: 'download/:id',component:AdminDownloadSelection},
-      {path: 'comments/:id',component:AdminReviewComments},
+      { path: 'download/:id',component:AdminDownloadSelection},
+      { path: 'comments/:id',component:AdminReviewComments},
       
     ],
   },
