@@ -7,8 +7,6 @@ import { Router } from '@angular/router';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
 
-
-
 @Component({
   selector: 'app-useralbumsubmitform',
   imports: [RouterLink,CommonModule],

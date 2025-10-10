@@ -27,7 +27,7 @@ export class Imagegallery implements OnInit {
   selectedItems: AlbumSelectionItem[] = [];
 
   loading = true;
-  galleryOpen =false;
+  galleryOpen = false;
   previewLoading = false;
 
   previewImage: string | null = null;
@@ -54,7 +54,9 @@ export class Imagegallery implements OnInit {
     //   this.selectedItems = [...data.tranditionalAlbumSelection];
     // }
   }
-
+resetPagination() {
+    this.currentPage = 1;
+  }
   showGallery(folderName: string) {
     this.loading = true;
 
@@ -65,33 +67,23 @@ export class Imagegallery implements OnInit {
     this.selectedItems = [];
     const data = this.clientDataService.getData();
     this.clientDataload = data;
-      this.galleryOpen =true;
+    this.galleryOpen = true;
+    this.resetPagination();
+    this.galleryOpen = true;
+    
+    if (folderName === this.folderNames[0]) {
+      this.isTraditional = true;
+      this.selectedItems = [...data.tranditionalAlbumSelection];
+      console.log('traditional photos', this.selectedItems);
+    } else {
+      this.isTraditional = false;
+      this.selectedItems = [...data.candidAlbumSelection];
+      console.log('candid photos', this.selectedItems);
+    }
 
-      // gallerySection.style.display = 'block';
-      // selectionSection.style.display = 'none'; // Hide selection section
-      this.galleryOpen =true;
-      if (folderName === this.folderNames[0]) {
-        this.isTraditional = true;
-        this.selectedItems = [...data.tranditionalAlbumSelection];
-        console.log('traditional photos', this.selectedItems);
-        console.log(
-          'data length',
-          this.clientDataload.tranditionalAlbumSelection.length
-        );
-      } else {
-        this.isTraditional = false;
-        this.selectedItems = [...data.candidAlbumSelection];
-        console.log('candid photos', this.selectedItems);
-        console.log(
-          'data length',
-          this.clientDataload.candidAlbumSelection.length
-        );
-      }
-
-      this.getImagesbyPath();
-      this.loading = false;    
+    this.getImagesbyPath();
+    this.loading = false;
   }
-  
 
   // Set 1: Example URLs of random images (different categories)
   traditionalImages: string[] = [
@@ -207,7 +199,7 @@ export class Imagegallery implements OnInit {
       return;
     }
 
-    this.galleryOpen =false;
+    this.galleryOpen = false;
     this.selectedFolderName = '';
   }
 
@@ -251,9 +243,9 @@ export class Imagegallery implements OnInit {
     if (next >= 1 && next <= this.totalPages) this.currentPage = next;
   }
 
-    fileNameFromUrl(url: string): string {
-    const filename = url.split('?')[0].split('/').pop() || ''
-   return decodeURIComponent(filename);    
+  fileNameFromUrl(url: string): string {
+    const filename = url.split('?')[0].split('/').pop() || '';
+    return decodeURIComponent(filename);
   }
 
   isSelected(imgUrl: string): boolean {
@@ -269,7 +261,7 @@ export class Imagegallery implements OnInit {
       this.selectedItems.splice(idx, 1);
     } else {
       this.selectedItems.push({
-        fileName : this.fileNameFromUrl(imgUrl),
+        fileName: this.fileNameFromUrl(imgUrl),
         comment: '',
         type: 'image',
         url: imgUrl,
@@ -336,34 +328,25 @@ export class Imagegallery implements OnInit {
   getImagesbyPath() {
     console.log('Fetching data from API...');
     let folderPath = this.isTraditional ? 'traditional' : 'candid';
-    // this.images = this.traditionalImages;
-     this.fetchData(this.clientDataload.clientId.toString() ?? "",folderPath);
-    // if (this.isTraditional) this.images = this.traditionalImages;
-    // else this.images = this.candidImages;
+    this.fetchData(this.clientDataload.clientId.toString() ?? '', folderPath);
   }
 
-
-  fetchData(clientId : string,folderPath: string): void {
+  fetchData(clientId: string, folderPath: string): void {
     this.loading = true;
     console.log('Fetching data from API...');
-    this.userService.getImagesbyType(clientId,folderPath)
-      .subscribe({
-        next: (data) => {
-          // This is where you process the successful response
-          console.log('API Response:', data); 
-          this.images  = data;
-          // this.images = this.traditionalImages;
-          // this.formLatestData = data;
-          // this.updateClinetData(this.formLatestData);
-          this.loading = false;
-        },
-        error: (error) => {
-          // This is executed if the request fails (e.g., 404, 500)
-          console.log('There was an error!', error);
-          this.loading = false;
-        },
-        complete: () => {},
-      });
+    this.userService.getImagesbyType(clientId, folderPath).subscribe({
+      next: (data) => {    
+        console.log('API Response:', data);
+        this.images = data;       
+        this.loading = false;
+      },
+      error: (error) => {
+        // This is executed if the request fails (e.g., 404, 500)
+        console.log('There was an error!', error);
+        this.loading = false;
+      },
+      complete: () => {},
+    });
   }
 
   saveSelection() {
@@ -398,8 +381,8 @@ export class Imagegallery implements OnInit {
         console.log('Save Response:', response);
         this.loading = false;
         this.notify.success('Your Selection/unselection saved successfully!');
-         this.galleryOpen =false;
-         this.selectedFolderName = '';
+        this.galleryOpen = false;
+        this.selectedFolderName = '';
       },
       error: (error) => {
         console.log('Save Error:', error);
