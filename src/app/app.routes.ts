@@ -10,7 +10,6 @@ import { Adminlayout } from './component/adminlayout/adminlayout'; // Import the
 import { Adminactionshome } from './component/adminactionshome/adminactionshome';
 import { Albumstratpage } from './component/albumstratpage/albumstratpage';
 import { AlbumName } from './component/album-name/album-name';
-// import { Albumtypefolder } from './component/albumtypefolder/albumtypefolder';
 import { Imagegallery } from './component/imagegallery/imagegallery';
 import { Framepicturecomponent } from './component/framepicturecomponent/framepicturecomponent';
 import { CoverpcitureSelection } from './component/coverpciture-selection/coverpciture-selection';
