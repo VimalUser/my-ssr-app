@@ -202,7 +202,6 @@ export class Uploadalbumpics implements OnInit {
       `Are you sure to delete all the ${category} images?`
     );
     if (!confirmDelete) {
-      this.sendWhatsAppMessage('6374234687', this.clientData.accessLink, this.clientData.passcode);
       return;
     }
     this.loading = true;
@@ -220,10 +219,4 @@ export class Uploadalbumpics implements OnInit {
     });
 
   }
-
-  sendWhatsAppMessage(phone: string, accessLink: string, passcode: string) {
-  const message = `Hello! Your access link: ${accessLink}\nPasscode: ${passcode}`;
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");  // opens WhatsApp Web or App
-}
 }
