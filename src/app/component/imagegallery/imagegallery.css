@@ -48,7 +48,7 @@ body {
 
 /* Highlight selected */
 .selected-card {
-  border: 3px solid #32ef5e !important;
+  border:4px solid #13f721 !important;
 }
 
 /* Floating footer overlay */
@@ -57,7 +57,7 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background:rgb(0 0 0 / 9%);
+  background:rgb(0 0 0 / 50%);
   font-weight: bold;
   color: white;
   font-size: 0.85rem;
@@ -117,7 +117,7 @@ body {
 .preview-body {
   padding: 14px;
   overflow-y: auto;
-  max-height: 60vh; /* Match image max height */
+  max-height: max-content; /* Match image max height */
   display: flex;
   justify-content: center; /* Center image horizontally */
   align-items: center;     /* Center image vertically */
@@ -162,4 +162,19 @@ body {
         flex: 0 0 auto;
         width: 25.666667%;
     }
+}
+
+.bi-eye{
+      font-weight: bolder;
+    font-size: 1.5rem;
+}
+.btn-eye{
+    background-color: rgb(0 0 0 / 0%);
+    color: white;
+    border: 0px;
+    padding: 0px;
+    font-weight: bolder;
+}
+textarea{
+  line-height: 1.1;
 }

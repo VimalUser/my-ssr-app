@@ -77,6 +77,7 @@ export class Albumstratpage implements OnInit {
       createdBy: clientDatafromDb.createdBy || '',
       accessLink: '',
       updatedBy: '',
+      isSubmitted: this.hasSubmitted,
     };
 
     this.clientDataService.updateData(updated);

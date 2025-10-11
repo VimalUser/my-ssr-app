@@ -19,17 +19,51 @@ export class CoverpcitureSelection {
     private userservice: userserviceapi,
     private notify: Notificationservice
   ) {}
+
   //folder selection logic
   galleryOpen = false;
 
+  // Image gallery logic
+  images: string[] = [];
+  pageSize = 6;
+  currentPage = 1;
+
+  selectedItems: AlbumSelectionItem[] = [];
+  allowedSelectedPhotos = 1; // Set your limit here
+  loading = true;
+  previewLoading = false;
+
+  previewImageUrl: string | null = null;
+  previewFileName = '';
+  previewComment = '';
+
+  pagelatestData: clientData = new clientData();
+  apiImageResponse: any;
+
+  ngOnInit(): void {
+    this.clientDataService.triggerNextStep(4);
+    this.loading = true;
+    const data = this.clientDataService.getData();
+    this.pagelatestData = data;
+    this.loading = false;
+    console.log('Initial Client Data in cover source:', this.images);
+  }
+
   showGallery() {
+    this.loading = true;
     const gallerySection = document.getElementById('gallerySection');
     const selectionSection = document.getElementById('selctionSection');
     this.selectedItems = [];
     this.galleryOpen = true;
+    this.resetPagination();
     this.selectedItems = [...this.pagelatestData.coverSelection];
-     if (this.images.length == 0)
+    if (this.images.length == 0)
       this.fetchData(this.pagelatestData.clientId.toString());
+    else this.loading = false;
+  }
+
+  resetPagination() {
+    this.currentPage = 1;
   }
 
   gobackFolderSelection() {
@@ -37,7 +71,6 @@ export class CoverpcitureSelection {
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
-      // User pressed Cancel, stop execution here
       return;
     }
     this.galleryOpen = false;
@@ -49,38 +82,14 @@ export class CoverpcitureSelection {
 
   nextStep() {
     if (this.pagelatestData.coverSelection.length < 1) {
-      this.notify.error('Please select 1 picture for album cover!');
+      this.notify.error(
+        `Please select ${this.allowedSelectedPhotos}  picture for album cover!`
+      );
       return;
     }
     this.clientDataService.triggerNextStep(5);
   }
 
-  // Image gallery logic
-  images: string[] = [];
-  pageSize = 12;
-  currentPage = 1;
-
-  selectedItems: AlbumSelectionItem[] = [];
-
-  loading = true;
-  previewLoading = false;
-
-  previewImage: string | null = null;
-  previewFileName = '';
-  previewComment = '';
-
-  pagelatestData: clientData = new clientData();
- apiImageResponse: any;
-
-  ngOnInit(): void {
-    this.clientDataService.triggerNextStep(4);
-    this.loading = true;
-    const data = this.clientDataService.getData();
-    this.pagelatestData = data; 
-    this.loading = false;
-    console.log('Initial Client Data in cover source:', this.images);
-  }
- 
   getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {
     this.apiImageResponse = data;
     this.images = data ? data.map((item) => item.imageUrl) : [];
@@ -105,43 +114,63 @@ export class CoverpcitureSelection {
     return decodeURIComponent(filename);
   }
 
-    fileTypeFromUrl(url: string): string {
+  fileTypeFromUrl(url: string): string {
     return url.split('?')[0].split('/').slice(-2, -1)[0] || '';
   }
 
   isSelected(imgUrl: string): boolean {
     const fileName = this.fileNameFromUrl(imgUrl);
-    return this.selectedItems.some((x) => x.fileName === fileName);
+    return this.selectedItems.some(
+      (x) =>
+        x.fileName === fileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imgUrl)
+    );
   }
 
-  toggleSelection(imgUrl: string) {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    const idx = this.selectedItems.findIndex((x) => x.fileName === fileName);
+  doesthisfileExistInSelection(fileName: string, image: string): number {
+    const idx = this.selectedItems.findIndex(
+      (x) =>
+        x.fileName === fileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(image)
+    );
+
+    return idx;
+  }
+
+  toggleSelection(imgageUrl: string) {
+    const fileName = this.fileNameFromUrl(imgageUrl);
+    const idx = this.doesthisfileExistInSelection(fileName, imgageUrl);
 
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
     } else {
-      if (this.selectedItems.length >= 1) {
-        this.notify.error('You have already made required selction');
+      if (this.checkMaxSelectedCountReached()) {
+        this.notify.error('You have already selected required images');
         return;
       }
 
       this.selectedItems.push({
         fileName: fileName,
         comment: '',
-        type: this.fileTypeFromUrl(imgUrl)+'_cover',
-        url: imgUrl,
+        type: 'cover',
+        url: imgageUrl,
       });
     }
 
     console.log('selected photos', this.selectedItems);
   }
 
-  openPreview(imgUrl: string) {
-    this.previewImage = imgUrl;
-    this.previewFileName = this.fileNameFromUrl(imgUrl);
+  checkMaxSelectedCountReached() {
+    return this.selectedItems.length >= this.allowedSelectedPhotos;
+  }
+
+  openPreview(imageUrl: string) {
+    this.previewImageUrl = imageUrl;
+    this.previewFileName = this.fileNameFromUrl(imageUrl);
     const existing = this.selectedItems.find(
-      (x) => x.fileName === this.previewFileName
+      (x) =>
+        x.fileName === this.previewFileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imageUrl)
     );
     this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
@@ -152,7 +181,7 @@ export class CoverpcitureSelection {
   }
 
   closePreview() {
-    this.previewImage = null;
+    this.previewImageUrl = null;
     this.previewFileName = '';
     this.previewComment = '';
     this.previewLoading = false;
@@ -173,41 +202,47 @@ export class CoverpcitureSelection {
         console.log('There was an error!', error);
         this.loading = false;
       },
-      complete: () => {},
+      complete: () => {
+        this.loading = false;
+      },
     });
   }
 
+  getitemfromSelection(imageUrl: string): any {
+    const fileName = this.fileNameFromUrl(imageUrl);
+    return this.selectedItems.find(
+      (x) =>
+        x.fileName === fileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imageUrl)
+    );
+  }
+
   savePreviewComment() {
-    const fileName = this.previewFileName;
-    let item = this.selectedItems.find((x) => x.fileName === fileName);
+    this.loading = true;
+    const imageUrl = this.previewImageUrl || '';
+    let item = this.getitemfromSelection(imageUrl);
 
     if (!item) {
+
+      if (this.checkMaxSelectedCountReached()) {
+        this.notify.error('You have already selected required images');
+        this.loading = false;
+        return;
+      }
+      
       item = {
-        fileName: this.fileNameFromUrl(fileName),
+        fileName: this.fileNameFromUrl(imageUrl),
         comment: '',
-        type: this.fileTypeFromUrl(fileName)+'_cover',
-        url: this.previewImage || '',
+        type: 'cover',
+        url: this.previewImageUrl || '',
       };
 
       this.selectedItems.push(item);
     }
-    item.comment = this.previewComment;
-    this.closePreview();
-  }
 
-  private mergeByFileName(
-    base: AlbumSelectionItem[],
-    add: AlbumSelectionItem[]
-  ) {
-    const map = new Map<string, AlbumSelectionItem>();
-    base.forEach((i) => map.set(i.fileName, { ...i }));
-    add.forEach((i) =>
-      map.set(i.fileName, {
-        ...(map.get(i.fileName) || ({} as AlbumSelectionItem)),
-        ...i,
-      })
-    );
-    return Array.from(map.values());
+    item.comment = this.previewComment;
+     this.loading = false;
+    this.closePreview();
   }
 
   saveSelection() {
@@ -238,7 +273,7 @@ export class CoverpcitureSelection {
         console.log('Save Response:', response);
         this.loading = false;
         this.notify.success('Your Selection/unselection saved successfully!');
-        this.galleryOpen =false;
+        this.galleryOpen = false;
       },
       error: (error) => {
         console.log('Save Error:', error);

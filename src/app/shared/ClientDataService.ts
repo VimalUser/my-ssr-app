@@ -131,7 +131,6 @@ export class ClientDataService {
 
   triggerNextStep(menuItem: number) {
     this.nextStepSubject.next(menuItem);
-    console.log('➡️ Next step triggered in client data service');
   }
 
   triggerPrevStep(menuName: number) {

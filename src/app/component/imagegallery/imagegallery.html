@@ -24,9 +24,10 @@
     <div class="row">
       <div class="col-12">
         <h3 class="fw-bold mb-2 text-white">Album Pictures</h3>
-        <div class="mb-3 text-secondary">Select your favorite images to proceed in your album...</div>
-                <div class="mb-3 text-secondary">
-                  <p> You should select {{clientDataload.noOfPics}} from traditional or candid picture to proceed with next step</p>
+        <div class="mb-3 text-white">Select your favorite images to proceed in your album...</div>
+                <div class="mb-3 text-white">
+                  <p> Please select exactly {{clientDataload.noOfPics}} pictures from either 
+                    the traditional or candid categories to proceed to the next step</p>
                   <!-- <p> You have already selected {{ clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length }} 
                     /{{clientDataload.noOfPics}} images..</p> -->
                 </div>
@@ -79,8 +80,8 @@
 
     <div class="row mb-2">
       <div class="col-12">
-        <h5 class="mb-3 text-white">Traditional Selected  = {{ clientDataload.tranditionalAlbumSelection.length }} Candid Selected  {{clientDataload.candidAlbumSelection.length }} 
-          / {{clientDataload.noOfPics}}</h5>
+        <h5 class="mb-3 text-white">Selected (Traditional+Candid) : {{ clientDataload.tranditionalAlbumSelection.length +clientDataload.candidAlbumSelection.length }}
+         /{{clientDataload.noOfPics}}</h5>
       </div>
     </div>
 
@@ -100,7 +101,7 @@
           {{ fileNameFromUrl(img) }}
         </span>
         <button
-          class="btn btn-sm btn-light p-1"
+          class="btn btn-sm btn-light btn-eye"
           (click)="openPreview(img); $event.stopPropagation()"
           title="Preview">
           <i class="bi bi-eye"></i>
@@ -148,7 +149,7 @@
           (load)="onPreviewImageLoad()"
           [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
       </div>
-        <div class="container my-3">
+        <div class="container">
         <div class="row">
           <div class="col-12">
             <div class="mb-3">
@@ -160,7 +161,7 @@
         <div class="row">
           <div class="col-12 d-flex justify-content-end gap-2">
             <button class="btn btn-light" (click)="closePreview()">Close</button>
-            <button class="btn btn-primary" (click)="savePreviewComment()">Save Comment</button>
+            <button class="btn btn-primary" (click)="savePreviewComment()">Select & add Comment</button>
           </div>
         </div>
       </div>

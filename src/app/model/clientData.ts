@@ -25,5 +25,5 @@ export class clientData {
   createdBy:string = '';
   updatedBy:string = '';
   accessLink:string = '';
-
+  isSubmitted:boolean = false;
 }

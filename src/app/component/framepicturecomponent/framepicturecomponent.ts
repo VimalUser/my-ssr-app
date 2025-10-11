@@ -19,19 +19,55 @@ export class Framepicturecomponent {
     private userservice: userserviceapi,
     private notify: Notificationservice
   ) {}
+
   //folder selection logic
   folderNames: string[] = ['Traditional Photos', 'Candid Photos'];
   selectedFolderName: string = '';
-  allowedSelectedPhotos = 2; // Set your limit here
+  allowedSelectedPhotos = 0; // Set your limit here
   selectedImageUrl: string | null = null;
   isPortrait: boolean = true;
   showGallerySection = true;
 
+  // Image gallery logic
+  images: string[] = [];
+  pageSize = 6;
+  currentPage = 1;
+
+  selectedItems: AlbumSelectionItem[] = [];
+
+  loading = true;
+  previewLoading = false;
+
+  previewImageUrl: string | null = null;
+  previewFileName = '';
+  previewComment = '';
+  isVisible = true;
+
+  galleryOpen = false;
+  pagelatestData: clientData = new clientData();
+
+  apiImageResponse: any;
+
+  ngOnInit(): void {
+    this.loading = true;
+    this.clientDataService.triggerNextStep(3);
+    const data = this.clientDataService.getData();
+    this.pagelatestData = data;
+    this.loading = false;
+    console.log('Initial Client Data in frameselectin source:', this.images);
+  }
+
+  resetPagination() {
+    this.currentPage = 1;
+  }
+
   showGallery(isPortrait: boolean) {
+    this.loading = true;
     this.selectedItems = [];
     this.isPortrait = isPortrait;
     this.selectedFolderName = isPortrait ? 'Portrait Frame' : 'Landscape Frame';
     this.galleryOpen = true;
+    this.resetPagination();
 
     if (isPortrait) {
       this.selectedItems = [...this.pagelatestData.portraitFrameSelection];
@@ -40,6 +76,7 @@ export class Framepicturecomponent {
     }
     if (this.images.length == 0)
       this.fetchData(this.pagelatestData.clientId.toString());
+    else this.loading = false;
   }
 
   gobackFolderSelection() {
@@ -62,64 +99,21 @@ export class Framepicturecomponent {
     if (
       this.pagelatestData.portraitFrameSelection.length +
         this.pagelatestData.landscapeFrameSelection.length <
-      2
+      this.pagelatestData.noOfFrames
     ) {
       this.notify.error(
-        'Please select 1 picture for portrait/landscape frame!'
+        `Please select ${this.pagelatestData.noOfFrames} picture for frame!`
       );
       return;
     }
     this.clientDataService.triggerNextStep(4);
   }
 
-  // Image gallery logic
-  images: string[] = [];
-  pageSize = 12;
-  currentPage = 1;
-
-  selectedItems: AlbumSelectionItem[] = [];
-
-  loading = true;
-  previewLoading = false;
-
-  previewImage: string | null = null;
-  previewFileName = '';
-  previewComment = '';
-  isVisible = true;
-
-  galleryOpen = false;
-  pagelatestData: clientData = new clientData();
-
-  apiImageResponse: any;
-
   getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {
     this.apiImageResponse = data;
+    this.allowedSelectedPhotos = this.pagelatestData.noOfFrames;
     this.images = data ? data.map((item) => item.imageUrl) : [];
   }
-
-  ngOnInit(): void {
-    this.clientDataService.triggerNextStep(3);
-    const data = this.clientDataService.getData();
-    this.pagelatestData = data;
-    // const selectedImagesSource = this.selectedImagesSource();
-    // this.images = this.selectedImagesSource();
-    console.log('image source - 2', this.images);
-    this.loading = false;
-
-    console.log('Initial Client Data in frameselectin source:', this.images);
-  }
-
-  // selectedImagesSource() {
-  //   const mergedArray: AlbumSelectionItem[] =
-  //     this.pagelatestData.tranditionalAlbumSelection.concat(
-  //       this.pagelatestData.candidAlbumSelection
-  //     );
-
-  //   const frameimagesSource: string[] = mergedArray.map(
-  //     (item: AlbumSelectionItem) => item.url
-  //   );
-  //   return frameimagesSource;
-  // }
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.images.length / this.pageSize));
@@ -146,52 +140,52 @@ export class Framepicturecomponent {
 
   isSelected(imgUrl: string): boolean {
     const fileName = this.fileNameFromUrl(imgUrl);
-    return this.selectedItems.some((x) => x.fileName === fileName
-     && x.type === (this.isPortrait ? this.fileTypeFromUrl(imgUrl) + '_portrait' : this.fileTypeFromUrl(imgUrl) + '_landscape'));
+    return this.selectedItems.some(
+      (x) =>
+        x.fileName === fileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imgUrl)
+    );
   }
 
-  toggleSelection(imgUrl: string) {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    const idx = this.selectedItems.findIndex((x) => x.fileName === fileName
-    && x.type === (this.isPortrait ? this.fileTypeFromUrl(imgUrl) + '_portrait' : this.fileTypeFromUrl(imgUrl) + '_landscape'));
-  
+  doesthisfileExistInSelection(fileName: string, image: string): number {
+    const idx = this.selectedItems.findIndex(
+      (x) =>
+        x.fileName === fileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(image)
+    );
+
+    return idx;
+  }
+
+  toggleSelection(imageUrl: string) {
+    const fileName = this.fileNameFromUrl(imageUrl);
+    const idx = this.doesthisfileExistInSelection(fileName, imageUrl);
 
     if (idx >= 0) {
-      this.selectedItems.splice(idx, 1);
+      this.selectedItems.splice(idx, 1); //remove
     } else {
-      if (this.selectedItems.length >= 1) {
-        this.notify.error('You have already made required selction');
+      if (this.checkMaxSelectedCountReached()) {
+        this.notify.error('You have already selected required images');
         return;
       }
 
       this.selectedItems.push({
         fileName: fileName,
         comment: '',
-        type: this.isPortrait
-          ? this.fileTypeFromUrl(imgUrl) + '_portrait'
-          : this.fileTypeFromUrl(imgUrl) + '_landscape',
-        url: imgUrl,
+        type: this.isPortrait ? 'portrait' : 'landscape',
+        url: imageUrl,
       });
     }
-
     console.log('selected photos', this.selectedItems);
   }
 
-  get hasPortraitType(): boolean {
-    return this.pagelatestData.portraitFrameSelection.length > 0;
-  }
-
-  get hasLandscapeType(): boolean {
-    return this.pagelatestData.landscapeFrameSelection.length > 0;
-  }
-
-  openPreview(imgUrl: string, mainFrame: boolean) {
-    this.isVisible = mainFrame;
-
-    this.previewImage = imgUrl;
-    this.previewFileName = this.fileNameFromUrl(imgUrl);
+  openPreview(imageUrl: string) {
+    this.previewImageUrl = imageUrl;
+    this.previewFileName = this.fileNameFromUrl(imageUrl);
     const existing = this.selectedItems.find(
-      (x) => x.fileName === this.previewFileName
+      (x) =>
+        x.fileName === this.previewFileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imageUrl)
     );
     this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
@@ -202,81 +196,79 @@ export class Framepicturecomponent {
   }
 
   closePreview() {
-    this.previewImage = null;
+    this.previewImageUrl = null;
     this.previewFileName = '';
     this.previewComment = '';
     this.previewLoading = false;
   }
 
+  getitemfromSelection(imageUrl: string): any {
+    const fileName = this.fileNameFromUrl(imageUrl);
+    return this.selectedItems.find(
+      (x) =>
+        x.fileName === fileName &&
+        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imageUrl)
+    );
+  }
+
   checkMaxSelectedCountReached() {
-    return this.selectedItems.length >= this.allowedSelectedPhotos;
+    let overAllSelectedCount = this.selectedItems.length;
+    if (this.isPortrait) {
+      overAllSelectedCount +=
+        this.pagelatestData.landscapeFrameSelection.length;
+    } else {
+      overAllSelectedCount += this.pagelatestData.portraitFrameSelection.length;
+    }
+
+    return overAllSelectedCount >= this.allowedSelectedPhotos;
   }
 
   savePreviewComment() {
-    const fileName = this.previewFileName;
-    let item = this.selectedItems.find((x) => x.fileName === fileName && 
-  x.type === (this.isPortrait ? this.fileTypeFromUrl(this.previewImage || '') + '_portrait' : this.fileTypeFromUrl(this.previewImage || '') + '_landscape'));
+    this.loading = true;
+
+    const imageUrl = this.previewImageUrl || '';
+    let item = this.getitemfromSelection(imageUrl);
 
     if (!item) {
-      item = {
-        fileName: this.fileNameFromUrl(fileName),
-        comment: '',
-        type: this.isPortrait
-          ? this.fileTypeFromUrl(fileName) + '+portrait'
-          : 'landscape',
-        url: this.previewImage || '',
-      };
-
-      if (
-        this.selectedItems.length > 0 )
-       {
-        this.notify.error('Require photo already selected');
+      if (this.checkMaxSelectedCountReached()) {
+        this.notify.error('You have already selected required images');
+        this.loading = false;
         return;
       }
-
-  
-
+      item = {
+        fileName: this.fileNameFromUrl(imageUrl),
+        comment: '',
+        type: this.isPortrait ? 'portrait' : 'landscape',
+        url: this.previewImageUrl || '',
+      };
       this.selectedItems.push(item);
     }
+
     item.comment = this.previewComment;
+    this.loading = false;
     this.closePreview();
   }
 
-  private mergeByFileName(
-    base: AlbumSelectionItem[],
-    add: AlbumSelectionItem[]
-  ) {
-    const map = new Map<string, AlbumSelectionItem>();
-    base.forEach((i) => map.set(i.fileName, { ...i }));
-    add.forEach((i) =>
-      map.set(i.fileName, {
-        ...(map.get(i.fileName) || ({} as AlbumSelectionItem)),
-        ...i,
-      })
-    );
-    return Array.from(map.values());
-  }
-
   fetchData(clientId: string): void {
-    this.loading = true;
     console.log('Fetching data from API...');
     this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
       next: (data) => {
-        // This is where you process the successful response
         console.log('API Response:', data);
         this.getImageUrls(data);
         this.loading = false;
       },
       error: (error) => {
-        // This is executed if the request fails (e.g., 404, 500)
         console.log('There was an error!', error);
         this.loading = false;
       },
-      complete: () => {},
+      complete: () => {
+        this.loading = false;
+      },
     });
   }
 
   saveSelection() {
+    this.loading = true;
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
@@ -306,12 +298,18 @@ export class Framepicturecomponent {
       next: (response) => {
         console.log('Save Response:', response);
         this.notify.success('Your Selection/unselection saved successfully!');
-        this.galleryOpen =false;
+        this.galleryOpen = false;
         this.selectedFolderName = '';
+        this.loading = false;
       },
       error: (error) => {
         console.log('Save Error:', error);
+        this.loading = false;
         this.notify.error('Failed to save your selection!');
+      },
+
+      complete: () => {
+        this.loading = false;
       },
     });
   }

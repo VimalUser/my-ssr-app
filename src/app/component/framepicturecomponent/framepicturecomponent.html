@@ -21,7 +21,7 @@
     <div class="row">
       <div class="col-12">
         <h3 class="fw-bold mb-2 text-white">Frame Picture</h3>
-        <div class="mb-3 text-secondary">
+        <div class="mb-3 text-white">
           Select your favorite images to proceed in frame...
         </div>
       </div>
@@ -41,23 +41,8 @@
           <div class="fw-semibold align-self-center">
             <p>Portrait Frame</p>
            <button class="btn btn-info" (click)="showGallery(true)"> Select image</button><br> 
-            <!-- <a (click)="showGallery(true)">Select image</a> <br /> -->             
-              {{pagelatestData.portraitFrameSelection.length}} selected            
-            <!-- <section *ngIf="hasPortraitType">
-              <button
-                class="btn btn-sm btn-outline-secondary"
-                (click)="
-                  openPreview(
-                    pagelatestData.portraitFrameSelection[0].url,
-                    true
-                  );
-                  $event.stopPropagation()
-                "
-                title="Preview">
-                Preview
-                <i class="bi bi-eye"></i>
-              </button>
-            </section> -->
+              {{pagelatestData.portraitFrameSelection.length}} selected         
+           
           </div>
         </div>
       </div>
@@ -73,26 +58,8 @@
           </div>
           <div class="fw-semibold align-self-center">
             <p>Landscape Frame</p>
-           <button class="btn btn-info" (click)="showGallery(false)"> Select image</button><br>
-              
+           <button class="btn btn-info" (click)="showGallery(false)"> Select image</button><br>              
              <span> {{pagelatestData.landscapeFrameSelection.length}} selected</span>
-            
-
-            <!-- <section *ngIf="hasLandscapeType">
-              <button
-                class="btn btn-sm btn-outline-secondary"
-                (click)="
-                  openPreview(
-                    pagelatestData.landscapeFrameSelection[0].url,
-                    true
-                  );
-                  $event.stopPropagation()
-                "
-                title="Preview">
-                Preview
-                <i class="bi bi-eye"></i>
-              </button>
-            </section> -->
           </div>
         </div>
       </div>
@@ -120,45 +87,38 @@
 
    <div class="row mb-2">
       <div class="col-12">
-        <h5 class="mb-3 text-white">Selected: {{ selectedItems.length }}</h5>
+        <h5 class="mb-3 text-white">Selected: {{ pagelatestData.portraitFrameSelection.length}} Portrait,{{ pagelatestData.landscapeFrameSelection.length  }} Landscape - Total: {{pagelatestData.portraitFrameSelection.length + pagelatestData.landscapeFrameSelection.length  }}/{{pagelatestData.noOfFrames}} </h5>
       </div>
     </div>
 
 
     <!-- Grid -->
     <div class="row">
-      <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
-        <div
-          class="card custom-img-card"
-          [class.selected-card]="isSelected(img)"
-          (click)="toggleSelection(img)">
-          <!-- Image -->
-          <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
+  <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
+    <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)" (click)="toggleSelection(img)">
+      <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
 
-          <!-- Checkmark overlay if selected -->
-          <div class="checkmark-overlay" *ngIf="isSelected(img)">
-            <i class="bi bi-check-lg"></i>
-          </div>
+      <!-- Checkmark overlay -->
+      <div class="checkmark-overlay" *ngIf="isSelected(img)">
+        <i class="bi bi-check-lg"></i>
+      </div>
 
-          <!-- Bottom bar with filename + preview button -->
-          <div
-            class="card-footer d-flex justify-content-between align-items-center small">
-            <span
-              class="text-truncate"
-              [title]="fileNameFromUrl(img)"
-              style="max-width: 70%">
-              {{ fileNameFromUrl(img) }}
-            </span>
-            <button
-              class="btn btn-sm btn-outline-secondary"
-              (click)="openPreview(img, false); $event.stopPropagation()"
-              title="Preview">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-        </div>
+      <!-- Floating footer overlay -->
+      <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
+        <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
+          {{ fileNameFromUrl(img) }}
+        </span>
+        <button
+          class="btn btn-sm btn-light btn-eye"
+          (click)="openPreview(img); $event.stopPropagation()"
+          title="Preview">
+          <i class="bi bi-eye"></i>
+        </button>
       </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center my-3">
@@ -180,10 +140,10 @@
 </section>
 
 <!-- Fullscreen Preview -->
-<div class="preview-overlay" *ngIf="previewImage">
+<div class="preview-overlay" *ngIf="previewImageUrl">
   <div class="preview-content">
     <div class="preview-header">
-      <h6 class="mb-0">{{ previewFileName }}</h6>
+      <h6 class="mb-0">{{previewFileName}}</h6>
       <button
         class="btn-close"
         (click)="closePreview()"
@@ -197,7 +157,7 @@
       </div>
 
       <img
-        [src]="previewImage"
+        [src]="previewImageUrl"
         class="preview-img"
         alt="preview"
         (load)="onPreviewImageLoad()"
@@ -219,7 +179,7 @@
         <div class="row">
           <div class="col-12 d-flex justify-content-end gap-2">
             <button class="btn btn-light" (click)="closePreview()">Close</button>
-            <button class="btn btn-primary" (click)="savePreviewComment()">Save Comment</button>
+            <button class="btn btn-primary" (click)="savePreviewComment()">Select & add Comment</button>
           </div>
         </div>
       </div>

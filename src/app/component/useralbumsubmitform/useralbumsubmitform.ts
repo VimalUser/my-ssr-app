@@ -42,14 +42,13 @@ export class Useralbumsubmitform implements OnInit {
     const updated: clientData = {
       ...data,
       status: 'Completed',
+      isSubmitted: true,
     };
 
     this.clientDataService.updateData(updated);
     this.apiCalltoSave(updated);
     
-    console.log('submit form ClientDataService:', updated);
-
-   
+    console.log('submit form ClientDataService:', updated);   
   }
 
   apiCalltoSave(updateData: clientData) {
@@ -79,7 +78,6 @@ export class Useralbumsubmitform implements OnInit {
       submitFormSection.style.display = 'none';
       submissionConfirmation.style.display = 'block'; // Show selection section
     }
-
   }
 
   prevStep() {
@@ -89,9 +87,4 @@ export class Useralbumsubmitform implements OnInit {
   nextStep() {
     this.clientDataService.triggerNextStep(4);
   }
-  
-  //  redirectToHome() {
-  //   console.log("current user in submit form",  this.clientDataService.getCurrentUser());
-  //   this.router.navigate(['/userhome/startpage']);
-  // }
 }

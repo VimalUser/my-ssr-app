@@ -21,7 +21,7 @@
     <div class="row">
       <div class="col-12">
         <h3 class="fw-bold mb-2 text-white">Cover Picture</h3>
-        <div class="mb-3 text-secondary">
+        <div class="mb-3 text-white">
           Select your favorite images to proceed in album cover page...
         </div>
       </div>
@@ -44,22 +44,6 @@
             <p>
               {{pagelatestData.coverSelection.length}} photo selected
             </p>
-           
-            <!-- <section >
-              <button
-                class="btn btn-sm btn-outline-secondary"
-                (click)="
-                  openPreview(
-                    pagelatestData.portraitFrameSelection[0].url
-                    
-                  );
-                  $event.stopPropagation()
-                "
-                title="Preview">
-                Preview
-                <i class="bi bi-eye"></i>
-              </button>
-            </section> -->
           </div>
         </div>
       </div>
@@ -94,39 +78,32 @@
 
 
     <!-- Grid -->
+    <!-- Grid -->
     <div class="row">
-      <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
-        <div
-          class="card custom-img-card"
-          [class.selected-card]="isSelected(img)"
-          (click)="toggleSelection(img)">
-          <!-- Image -->
-          <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
+  <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
+    <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)" (click)="toggleSelection(img)">
+      <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
 
-          <!-- Checkmark overlay if selected -->
-          <div class="checkmark-overlay" *ngIf="isSelected(img)">
-            <i class="bi bi-check-lg"></i>
-          </div>
+      <!-- Checkmark overlay -->
+      <div class="checkmark-overlay" *ngIf="isSelected(img)">
+        <i class="bi bi-check-lg"></i> 
+      </div>
 
-          <!-- Bottom bar with filename + preview button -->
-          <div
-            class="card-footer d-flex justify-content-between align-items-center small">
-            <span
-              class="text-truncate"
-              [title]="fileNameFromUrl(img)"
-              style="max-width: 70%">
-              {{ fileNameFromUrl(img) }}
-            </span>
-            <button
-              class="btn btn-sm btn-outline-secondary"
-              (click)="openPreview(img); $event.stopPropagation()"
-              title="Preview">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-        </div>
+      <!-- Floating footer overlay -->
+      <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
+        <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
+          {{ fileNameFromUrl(img) }}
+        </span>
+        <button
+          class="btn btn-sm btn-light btn-eye"
+          (click)="openPreview(img); $event.stopPropagation()"
+          title="Preview">
+          <i class="bi bi-eye"></i>
+        </button>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center my-3">
@@ -142,13 +119,13 @@
         (click)="changePage(1)"
         [disabled]="currentPage === totalPages">
         Next
-      </button>
+      </button> 
     </div>
   </div>
 </section>
 
 <!-- Fullscreen Preview -->
-<div class="preview-overlay" *ngIf="previewImage">
+<div class="preview-overlay" *ngIf="previewImageUrl">
   <div class="preview-content">
     <div class="preview-header">
       <h6 class="mb-0">{{ previewFileName }}</h6>
@@ -165,7 +142,7 @@
       </div>
 
       <img
-        [src]="previewImage"
+        [src]="previewImageUrl"
         class="preview-img"
         alt="preview"
         (load)="onPreviewImageLoad()"

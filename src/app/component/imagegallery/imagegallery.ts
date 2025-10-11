@@ -44,7 +44,6 @@ export class Imagegallery implements OnInit {
 
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(2);
-
     this.loading = false;
     const data = this.clientDataService.getData();
     this.clientDataload = data;
@@ -54,7 +53,7 @@ export class Imagegallery implements OnInit {
   resetPagination() {
     this.currentPage = 1;
   }
-  
+
   showGallery(folderName: string) {
     this.loading = true;
 
@@ -65,135 +64,27 @@ export class Imagegallery implements OnInit {
     this.selectedItems = [];
     const data = this.clientDataService.getData();
     this.clientDataload = data;
-    this.galleryOpen = true;
     this.resetPagination();
     this.galleryOpen = true;
 
     if (folderName === this.folderNames[0]) {
       this.isTraditional = true;
       this.selectedItems = [...data.tranditionalAlbumSelection];
-      console.log('traditional photos', this.selectedItems);
+      console.log('traditional selected photos', this.selectedItems);
     } else {
       this.isTraditional = false;
       this.selectedItems = [...data.candidAlbumSelection];
-      console.log('candid photos', this.selectedItems);
+      console.log('candid selected photos', this.selectedItems);
     }
 
     this.getImagesbyPath();
-    this.loading = false;
   }
-
-  // Set 1: Example URLs of random images (different categories)
-  traditionalImages: string[] = [
-    'https://picsum.photos/id/1011/400/300',
-    'https://picsum.photos/id/1012/400/300',
-    'https://picsum.photos/id/1013/400/300',
-    'https://picsum.photos/id/1014/400/300',
-    'https://picsum.photos/id/1015/400/300',
-    'https://picsum.photos/id/1016/400/300',
-    'https://picsum.photos/id/1018/400/300',
-    'https://picsum.photos/id/1020/400/300',
-    'https://picsum.photos/id/1021/400/300',
-    'https://picsum.photos/id/1022/400/300',
-    'https://picsum.photos/id/1024/400/300',
-    'https://picsum.photos/id/1025/400/300',
-    'https://picsum.photos/id/1026/400/300',
-    'https://picsum.photos/id/1027/400/300',
-    'https://picsum.photos/id/1028/400/300',
-    'https://picsum.photos/id/1029/400/300',
-    'https://picsum.photos/id/1030/400/300',
-    'https://picsum.photos/id/1031/400/300',
-    'https://picsum.photos/id/1032/400/300',
-    'https://picsum.photos/id/1033/400/300',
-    'https://picsum.photos/id/1035/400/300',
-    'https://picsum.photos/id/1036/400/300',
-    'https://picsum.photos/id/1037/400/300',
-    'https://picsum.photos/id/1038/400/300',
-    'https://picsum.photos/id/1039/400/300',
-    'https://picsum.photos/id/1040/400/300',
-    'https://picsum.photos/id/1041/400/300',
-    'https://picsum.photos/id/1042/400/300',
-    'https://picsum.photos/id/1043/400/300',
-    'https://picsum.photos/id/1044/400/300',
-    'https://picsum.photos/id/1045/400/300',
-    'https://picsum.photos/id/1047/400/300',
-    'https://picsum.photos/id/1048/400/300',
-    'https://picsum.photos/id/1049/400/300',
-    'https://picsum.photos/id/1050/400/300',
-    'https://picsum.photos/id/1051/400/300',
-    'https://picsum.photos/id/1052/400/300',
-    'https://picsum.photos/id/1053/400/300',
-    'https://picsum.photos/id/1054/400/300',
-    'https://picsum.photos/id/1055/400/300',
-    'https://picsum.photos/id/1056/400/300',
-    'https://picsum.photos/id/1057/400/300',
-    'https://picsum.photos/id/1058/400/300',
-    'https://picsum.photos/id/1059/400/300',
-    'https://picsum.photos/id/1060/400/300',
-    'https://picsum.photos/id/1061/400/300',
-    'https://picsum.photos/id/1062/400/300',
-    'https://picsum.photos/id/1063/400/300',
-    'https://picsum.photos/id/1064/400/300',
-  ];
-  candidImages: string[] = [
-    'https://picsum.photos/id/1/500/300',
-    'https://picsum.photos/id/2/500/300',
-    'https://picsum.photos/id/3/500/300',
-    'https://picsum.photos/id/4/500/300',
-    'https://picsum.photos/id/5/500/300',
-    'https://picsum.photos/id/6/500/300',
-    'https://picsum.photos/id/7/500/300',
-    'https://picsum.photos/id/8/500/300',
-    'https://picsum.photos/id/9/500/300',
-    'https://picsum.photos/id/10/500/300',
-    'https://picsum.photos/id/21/500/300',
-    'https://picsum.photos/id/22/500/300',
-    'https://picsum.photos/id/23/500/300',
-    'https://picsum.photos/id/24/500/300',
-    'https://picsum.photos/id/25/500/300',
-    'https://picsum.photos/id/26/500/300',
-    'https://picsum.photos/id/27/500/300',
-    'https://picsum.photos/id/28/500/300',
-    'https://picsum.photos/id/29/500/300',
-    'https://picsum.photos/id/30/500/300',
-    'https://picsum.photos/id/31/500/300',
-    'https://picsum.photos/id/32/500/300',
-    'https://picsum.photos/id/33/500/300',
-    'https://picsum.photos/id/34/500/300',
-    'https://picsum.photos/id/35/500/300',
-    'https://picsum.photos/id/36/500/300',
-    'https://picsum.photos/id/37/500/300',
-    'https://picsum.photos/id/38/500/300',
-    'https://picsum.photos/id/39/500/300',
-    'https://picsum.photos/id/40/500/300',
-    'https://picsum.photos/id/41/500/300',
-    'https://picsum.photos/id/42/500/300',
-    'https://picsum.photos/id/43/500/300',
-    'https://picsum.photos/id/44/500/300',
-    'https://picsum.photos/id/45/500/300',
-    'https://picsum.photos/id/46/500/300',
-    'https://picsum.photos/id/47/500/300',
-    'https://picsum.photos/id/48/500/300',
-    'https://picsum.photos/id/49/500/300',
-    'https://picsum.photos/id/50/500/300',
-    'https://picsum.photos/id/51/500/300',
-    'https://picsum.photos/id/52/500/300',
-    'https://picsum.photos/id/53/500/300',
-    'https://picsum.photos/id/54/500/300',
-    'https://picsum.photos/id/55/500/300',
-    'https://picsum.photos/id/56/500/300',
-    'https://picsum.photos/id/57/500/300',
-    'https://picsum.photos/id/58/500/300',
-    'https://picsum.photos/id/59/500/300',
-    'https://picsum.photos/id/60/500/300',
-  ];
 
   gobackFolderSelection() {
     const confirmCancelled = confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
-      // User pressed Cancel, stop execution here
       return;
     }
 
@@ -221,9 +112,6 @@ export class Imagegallery implements OnInit {
       this.notify.error(alertMessage);
       return;
     }
-    // Logic to proceed to the next step
-    console.log('Proceeding to the next step...');
-    // Notify other components to move to next step
     this.clientDataService.triggerNextStep(3);
   }
 
@@ -252,31 +140,16 @@ export class Imagegallery implements OnInit {
   }
 
   toggleSelection(imgUrl: string) {
-    let overAllSelectedCount = this.selectedItems.length;
-    if (this.isTraditional) {
-      overAllSelectedCount =
-        overAllSelectedCount + this.clientDataload.candidAlbumSelection.length;
-    } else {
-      overAllSelectedCount =
-        overAllSelectedCount +
-        this.clientDataload.tranditionalAlbumSelection.length;
-    }
-
     const fileName = this.fileNameFromUrl(imgUrl);
     const idx = this.selectedItems.findIndex((x) => x.fileName === fileName);
 
     if (idx >= 0) {
-      this.selectedItems.splice(idx, 1);
+      this.selectedItems.splice(idx, 1); //remove that item
     } else {
-      if (overAllSelectedCount >= this.clientDataload.noOfPics) {
+      if (this.isMaximumImagesSelected()) {
         this.notify.error('You have already made required selction');
         return;
-      } 
-    }
-
-    if (idx >= 0) {
-      this.selectedItems.splice(idx, 1);
-    } else {
+      }
       this.selectedItems.push({
         fileName: this.fileNameFromUrl(imgUrl),
         comment: '',
@@ -287,6 +160,17 @@ export class Imagegallery implements OnInit {
     }
 
     console.log('selected photos', this.selectedItems);
+  }
+
+  isMaximumImagesSelected(): boolean {
+    let overAllSelectedCount = this.selectedItems.length;
+    if (this.isTraditional) {
+      overAllSelectedCount += this.clientDataload.candidAlbumSelection.length;
+    } else {
+      overAllSelectedCount +=
+        this.clientDataload.tranditionalAlbumSelection.length;
+    }
+    return overAllSelectedCount >= this.clientDataload.noOfPics;
   }
 
   openPreview(imgUrl: string) {
@@ -313,7 +197,12 @@ export class Imagegallery implements OnInit {
   savePreviewComment() {
     const fileName = this.previewFileName;
     let item = this.selectedItems.find((x) => x.fileName === fileName);
+
     if (!item) {
+      if (this.isMaximumImagesSelected()) {
+        this.notify.error('You have already selected required images');
+        return;
+      }
       item = {
         fileName: this.fileNameFromUrl(fileName),
         comment: '',
@@ -323,27 +212,12 @@ export class Imagegallery implements OnInit {
       };
       this.selectedItems.push(item);
     }
+
     item.comment = this.previewComment;
     this.closePreview();
   }
 
-  private mergeByFileName(
-    base: AlbumSelectionItem[],
-    add: AlbumSelectionItem[]
-  ) {
-    const map = new Map<string, AlbumSelectionItem>();
-    base.forEach((i) => map.set(i.fileName, { ...i }));
-    add.forEach((i) =>
-      map.set(i.fileName, {
-        ...(map.get(i.fileName) || ({} as AlbumSelectionItem)),
-        ...i,
-      })
-    );
-    return Array.from(map.values());
-  }
-
   getImagesbyPath() {
-    console.log('Fetching data from API...');
     let folderPath = this.isTraditional ? 'traditional' : 'candid';
     this.fetchData(this.clientDataload.clientId.toString() ?? '', folderPath);
   }
@@ -362,20 +236,65 @@ export class Imagegallery implements OnInit {
         console.log('There was an error!', error);
         this.loading = false;
       },
-      complete: () => {},
+      complete: () => {
+        this.loading = false;
+      },
     });
   }
 
   saveSelection() {
+    // If Frame/Cover is NOT selected, save immediately.
+    if (!this.isFrameOrCoverSelected()) {
+      this.apiCalltoSave(this.updateModelWithLatestData());
+      return;
+    }
+
+    const confirmed = confirm(
+      'You have already selected Frame/Cover photos. Any changes will clear frame/cover selection and require you to reselect again.<br/> Do you want to proceed?'
+    );
+
+    // If the user confirms (clicks OK), proceed with saving.
+    if (confirmed) {
+      this.apiCalltoSave(this.updateModelWithLatestData(true));
+    }
+
+    // If the user cancels (clicks Cancel), the function returns, doing nothing.
+  }
+
+  saveSelection1() {
+    if (this.isFrameOrCoverSelected()) {
+      const confirmCancelled = confirm(
+        'You have already selected Frame/Cover photos,any changes will clear frame/cover selection and have reslect again.'
+      );
+      if (!confirmCancelled) {
+        return;
+      } else {
+        this.apiCalltoSave(this.updateModelWithLatestData());
+      }
+    }
+
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
-  updateModelWithLatestData() {
+  isFrameOrCoverSelected(): boolean {
+    return (
+      this.clientDataload.portraitFrameSelection.length > 0 ||
+      this.clientDataload.landscapeFrameSelection.length > 0 ||
+      this.clientDataload.coverSelection.length > 0
+    );
+  }
+
+  updateModelWithLatestData(clearFrameCover: boolean = false) {
     const existingData: clientData = this.clientDataService.getData();
     const propertyToUpdate = this.isTraditional
       ? 'tranditionalAlbumSelection'
       : 'candidAlbumSelection';
 
+    if (clearFrameCover) {
+      existingData.portraitFrameSelection = [];
+      existingData.landscapeFrameSelection = [];
+      existingData.coverSelection = [];
+    }
     const updated: clientData = {
       ...existingData,
       [propertyToUpdate]: [...this.selectedItems],
