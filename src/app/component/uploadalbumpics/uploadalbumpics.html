@@ -26,16 +26,20 @@
 
         <div class="button-row">
           <!-- Add Images -->
-          <button class="btn-modern add-btn" (click)="traditionalFileInput.click()"><i class="fa fa-folder-open fav-icon" ></i> Choose Images</button>
+          <button class="btn-modern add-btn" (click)="traditionalFileInput.click()"><i
+              class="fa fa-folder-open fav-icon"></i> Choose Images</button>
 
           <!-- Wide Upload Button -->
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('traditional')"><i class="fa fa-upload fav-icon"></i> Upload</button>
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('traditional')"><i
+              class="fa fa-upload fav-icon"></i> Upload</button>
 
           <!-- Wide Delete All Button -->
-          <button [disabled]="traditionalPhotosCount == 0" class="btn-modern delete-btn wide-btn" (click)="onDeleteAll('traditional')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+          <button [disabled]="traditionalPhotosCount == 0" class="btn-modern delete-btn wide-btn"
+            (click)="onDeleteAll('traditional')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
 
           <span class="files-supported">{{allowedTypesMessage}}</span>
         </div>
+        <span class="files-supported">Max allowed {{MAX_FILE_SIZE_MB}} MB</span>
 
         <div class="info-row">
           <span class="file-count">{{ selectedTraditionalFiles.length }} images selected to upload</span>
@@ -54,11 +58,15 @@
         <input type="file" multiple (change)="onFileSelected($event, 'candid')" class="file-input" #candidFileInput />
 
         <div class="button-row">
-          <button class="btn-modern add-btn" (click)="candidFileInput.click()"><i class="fa fa-folder-open fav-icon" ></i> Choose Images</button>
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('candid')"><i class="fa fa-upload fav-icon"></i> Upload</button>
-          <button [disabled]="candidPhotosCount == 0" class="btn-modern delete-btn wide-btn" (click)="onDeleteAll('candid')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+          <button class="btn-modern add-btn" (click)="candidFileInput.click()"><i
+              class="fa fa-folder-open fav-icon"></i> Choose Images</button>
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('candid')"><i
+              class="fa fa-upload fav-icon"></i> Upload</button>
+          <button [disabled]="candidPhotosCount == 0" class="btn-modern delete-btn wide-btn"
+            (click)="onDeleteAll('candid')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
           <span class="files-supported">{{allowedTypesMessage}}</span>
         </div>
+        <span class="files-supported">Max allowed {{MAX_FILE_SIZE_MB}} MB</span>
 
         <div class="info-row">
           <span class="file-count">{{ selectedCandidFiles.length }} images selected to upload</span>
@@ -77,11 +85,15 @@
         <input type="file" (change)="onFileSelected($event, 'loginCover')" class="file-input" #loginCoverFileInput />
 
         <div class="button-row">
-          <button class="btn-modern add-btn" (click)="loginCoverFileInput.click()"><i class="fa fa-folder-open fav-icon" ></i> Choose Images</button>
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('loginCover')"><i class="fa fa-upload fav-icon"></i> Upload</button>
-          <button [disabled]="loginCoverPhotosCount == 0" class="btn-modern delete-btn wide-btn" (click)="onDeleteAll('logincover')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
-          <span class="files-supported">{{allowedTypesMessage}}</span>
+          <button class="btn-modern add-btn" (click)="loginCoverFileInput.click()"><i
+              class="fa fa-folder-open fav-icon"></i> Choose Images</button>
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('loginCover')"><i
+              class="fa fa-upload fav-icon"></i> Upload</button>
+          <button [disabled]="loginCoverPhotosCount == 0" class="btn-modern delete-btn wide-btn"
+            (click)="onDeleteAll('logincover')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+          <span class="files-supported">{{allowedTypesMessage}}</span><br />
         </div>
+        <span class="files-supported">Max allowed {{MAX_FILE_SIZE_MB}} MB</span>
 
         <div class="info-row">
           <span class="file-count">{{ selectedLoginCoverFiles.length }} images selected to upload</span>

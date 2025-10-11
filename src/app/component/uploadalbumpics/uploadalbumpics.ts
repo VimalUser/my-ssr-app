@@ -25,6 +25,9 @@ export class Uploadalbumpics implements OnInit {
   clientData: any;
   allowedTypes = environment.allowedImageTypes.join(',');
   allowedTypesMessage = `Only ${this.allowedTypes.toUpperCase()} formats are supported`;
+  readonly MAX_FILE_SIZE_MB = 500; // 500 MB
+  readonly MAX_FILE_SIZE_BYTES = this.MAX_FILE_SIZE_MB * 1024 * 1024;
+
 
   constructor(
     private fb: FormBuilder,
@@ -93,17 +96,39 @@ export class Uploadalbumpics implements OnInit {
       const allowedExtensions = this.allowedTypes;
       const fileArray: File[] = Array.from(files);
 
-      // Separate valid and invalid files
-      const validFiles = fileArray.filter(file => {
+      const validFiles: File[] = [];
+      const invalidTypeFiles: string[] = [];
+      const tooLargeFiles: string[] = [];
+
+      for (const file of fileArray) {
         const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-        return allowedExtensions.includes(ext);
-      });
 
-      const invalidFiles = fileArray.filter(file => !validFiles.includes(file));
+        // 1️⃣ Check file type
+        const isTypeValid = allowedExtensions.includes(ext);
 
-      // Show error if any invalid files
-      if (invalidFiles.length > 0) {
-        this.notify.error('Only JPG, JPEG, PNG formats are supported');
+        // 2️⃣ Check file size
+        const isSizeValid = file.size <= this.MAX_FILE_SIZE_BYTES;
+
+        if (!isTypeValid) {
+          invalidTypeFiles.push(file.name);
+        } else if (!isSizeValid) {
+          tooLargeFiles.push(`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+        } else {
+          validFiles.push(file);
+        }
+      }
+
+      // 🔴 Show combined error messages
+      if (invalidTypeFiles.length > 0) {
+        this.notify.error(
+          `Only ${allowedExtensions} formats are supported.\nInvalid: ${invalidTypeFiles.join(', ')}`
+        );
+      }
+
+      if (tooLargeFiles.length > 0) {
+        this.notify.error(
+          `These files exceed the ${this.MAX_FILE_SIZE_MB} MB limit:\n${tooLargeFiles.join('\n')}`
+        );
       }
 
       // ✅ Add only valid files
@@ -130,11 +155,10 @@ export class Uploadalbumpics implements OnInit {
         }
       }
 
-      // Reset file input to allow selecting same file again
+      // Reset input so user can reselect the same file again
       event.target.value = '';
     }
   }
-
 
   // Triggers the API call to upload the selected images
   onUpload(category: string): void {
@@ -152,6 +176,25 @@ export class Uploadalbumpics implements OnInit {
     }
 
     if (filesToUpload.length > 0) {
+
+      // Combine all files into one array
+      const allFiles = [
+        ...this.selectedTraditionalFiles,
+        ...this.selectedCandidFiles,
+        ...this.selectedLoginCoverFiles
+      ];
+
+      // Compute total size in bytes
+      const totalSize = allFiles.reduce((sum, file) => sum + file.size, 0);
+
+      if (totalSize > this.MAX_FILE_SIZE_BYTES) {
+        const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+        this.notify.error(
+          `Total file size is ${totalSizeMB} MB. Maximum allowed size is ${this.MAX_FILE_SIZE_MB} MB.`
+        );
+        return;
+      }
+
       this.loading = true;
       const formData = new FormData();
       for (const file of filesToUpload) {
