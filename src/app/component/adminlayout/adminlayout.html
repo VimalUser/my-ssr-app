@@ -1,4 +1,4 @@
-<header class="d-flex align-items-center border-bottom p-2 px-3 sticky-top"
+<header class="d-flex align-items-center border-bottom p-2 px-3"
   style="background-color: #f6ecdb; z-index: 1020;">
   <div class="container-fluid">
     <div class="row w-100 align-items-center">
@@ -20,20 +20,21 @@
   </div>
 </header>
 
-<div class="d-flex flex-grow-1" style="min-height: 100vh;">
+<div class="d-flex flex-grow-1" style="min-height: calc(100vh - 56px);">
 
-  <div class="offcanvas offcanvas-start sidebar-custom d-lg-block flex-shrink-0" tabindex="-1" id="sidebarMenu"
-    aria-labelledby="sidebarMenuLabel">
+ <div class="offcanvas offcanvas-start sidebar-custom d-lg-block flex-shrink-0"
+     [class.collapsed]="sidebarCollapsed"
+     tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header border-bottom d-lg-none">
       <h5 class="offcanvas-title text-white" id="sidebarMenuLabel">Menu</h5>
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
     <div class="offcanvas-body p-3 d-flex flex-column h-100">
-      <button style="text-align: left;" class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3"
-        (click)="createnew()">
-        + Create new client
-      </button>
+     <button class="btn btn-warning w-100 mb-3 text-white fw-bold rounded-3 d-flex align-items-center justify-content-center">
+  <i class="bi bi-plus"></i>
+  <span class="ms-2">Create new client</span>
+</button>
 
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item mb-2">
@@ -42,29 +43,26 @@
             class="nav-link sidebar-link d-flex align-items-center"
             routerLinkActive="sidebar-active"
             [routerLinkActiveOptions]="{ exact: true }">
-            <i class="bi bi-house-door me-2"></i> Home - Dashboard
+            <i class="bi bi-house-door me-2"></i><span> Dashboard</span>  
           </a>
         </li>
       </ul>
 
-      <!-- <div class="sidebar-footer mt-auto pt-3 border-top d-flex align-items-center text-white">
-        <span>
-          {{currentUserName$ | async}}
-          <br />
-          <button class="btn btn-warning fw-bold mt-2" style="border-radius: 8px" (click)="logout()">
-            Logout
-          </button>
-        </span>
-      </div> -->
+   
+
       <div class="sidebar-footer mt-auto pt-3 border-top d-flex flex-column text-white">
         <div class="d-flex align-items-center mb-2">
           <i class="bi bi-person-circle me-3 fs-3"></i>
           <span class="fw-bold">{{currentUserName$ | async}}</span>
         </div>
-
+  
         <button class="btn btn-warning fw-bold align-self-start" style="border-radius: 8px" (click)="logout()">
-          <i class="bi bi-box-arrow-right me-1"></i> Logout
+          <i class="bi bi-box-arrow-right me-1"></i> <span>Logout</span> 
         </button>
+         <button class="btn btn-outline-warning d-none d-lg-inline-flex align-items-center mt-3" style="border-radius: 8px; padding: 6px 12px;"
+        (click)="toggleSidebar()" aria-label="Toggle sidebar"><span>Shirnk</span> 
+  <i [ngClass]="{'bi-chevron-left': !sidebarCollapsed, 'bi-chevron-right': sidebarCollapsed}" class="fs-4"></i>
+</button>
       </div>
     </div>
   </div>

@@ -27,6 +27,9 @@ export class AdminReviewComments implements OnInit {
     }
     });
   }
+   goBack() {
+    window.history.back();
+  }
 
   get PortraitFilename(){
    return this.pageLatestAdminData.portraitFrameSelection[0].fileName || '';

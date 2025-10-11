@@ -33,6 +33,9 @@ export class SendClientCredentials {
       this.fetchData();
     }
   }
+   goBack() {
+    window.history.back();
+  }
 
   // This is the single, combined constructor
   constructor(

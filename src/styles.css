@@ -55,3 +55,9 @@
 a:hover {
   cursor: pointer;
 }
+
+.back-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}

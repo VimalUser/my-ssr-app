@@ -43,7 +43,9 @@ export class Newclientalbumform implements OnInit {
     }
 
   }
-
+ goBack() {
+    window.history.back();
+  }
   // This is the single, combined constructor
   constructor(
     private fb: FormBuilder,

@@ -50,6 +50,9 @@ export class AdminDownloadSelection {
     });
   }
 
+   goBack() {
+    window.history.back();
+  }
   download1() {
     {
       this.loading

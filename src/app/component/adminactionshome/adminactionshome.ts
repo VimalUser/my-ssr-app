@@ -29,6 +29,8 @@ export class Adminactionshome implements OnInit {
 
   }
 
+ 
+
   ngOnInit(): void {
 
     this.route.paramMap.subscribe((params) => {

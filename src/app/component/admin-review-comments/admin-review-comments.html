@@ -1,5 +1,10 @@
 <div class="container mt-5">
-  <h2 class="mb-4 fw-bold card-style p-3">Comments Sections
+  <h2 class="mb-4 fw-bold card-style p-3">
+     <button class="back-button">
+      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+        style="width: 40px; height: 40px; cursor: pointer;" />
+    </button>
+    Comments Sections
     <h5>{{ this.pageLatestAdminData.clientName }}</h5>
 
     

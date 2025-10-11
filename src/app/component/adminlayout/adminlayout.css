@@ -11,6 +11,8 @@
    font-weight: 500;
    border-radius: 8px;
    padding: 0.7rem 1rem;
+    padding:  5px 0.5rem;
+  
    transition: background-color 0.2s ease, color 0.2s ease;
    user-select: none;
  }
@@ -33,27 +35,87 @@
 
  .sidebar-link i {
    font-size: 1.1rem;
+
  }
 
- /* Desktop sidebar as static sidebar */
  @media (min-width: 992px) {
-   .offcanvas {
-     /* These Bootstrap overrides make the offcanvas element a static sidebar */
-     position: sticky !important; /* Use sticky or fixed for static sidebar */
-     top: 0; /* Align to the top of the viewport */
-     transform: none !important;
-     visibility: visible !important;
-     border: none !important;
-     width: 250px !important; /* Match mobile width for consistency */
-     height: 100vh !important;
-     overflow-y: auto !important;
-   }
+  .offcanvas.sidebar-custom {
+    position: sticky !important;
+    top: 56px !important; /* Match your header height */
+    height: calc(100vh - 56px) !important;
+    overflow-y: auto !important;
+    width: 250px !important;
+    transition: width 0.3s;
+  }
+ main.col {
+    height: calc(100vh - 56px);
+    overflow: auto;
+  }
 
-   .offcanvas-body {
-     /* Ensure offcanvas body content is visible and takes up space */
-     padding: 0.5rem 0.5rem !important; 
-   }
+  .offcanvas.sidebar-custom.collapsed {
+    width: 60px !important;
+    overflow-x: hidden !important;
+  }
+  .offcanvas {
+    position: sticky !important; /* Keeps sidebar visible on scroll */
+    top: 0; /* Align to viewport top */
+    transform: none !important;
+    visibility: visible !important;
+    border: none !important;
+    width: 220px !important; /* Fixed sidebar width */
+    overflow-y: auto !important; /* Enables internal scrolling */
+    /* height property removed */
+  }
 
-   /* REMOVED: main.col { margin-left: 200px; } */
-   /* We now rely on the 'col' and 'flex-shrink-0' classes for proper side-by-side layout */
- }
+  .offcanvas-body {
+    padding: 0.5rem 0.5rem !important;
+  }
+
+  /* Expanded sidebar */
+.offcanvas.sidebar-custom {
+  width: 250px !important;
+  transition: width 0.3s ease;
+}
+
+/* Collapsed sidebar */
+.offcanvas.sidebar-custom.collapsed {
+  width: 60px !important; /* smaller width for icons only */
+}
+
+/* Hide sidebar link text when collapsed */
+.offcanvas.sidebar-custom.collapsed .sidebar-link span {
+  display: none;
+}
+
+/* Center icons when collapsed */
+.offcanvas.sidebar-custom.collapsed .sidebar-link i {
+  margin: 0 auto;
+  display: block;
+}
+
+.offcanvas.sidebar-custom.collapsed {
+  width: 60px !important;
+  overflow-x: hidden !important;
+}
+
+.offcanvas.sidebar-custom.collapsed .btn span,
+.offcanvas.sidebar-custom.collapsed .sidebar-link span {
+  display: none !important;
+}
+
+.offcanvas.sidebar-custom.collapsed .btn,
+.offcanvas.sidebar-custom.collapsed .sidebar-link {
+  justify-content: center;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+}
+
+.offcanvas.sidebar-custom.collapsed .btn i,
+.offcanvas.sidebar-custom.collapsed .sidebar-link i {
+  margin: 0 auto !important;
+  font-size: 1.4rem !important;
+  display: block;
+}
+
+
+}

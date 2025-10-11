@@ -23,6 +23,13 @@ export class Adminlayout {
     this.currentUserName$ = this.adminDataService.adminName$;
   }
 
+  sidebarCollapsed = false;
+
+toggleSidebar() {
+  this.sidebarCollapsed = !this.sidebarCollapsed;
+}
+
+
 createnew() {
     this.router.navigate(['admindashboard/newclient']);
   }
