@@ -142,7 +142,8 @@
 
 .files-supported {
   font-size: 0.85rem;
-  color: #555;
+  /* color: #555; */
+  color: red;
   margin-left: auto;
   font-style: italic;
 }
