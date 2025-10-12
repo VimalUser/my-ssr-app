@@ -80,8 +80,11 @@
 
     <div class="row mb-2">
       <div class="col-12">
-        <h5 class="mb-3 text-white">Selected (Traditional+Candid) : {{ clientDataload.tranditionalAlbumSelection.length +clientDataload.candidAlbumSelection.length }}
-         /{{clientDataload.noOfPics}}</h5>
+        <h5 class="mb-3 text-white">
+          Saved: {{ clientDataload.tranditionalAlbumSelection.length}} Traditional,{{ clientDataload.candidAlbumSelection.length  }} Candid - Total: {{clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length  }}/{{clientDataload.noOfPics}} &nbsp; | &nbsp;  
+         <p>Current Selection:{{ selectedItems.length}}</p> 
+         </h5>
+
       </div>
     </div>
 
