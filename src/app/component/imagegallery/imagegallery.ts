@@ -21,7 +21,7 @@ export class Imagegallery implements OnInit {
 
   // Image gallery logic
   images: string[] = [];
-  pageSize = 6;
+  pageSize = 50;
   currentPage = 1;
 
   selectedItems: AlbumSelectionItem[] = [];
@@ -122,6 +122,23 @@ export class Imagegallery implements OnInit {
   get paginatedImages(): string[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.images.slice(start, start + this.pageSize);
+  }
+
+  get TotalSelectionMessage(): string {
+    const noofPhotos = Number(this.clientDataload.noOfPics) || 0;
+    const tradionalCount =
+      this.clientDataload.tranditionalAlbumSelection.length;
+    const CandidCount = this.clientDataload.candidAlbumSelection.length;
+    const addOtherTypeCount = this.isTraditional? CandidCount : tradionalCount;
+    const difference = noofPhotos - (this.selectedItems.length +addOtherTypeCount);
+
+    const message = `
+  <span class="">Saved Photos - </span> <span class="text-white">
+  Traditional: ${tradionalCount} | 
+  Candid: ${CandidCount} | </span>
+ <span class=""> Selection(s) remaining: ${difference} of ${noofPhotos}</span>
+`;
+    return message;
   }
 
   changePage(step: number) {

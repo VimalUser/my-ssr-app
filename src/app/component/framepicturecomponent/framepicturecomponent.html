@@ -4,7 +4,7 @@
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-between align-items-center">
         <button
-          class="btn btn-link fs-4 text-white p-0"
+          class="btn btn-link fs-4 heading-orange p-0"
           aria-label="Back"
           (click)="prevStep()">
           <i class="bi bi-arrow-left"></i>
@@ -20,7 +20,7 @@
     <!-- Frame Picture Title -->
     <div class="row">
       <div class="col-12">
-        <h3 class="fw-bold mb-2 text-white">Frame Picture</h3>
+        <h3 class="fw-bold mb-2 heading-orange">Frame Picture</h3>
         <div class="mb-3 text-white">
           Select your favorite images to proceed in frame...
         </div>
@@ -39,8 +39,8 @@
               style="max-width: 130px; height: auto" />
           </div>
           <div class="fw-semibold align-self-center">
-            <p>Portrait Frame</p>
-           <button class="btn btn-info" (click)="showGallery(true)"> Select image</button><br> 
+            Portrait Frame <br>
+           <a class="btn-link" style="color: wheat;" (click)="showGallery(true)"> Select image</a><br> 
               {{pagelatestData.portraitFrameSelection.length}} selected         
            
           </div>
@@ -57,8 +57,8 @@
               style="max-width: 130px; height: auto" />
           </div>
           <div class="fw-semibold align-self-center">
-            <p>Landscape Frame</p>
-           <button class="btn btn-info" (click)="showGallery(false)"> Select image</button><br>              
+            Landscape Frame<br>
+           <a class="btn-link" style="color: wheat;" (click)="showGallery(false)"> Select image</a><br>              
              <span> {{pagelatestData.landscapeFrameSelection.length}} selected</span>
           </div>
         </div>
@@ -71,7 +71,7 @@
   <div class="container-fluid py-4">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-between align-items-center">
-        <div>
+        <div class="heading-orange">
         <span
           class="bi bi-arrow-left-circle fs-5 me-2"
           (click)="gobackFolderSelection()"></span>
@@ -87,7 +87,7 @@
 
    <div class="row mb-2">
       <div class="col-12">
-        <h5 class="mb-3 text-white">Selected: {{ pagelatestData.portraitFrameSelection.length}} Portrait,{{ pagelatestData.landscapeFrameSelection.length  }} Landscape - Total: {{pagelatestData.portraitFrameSelection.length + pagelatestData.landscapeFrameSelection.length  }}/{{pagelatestData.noOfFrames}} </h5>
+        <h5 class="mb-3 text-white"  [innerHTML]="TotalSelectionMessage"> </h5>
       </div>
     </div>
 

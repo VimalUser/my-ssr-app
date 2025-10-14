@@ -1,3 +1,27 @@
 body, .sidebar, .main-content, .card, .btn, ul, li, h1, h2, h3, h4, h5, h6, p, span, input, label {
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
 }
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 240px; /* Adjust height */
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slide-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slide-img.active {
+  opacity: 1;
+  z-index: 2;
+}

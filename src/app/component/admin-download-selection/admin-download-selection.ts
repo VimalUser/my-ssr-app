@@ -53,29 +53,6 @@ export class AdminDownloadSelection {
    goBack() {
     window.history.back();
   }
-  download1() {
-    {
-      this.loading
-      console.log('Fetching data from API...');
-      this.apiAdminService.downloadpictures1(this.adminData.clientId).subscribe({
-        next: (data) => {
-          console.log('Data received from API:', data);
-          this.loading = false;
-          this.notify.success("Download completed");
-        },
-        error: (error) => {
-          console.error('Error fetching data from API:', error);
-          this.loading = false;
-          this.notify.error(error.error.message || 'An error occurred while fetching data.');
-        },
-        complete: () => {
-          this.loading = false;
-          // Optional: Executed when the Observable completes
-          console.log('Data fetching complete.');
-        },
-      });
-    }
-  }
   // component.ts
   download(): void {
     this.loading = true;

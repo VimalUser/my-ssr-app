@@ -8,7 +8,7 @@
   <div class="container py-4">  
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-between align-items-center">
-        <button class="btn btn-link fs-4 text-white p-0" aria-label="Back" (click)="prevStep()">
+        <button class="btn btn-link fs-4 heading-orange p-0" aria-label="Back" (click)="prevStep()">
           <i class="bi bi-arrow-left"></i>
         </button>
         <div>
@@ -23,7 +23,7 @@
 
     <div class="row">
       <div class="col-12">
-        <h3 class="fw-bold mb-2 text-white">Album Pictures</h3>
+        <h3 class="fw-bold mb-2 heading-orange">Album Pictures</h3>
         <div class="mb-3 text-white">Select your favorite images to proceed in your album...</div>
                 <div class="mb-3 text-white">
                   <p> Please select exactly {{clientDataload.noOfPics}} pictures from either 
@@ -35,19 +35,19 @@
       </div>
     </div>
 
-    <div class="row justify-content-start gx-3 gy-4">
+    <div class="row justify-content-start gx-3 gy-4 heading-orange">
       <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(folderNames[0])">
         <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
-        <div class="fw-semibold mt-2" style="font-size: 1.06rem">
+        <div class="fw-semibold mt-2" style="font-size: 1.06rem" class="text-white">
           Traditional Photos <br />
-          {{ clientDataload.tranditionalAlbumSelection.length }} Selected <br />
+      <span >     {{ clientDataload.tranditionalAlbumSelection.length }} Selected </span> <br />
         </div>
       </div>
       <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(folderNames[1])">
         <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
-        <div class="fw-semibold mt-2" style="font-size: 1.06rem">
+        <div class="fw-semibold mt-2" style="font-size: 1.06rem" class="text-white">
           Candid Photos <br />
-          {{ clientDataload.candidAlbumSelection.length }} selected<br />
+       <span class="text-white">   {{ clientDataload.candidAlbumSelection.length }} selected</span><br />
         </div>
       </div>
     </div>
@@ -65,10 +65,11 @@
 </section>
 
 <section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper">
-  <div class="container-fluid py-4">
+  <div class="">
+  <div class="container-fluid header-static">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-between align-items-center">
-        <div>
+        <div class="heading-orange">
           <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
           <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
             {{ selectedFolderName }}
@@ -80,14 +81,13 @@
 
     <div class="row mb-2">
       <div class="col-12">
-        <h5 class="mb-3 text-white">
-          Saved: {{ clientDataload.tranditionalAlbumSelection.length}} Traditional,{{ clientDataload.candidAlbumSelection.length  }} Candid - Total: {{clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length  }}/{{clientDataload.noOfPics}} &nbsp; | &nbsp;  
-         <p>Current Selection:{{ selectedItems.length}}</p> 
+        <h5 class="" [innerHTML]="TotalSelectionMessage">
+          
          </h5>
 
       </div>
     </div>
-
+</div>
     <div class="row">
   <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
     <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)" (click)="toggleSelection(img)">

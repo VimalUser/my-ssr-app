@@ -26,3 +26,8 @@ body.dark-mode input.form-control {
   color: #fff !important;
   border-color: #444 !important;
 }
+
+.heading-orange{
+  color: #ef9333;
+  font-weight: bold;
+} 

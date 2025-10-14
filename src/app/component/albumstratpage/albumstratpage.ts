@@ -34,9 +34,29 @@ export class Albumstratpage implements OnInit {
     this.clientDataService.restoreUserFromStorage();
     this.clientDataService.resetClientDataOnly();
      this.clientDataService.triggerNextStep(0);
+  // Automatically generate ad image names
+    this.adImages = Array.from({ length: 2 }, (_, i) => `assets/startpage-ad/ad_${i + 1}.png`);
+
+    // Slide every 3 seconds
+    this.intervalId = window.setInterval(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
+    }, 3000);
+
 
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
+
+
+  }
+
+    adImages: string[] = [];
+  currentIndex = 0;
+  intervalId?: number;
+
+ 
+
+  ngOnDestroy(): void {
+    if (this.intervalId) clearInterval(this.intervalId);
   }
 
   nextStep() {

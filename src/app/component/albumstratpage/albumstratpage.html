@@ -4,9 +4,19 @@
   <div class="card shadow-sm border-0 rounded-4 p-3 mb-3 bg-white">
     <div class="row align-items-center justify-content-center g-3">
       <div class="col-md-12 col-12">
-        <div class="d-flex align-items-center gap-3 flex-wrap">
+ <div class="slider-container flex align-items-center gap-3 flex-wrap">
+    <img
+      *ngFor="let img of adImages; let i = index"
+      [src]="img"
+      [class.active]="i === currentIndex"
+      alt="Advertisement"
+      class="slide-img rounded border"
+    />
+  </div>
+
+        <!-- <div class="d-flex align-items-center gap-3 flex-wrap">
           <img src="assets/startpage-ad/ad_1.png" alt="Frame 1" style="height:100%; width:100%;" class="rounded border"/>
-        </div>
+        </div> -->
       </div>
       <!-- <div class="col-md-3 col-12 text-center">
         <div class="bg-warning rounded-3 py-2 px-2 shadow-sm d-inline-block">

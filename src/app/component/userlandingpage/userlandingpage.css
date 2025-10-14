@@ -91,3 +91,8 @@
   border-radius: 2rem;
   box-shadow: 0 8px 32px #2223;
 }
+
+.heading-orange{
+  color: #ef9333;
+  font-weight: bold;
+} 

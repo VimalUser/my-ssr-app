@@ -25,7 +25,7 @@ export class CoverpcitureSelection {
 
   // Image gallery logic
   images: string[] = [];
-  pageSize = 6;
+  pageSize = 50;
   currentPage = 1;
 
   selectedItems: AlbumSelectionItem[] = [];
@@ -116,6 +116,20 @@ export class CoverpcitureSelection {
 
   fileTypeFromUrl(url: string): string {
     return url.split('?')[0].split('/').slice(-2, -1)[0] || '';
+  }
+
+  get TotalSelectionMessage(): string {
+    const noofCover = this.allowedSelectedPhotos;
+    const CoverPictureCount = this.pagelatestData.coverSelection.length;
+    
+    const difference = noofCover - this.selectedItems.length;
+
+    const message = `
+ <span class=""> Selection(s) remaining: ${
+   difference
+ } of ${this.allowedSelectedPhotos}</span>
+`;
+    return message;
   }
 
   isSelected(imgUrl: string): boolean {
@@ -223,13 +237,12 @@ export class CoverpcitureSelection {
     let item = this.getitemfromSelection(imageUrl);
 
     if (!item) {
-
       if (this.checkMaxSelectedCountReached()) {
         this.notify.error('You have already selected required images');
         this.loading = false;
         return;
       }
-      
+
       item = {
         fileName: this.fileNameFromUrl(imageUrl),
         comment: '',
@@ -241,7 +254,7 @@ export class CoverpcitureSelection {
     }
 
     item.comment = this.previewComment;
-     this.loading = false;
+    this.loading = false;
     this.closePreview();
   }
 

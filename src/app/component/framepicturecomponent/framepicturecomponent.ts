@@ -30,7 +30,7 @@ export class Framepicturecomponent {
 
   // Image gallery logic
   images: string[] = [];
-  pageSize = 6;
+  pageSize = 50;
   currentPage = 1;
 
   selectedItems: AlbumSelectionItem[] = [];
@@ -107,6 +107,21 @@ export class Framepicturecomponent {
       return;
     }
     this.clientDataService.triggerNextStep(4);
+  }
+
+  get TotalSelectionMessage(): string {
+    const noOfFrames = Number(this.pagelatestData.noOfFrames) || 0;
+    const portraitCount = this.pagelatestData.portraitFrameSelection.length;     
+    const LandscapeCount =   this.pagelatestData.landscapeFrameSelection.length; 
+    const addOtherTypeCount = this.isPortrait? LandscapeCount : portraitCount;
+ 
+    const difference = noOfFrames - (this.selectedItems.length +addOtherTypeCount);
+    
+    const message = `<span class="">Saved Photos - </span> <span class="text-white">
+  Portrait: ${portraitCount} | 
+  Landscape: ${LandscapeCount} | </span>
+ <span class=""> Selection(s) remaining: ${difference} of ${noOfFrames}</span>`;
+    return message;
   }
 
   getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {

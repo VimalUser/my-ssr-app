@@ -26,7 +26,7 @@ body {
 
 .custom-img-card {
   position: relative;
-  height: 250px;
+  height: 100%;
   overflow: hidden;
   cursor: pointer;
   display: flex;
@@ -160,7 +160,7 @@ body {
 @media (min-width: 992px) {
     .col-lg-2 {
         flex: 0 0 auto;
-        width: 25.666667%;
+        width: 20%;
     }
 }
 
@@ -177,4 +177,23 @@ body {
 }
 textarea{
   line-height: 1.1;
+}
+
+.text-Orange{
+  color: #f57e3d;
+} 
+
+.heading-orange{
+  color: #ef9333;
+  font-weight: bold;
+} 
+
+.header-static{
+  position: sticky;
+  top: 0;
+  background-color:rgb(90 88 88 / 86%);
+  z-index: 10;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  border-bottom: 1px solid #ddd;
 }
