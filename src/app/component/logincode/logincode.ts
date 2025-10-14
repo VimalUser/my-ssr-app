@@ -55,45 +55,49 @@ export class Logincode {
     }
     this.loading = true;
     // Subscribe to query params
-    this.route.queryParamMap.subscribe((params) => {
-      this.user = params.get('user');
-      console.log('Login Code:', this.user);
+    setTimeout(() => {
+      this.route.queryParamMap.subscribe((params) => {
+        this.user = params.get('user');
+        console.log('Login Code:', this.user);
 
-      if (!this.user || this.user.trim() === '') {
-        this.loading = false;
-        this.notify.error('Please enter the exact URL you received to proceed');
-        return;
-      }
-
-      // Call API to validate
-      this.userService.checkClientUrlInfo(this.user).subscribe({
-        next: (res: any) => {
-          this.userInfo = res;
-          console.log('User Info from API:', this.userInfo);
-          const loggedInUser: LoggedInUser = {
-            clientId: this.userInfo.clientId,
-            clientName: this.userInfo.clientName,
-          };
-
-          if (
-            this.userInfo.loginCoverUrl &&
-            this.userInfo.loginCoverUrl.trim() !== ''
-          ) {
-            this.bgImage = this.userInfo.loginCoverUrl;
-          }
-
-          // 1. Store user in service
-          this.clientService.setCurrentUser(loggedInUser);
+        if (!this.user || this.user.trim() === '') {
           this.loading = false;
-        },
-        error: (err) => {
-          if (err.status === 400 || err.status === 404) {
-            this.notify.error(err.error.message);
-          }
-          this.loading = false;
-        },
+          console.log("inside error");
+          this.notify.error('Please enter the exact URL you received to proceed');
+          return;
+        }
+
+        // Call API to validate
+        this.userService.checkClientUrlInfo(this.user).subscribe({
+          next: (res: any) => {
+            this.userInfo = res;
+            console.log('User Info from API:', this.userInfo);
+            const loggedInUser: LoggedInUser = {
+              clientId: this.userInfo.clientId,
+              clientName: this.userInfo.clientName,
+            };
+
+            if (
+              this.userInfo.loginCoverUrl &&
+              this.userInfo.loginCoverUrl.trim() !== ''
+            ) {
+              this.bgImage = this.userInfo.loginCoverUrl;
+            }
+
+            // 1. Store user in service
+            this.clientService.setCurrentUser(loggedInUser);
+            this.loading = false;
+          },
+          error: (err) => {
+            if (err.status === 400 || err.status === 404) {
+              this.notify.error(err.error.message);
+            }
+            this.loading = false;
+          },
+        });
       });
-    });
+    }, 100);
+
   }
 
   validateClientLogin() {
