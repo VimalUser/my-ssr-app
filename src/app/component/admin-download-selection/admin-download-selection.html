@@ -2,12 +2,11 @@
     
     <div class="styled-card mb-4 p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
          <button class="back-button">
-      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
-        style="width: 40px; height: 40px; cursor: pointer;" />
-    </button>
+            <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+            style="width: 40px; height: 40px; cursor: pointer;" />
+        </button>
         <div>
-            <h2 class="fw-bolder mb-0 text-dark">{{ clientName }}</h2>
-            <h5 class="text-muted mb-0">Photos Count - {{noOfPics}}</h5>
+            <h2 class="fw-bolder mb-0 text-dark">Client : {{ clientName }}  <span class="text-muted mb-0"> | Photos Count - {{noOfPics}}</span></h2>
         </div>
         
         <button class="btn btn-orange-primary d-flex align-items-center justify-content-center" (click)="download()">

@@ -1,14 +1,18 @@
 <div class="main-container" *ngIf="!loading">
-  <div class="header-section">
-    <button class="back-button">
-      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
-        style="width: 40px; height: 40px; cursor: pointer;" />
-    </button>
-    <div class="header-info">
-      <span>Client : {{clientData.clientName}}</span>
-      <span>Order no : {{clientData.orderNumber}}</span>
-    </div>
-    <div></div>
+  <div
+    class="styled-card mb-4 p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <!-- <div class="header-section"> -->
+      <button class="back-button">
+        <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+          style="width: 40px; height: 40px; cursor: pointer;" />
+      </button>
+      <div>
+        <h2 class="fw-bolder mb-0 text-dark">Client : {{clientData.clientName}}
+          <span class="text-muted mb-0"> | Order No : {{clientData.orderNumber}}</span>
+        </h2>
+      </div>
+      <div></div>
+    <!-- </div> -->
   </div>
 
   <div class="upload-sections">
