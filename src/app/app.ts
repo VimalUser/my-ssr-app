@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { Userlandingpage } from "./component/userlandingpage/userlandingpage";
-import { NotificationComponent } from './notification/notification';
+import { NotificationComponent } from './component/shared/notification.component/notification.component';
 import { ClientDataService } from './shared/ClientDataService';
+
 
 @Component({
   selector: 'app-root',
