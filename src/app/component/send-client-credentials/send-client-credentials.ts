@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Notificationservice } from '../../services/notificationservice';
 import { CommonModule } from '@angular/common';
+import { MarkAsDoneDirective } from '../../shared/mark-as-done';
 
 @Component({
   selector: 'app-send-client-credentials',
-  imports: [CommonModule],
+  imports: [CommonModule, MarkAsDoneDirective],
   templateUrl: './send-client-credentials.html',
   styleUrl: './send-client-credentials.css'
 })
@@ -19,6 +20,7 @@ export class SendClientCredentials {
   errorMessage: string | null = null;
   isLoading: boolean = false;
   id: string = '';
+  clientId: number = 0;
   accesslink: string = '';
   passcode: string = '';
   clientPhoneNo: string = '';
@@ -28,6 +30,7 @@ export class SendClientCredentials {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id') ?? '';
+      this.clientId = +this.id;
     });
     if (this.id != '') {
       this.fetchData();
@@ -115,5 +118,9 @@ export class SendClientCredentials {
                       \n In case of any issues, feel free to reach out to us.`;
     const url = `https://wa.me/${this.clientPhoneNo}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
+  }
+   onLoadingChange(loading: boolean) {
+    console.log('Loading state changed:', loading);
+    this.isLoading = loading;
   }
 }

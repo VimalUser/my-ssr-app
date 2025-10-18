@@ -19,3 +19,10 @@ export interface ClientManagement {
     inprogressProject: number;
     dashBoardData: DashBoardDto[];
 }
+
+export interface AdminStatusInput
+{
+    clientId: number;
+    adminStatus: string;
+    updatedBy?: string;
+}

@@ -1,63 +1,65 @@
 <div class="container py-4 py-lg-5">
-    
-    <div class="styled-card mb-4 p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-         <button class="back-button">
+
+    <div
+        class="styled-card mb-4 p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <button class="back-button">
             <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
-            style="width: 40px; height: 40px; cursor: pointer;" />
+                style="width: 40px; height: 40px; cursor: pointer;" />
         </button>
         <div>
-            <h2 class="fw-bolder mb-0 text-dark">Client : {{ clientName }}  <span class="text-muted mb-0"> | Photos Count - {{noOfPics}}</span></h2>
+            <h2 class="fw-bolder mb-0 text-dark">Client : {{ clientName }} <span class="text-muted mb-0"> | Photos Count
+                    - {{noOfPics}}</span></h2>
         </div>
-        
+
         <button class="btn btn-orange-primary d-flex align-items-center justify-content-center" (click)="download()">
             <i class="bi bi-cloud-arrow-down-fill me-2 fs-5"></i>
             Download Album
         </button>
     </div>
-    
+
     <div class="styled-card mb-4 p-4">
         <h5 class="mb-4 text-dark fw-bold border-bottom pb-2">Photo Summary by Type</h5>
-        
+
         <div class="row row-cols-2 row-cols-md-3 g-3 g-md-4">
-            
+
             <div class="col">
                 <div class="summary-item-accent h-100">
                     <span class="text-muted small mb-1 count-label">Traditional Photos</span>
                     <span class="fw-bold text-orange-bold count-number">{{ traditionalCount }}</span>
                 </div>
             </div>
-            
+
             <div class="col">
                 <div class="summary-item-accent h-100">
                     <span class="text-muted small mb-1 count-label">Candid Photos</span>
                     <span class="fw-bold text-orange-bold count-number">{{ candidCount }}</span>
                 </div>
             </div>
-            
+
             <div class="col">
                 <div class="summary-item-accent h-100">
                     <span class="text-muted small mb-1 count-label">Cover Photos</span>
                     <span class="fw-bold text-orange-bold count-number">{{ coverCount }}</span>
                 </div>
             </div>
-            
+
             <div class="col">
                 <div class="summary-item-accent h-100">
                     <span class="text-muted small mb-1 count-label">Portrait Frames</span>
                     <span class="fw-bold text-orange-bold count-number">{{ portraitFrameCount }}</span>
                 </div>
             </div>
-            
+
             <div class="col">
                 <div class="summary-item-accent h-100">
                     <span class="text-muted small mb-1 count-label">Landscape Frames</span>
                     <span class="fw-bold text-orange-bold count-number">{{ landscapeFrameCount }}</span>
                 </div>
             </div>
-            
+
         </div>
     </div>
-    
+
     <!-- <div class="styled-card p-4">
         
         <div class="mb-4 d-grid">
@@ -87,7 +89,18 @@
             </div>
         </div>
     </div> -->
+
+    <div class="styled-card mb-4 p-4">
+        <input type="checkbox" class="big-checkbox" appMarkAsDone
+          [clientId]="adminData.clientId"
+          adminStatus="Photos Dwonloaded"
+          confirmMessage="Are you sure to mark as done?"
+          (loadingChange)="onLoadingChange($event)"
+        />
+        <label for="markDone" class="ms-2 fw-semibold">Mark Download as Done</label>
+    </div>
 </div>
+
 <div *ngIf="loading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Uploading...">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>

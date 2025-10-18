@@ -6,10 +6,12 @@ import { AdminDataService } from '../../shared/admin-data-service';
 import { AdminData } from '../../model/AdminData';
 import { Notificationservice } from '../../services/notificationservice';
 import { CommonModule } from '@angular/common';
+import { AdminStatusInput } from '../../model/ClientManagement';
+import { MarkAsDoneDirective } from '../../shared/mark-as-done';
 
 @Component({
   selector: 'app-admin-download-selection',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MarkAsDoneDirective],
   templateUrl: './admin-download-selection.html',
   styleUrl: './admin-download-selection.css'
 })
@@ -32,6 +34,7 @@ export class AdminDownloadSelection {
   adminData: AdminData = {} as AdminData;
   approvalComment: string = "";
   isLoading: boolean = false;
+  isMarkedDone: boolean = false;
 
   ngOnInit(): void {
 
@@ -50,7 +53,7 @@ export class AdminDownloadSelection {
     });
   }
 
-   goBack() {
+  goBack() {
     window.history.back();
   }
   // component.ts
@@ -98,5 +101,7 @@ export class AdminDownloadSelection {
       });
   }
 
-
+   onLoadingChange(loading: boolean) {
+    this.loading = loading;
+  }
 }

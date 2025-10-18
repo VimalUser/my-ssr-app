@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { ClientManagement } from '../model/ClientManagement';
+import { AdminStatusInput, ClientManagement } from '../model/ClientManagement';
 
 export interface DropdownItem {
   id: number;
@@ -130,6 +130,9 @@ export class newclientapi {
   getClientManagementData(pageNumber: number, pageSize: number): Observable<ClientManagement> {
     return this.http.get<ClientManagement>(this.clientAlbumUrl
       + 'getClientManagementData' + `?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  }
+  markAsDone(data: AdminStatusInput): Observable<boolean> {
+    return this.http.put<boolean>(this.clientAlbumUrl + 'updateAdminStatus', data);
   }
 
   private handleError(error: HttpErrorResponse) {

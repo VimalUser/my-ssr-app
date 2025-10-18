@@ -9,6 +9,7 @@ import { Notificationservice } from '../../services/notificationservice';
 import { finalize, firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { MarkAsDoneDirective } from '../../shared/mark-as-done';
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -17,6 +18,7 @@ import { environment } from '../../../environments/environment';
     CommonModule, // Required for ngIf, ngFor etc.
     FormsModule, // Needed for template-driven forms
     ReactiveFormsModule, // Needed for reactive forms
+    MarkAsDoneDirective
   ],
   templateUrl: './uploadalbumpics.html',
   styleUrl: './uploadalbumpics.css',
@@ -54,12 +56,14 @@ export class Uploadalbumpics implements OnInit {
   public selectedLoginCoverFiles: File[] = [];
 
   clientId: string = '';
+  clientIdNumber: number = 0;
   public loading: boolean = false;
 
   ngOnInit(): void {
 
     this.route.paramMap.subscribe((params) => {
       this.clientId = params.get('id') ?? '';
+      this.clientIdNumber = +this.clientId;
     });
     this.loadClientData();
   }
@@ -261,5 +265,10 @@ export class Uploadalbumpics implements OnInit {
       }
     });
 
+  }
+
+   onLoadingChange(loading: boolean) {
+    console.log('Loading state changed upload pics:', loading);
+    this.loading = loading;
   }
 }

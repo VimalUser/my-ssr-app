@@ -61,3 +61,11 @@ a:hover {
   background: none;
   cursor: pointer;
 }
+
+.big-checkbox {
+  width: 15px;
+  height: 15px;
+  transform: scale(1.5); /* alternate way */
+  accent-color: #007bff; /* optional: color */
+  cursor: pointer;
+}
