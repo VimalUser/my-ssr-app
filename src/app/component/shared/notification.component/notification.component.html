@@ -1,0 +1,19 @@
+<div class="alert-container" *ngIf="notifications.length > 0">
+  <div class="alert" [ngClass]="notifications[0].type">
+    {{ notifications[0].message }}
+  </div>
+</div>
+
+<div class="confirm-overlay" *ngIf="confirmation">
+  <div class="confirm-box">
+    <p class="confirm-message">{{ confirmation.message }}</p>
+    <div class="confirm-actions">
+      <button class="btn confirm" (click)="respond(true)">
+        {{ confirmation.confirmText || 'Yes' }}
+      </button>
+      <button class="btn cancel" (click)="respond(false)">
+        {{ confirmation.cancelText || 'No' }}
+      </button>
+    </div>
+  </div>
+</div>

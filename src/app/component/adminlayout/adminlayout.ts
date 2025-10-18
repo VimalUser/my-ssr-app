@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router  } from '@angular/router';
 import { RouterOutlet,RouterModule } from '@angular/router';
-import { NotificationComponent } from '../../notification/notification';
 import { map, Observable } from 'rxjs';
 import { AdminDataService } from '../../shared/admin-data-service';
 import { AdminData } from '../../model/AdminData';
