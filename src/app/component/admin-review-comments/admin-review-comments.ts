@@ -13,6 +13,8 @@ import { MarkAsDoneDirective } from '../../shared/mark-as-done';
 })
 export class AdminReviewComments implements OnInit {
   isLoading: boolean = false;
+  checkboxMessage: string = '';
+
 
   constructor(
     private adminDataService :AdminDataService
@@ -50,4 +52,7 @@ export class AdminReviewComments implements OnInit {
    onLoadingChange(loading: boolean) {
     this.isLoading = loading;
   }
+    onMessageChange(msg: string) {
+  this.checkboxMessage = msg;
+}
 }

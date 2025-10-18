@@ -90,7 +90,8 @@
               <th>Event Type</th>
               <th>Total Photos</th>
               <th>Selected</th>
-              <th>Progress</th>
+              <th>Client Status</th>
+              <th>Admin Status</th>
               <th></th>
             </tr>
           </thead>
@@ -115,6 +116,11 @@
                   {{ client.progress }}
                 </span>
 
+              </td>
+              <td>
+                <span class="badge-status" >
+                  {{ client.adminStatus || 'Yet to Start' }}
+                </span>
               </td>
               <td>
                 <button class="btn btn-primary btn-sm" (click)="viewClientInfo(client.clientId)">

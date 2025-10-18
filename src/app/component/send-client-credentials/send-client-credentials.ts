@@ -24,6 +24,7 @@ export class SendClientCredentials {
   accesslink: string = '';
   passcode: string = '';
   clientPhoneNo: string = '';
+  checkboxMessage: string = '';
 
   private apiService = inject(newclientapi);
   
@@ -123,4 +124,7 @@ export class SendClientCredentials {
     console.log('Loading state changed:', loading);
     this.isLoading = loading;
   }
+    onMessageChange(msg: string) {
+  this.checkboxMessage = msg;
+}
 }

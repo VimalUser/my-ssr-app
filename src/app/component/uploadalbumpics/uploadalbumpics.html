@@ -110,9 +110,11 @@
         <!-- <input type="checkbox" class="big-checkbox" id="markDone" [(ngModel)]="isMarkedDone" (change)="markAsDone($event)" /> -->
         <input type="checkbox" class="big-checkbox" appMarkAsDone
           [clientId]="clientIdNumber"
+          adminScreen="photoUpload"
           adminStatus="Photos Uploaded"
           confirmMessage="Are you sure to mark as done?"
           (loadingChange)="onLoadingChange($event)"
+          (messageChange)="onMessageChange($event)"
         />
         <label for="markDone" class="ms-2 fw-semibold">Mark Upload as Done</label>
     </div>

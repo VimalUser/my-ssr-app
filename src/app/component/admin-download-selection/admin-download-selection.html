@@ -93,11 +93,15 @@
     <div class="styled-card mb-4 p-4">
         <input type="checkbox" class="big-checkbox" appMarkAsDone
           [clientId]="adminData.clientId"
-          adminStatus="Photos Dwonloaded"
+          adminScreen="photoDownload"
+          adminStatus="Photos Downloaded"
           confirmMessage="Are you sure to mark as done?"
           (loadingChange)="onLoadingChange($event)"
+          (messageChange)="onMessageChange($event)"
         />
         <label for="markDone" class="ms-2 fw-semibold">Mark Download as Done</label>
+        <!-- <br/>
+        <span class="text-danger italic">{{checkboxMessage}}</span> -->
     </div>
 </div>
 

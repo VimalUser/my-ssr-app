@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { AdminStatusInput, ClientManagement } from '../model/ClientManagement';
+import { AdminStatusInput, AdminStatusOutput, ClientManagement } from '../model/ClientManagement';
 
 export interface DropdownItem {
   id: number;
@@ -133,6 +133,10 @@ export class newclientapi {
   }
   markAsDone(data: AdminStatusInput): Observable<boolean> {
     return this.http.put<boolean>(this.clientAlbumUrl + 'updateAdminStatus', data);
+  }
+
+    getAdminStatus(clientId :number): Observable<AdminStatusOutput> {
+    return this.http.get<AdminStatusOutput>(`${this.clientAlbumUrl}getAdminStatus?clientId=${clientId}`);
   }
 
   private handleError(error: HttpErrorResponse) {

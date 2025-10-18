@@ -7,6 +7,7 @@ export interface DashBoardDto {
     selectedPhotos: number;
     percentage: number;
     progress: string;
+    adminStatus: string;
     noofComments: number;
 }
 
@@ -25,4 +26,19 @@ export interface AdminStatusInput
     clientId: number;
     adminStatus: string;
     updatedBy?: string;
+}
+
+export interface AdminStatusOutput
+{
+    clientId: number;
+    photosUpload: CheckboxStatus;
+    photosDownload: CheckboxStatus;
+    loginInfo: CheckboxStatus;
+    reviewComment: CheckboxStatus;
+}
+
+export interface CheckboxStatus
+{
+    isDisabled: boolean;
+    isChecked: boolean;
 }

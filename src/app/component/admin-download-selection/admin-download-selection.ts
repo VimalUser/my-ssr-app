@@ -24,6 +24,7 @@ export class AdminDownloadSelection {
   clientName: any;
   noOfPics: any;
   loading: boolean = false;
+  checkboxMessage: string = '';
 
   constructor(
     private apiAdminService: newclientapi,
@@ -104,4 +105,7 @@ export class AdminDownloadSelection {
    onLoadingChange(loading: boolean) {
     this.loading = loading;
   }
+  onMessageChange(msg: string) {
+  this.checkboxMessage = msg;
+}
 }

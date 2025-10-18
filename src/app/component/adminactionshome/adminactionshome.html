@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
                 [routerLink]="['/admindashboard/uploadpictures', clientId]" style="animation-delay: 0.1s;">
@@ -23,6 +23,20 @@
                 <div class="card-body p-0">
                     <h5 class="card-title">Upload Photos</h5>
                     <p class="card-text text-muted">Upload function photos for user selection.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Send WhatsApp Message -->
+        <div class="col">
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/sendCredentials', clientId]"
+                style="animation-delay: 0.4s; cursor:pointer;">
+                <i class="bi bi-door-open icon-large text-success mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">User Login Details</h5>
+                    <p class="card-text text-muted">View and Send access link and passcode to the client via WhatsApp.
+                    </p>
                 </div>
             </div>
         </div>
@@ -43,24 +57,13 @@
                 [routerLink]="['/admindashboard/comments', clientId]" style="animation-delay: 0.3s;">
                 <i class="bi bi-chat-dots-fill icon-large text-comment mb-3"></i>
                 <div class="card-body p-0">
-                    <h5 class="card-title">View Comments</h5>
+                    <h5 class="card-title">Review Comments</h5>
                     <p class="card-text text-muted">See the user comments on selected photos.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Send WhatsApp Message -->
-        <div class="col">
-            <div class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/sendCredentials', clientId]"
-                style="animation-delay: 0.4s; cursor:pointer;">                
-                <i class="bi bi-door-open icon-large text-success mb-3"></i>
-                <div class="card-body p-0">
-                    <h5 class="card-title">User Login Details</h5>
-                    <p class="card-text text-muted">View and Send access link and passcode to the client via WhatsApp.</p>
-                </div>
-            </div>
-        </div>
+
 
     </div>
 

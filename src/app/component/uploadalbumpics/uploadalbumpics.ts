@@ -29,6 +29,7 @@ export class Uploadalbumpics implements OnInit {
   allowedTypesMessage = `Only ${this.allowedTypes.toUpperCase()} formats are supported`;
   readonly MAX_FILE_SIZE_MB = 500; // 500 MB
   readonly MAX_FILE_SIZE_BYTES = this.MAX_FILE_SIZE_MB * 1024 * 1024;
+  checkboxMessage: string = '';
 
 
   constructor(
@@ -271,4 +272,7 @@ export class Uploadalbumpics implements OnInit {
     console.log('Loading state changed upload pics:', loading);
     this.loading = loading;
   }
+    onMessageChange(msg: string) {
+  this.checkboxMessage = msg;
+}
 }

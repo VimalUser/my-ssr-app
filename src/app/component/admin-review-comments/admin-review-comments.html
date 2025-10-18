@@ -159,9 +159,11 @@
   <div class="styled-card mb-4 p-4">
         <input type="checkbox" class="big-checkbox" appMarkAsDone
           [clientId]="pageLatestAdminData.clientId"
+          adminScreen="reviewComments"
           adminStatus="Reviewed Comments"
           confirmMessage="Are you sure to mark as done?"
           (loadingChange)="onLoadingChange($event)"
+          (messageChange)="onMessageChange($event)"
         />
         <label for="markDone" class="ms-2 fw-semibold">Mark reviewed comments as Done</label>
     </div>
