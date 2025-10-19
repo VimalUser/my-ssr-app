@@ -66,6 +66,7 @@ export class Newclientalbumform implements OnInit {
       noOfFrame: ['', Validators.required],
       albumSizeId: ['', Validators.required],
       noOfPics: ['', Validators.required],
+      noOfAlbumCover: ['', Validators.required],
       frameSizeId: ['', Validators.required],
       clientId: [0],
       status: ['Yet to Start'],

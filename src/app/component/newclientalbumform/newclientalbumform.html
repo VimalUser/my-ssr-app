@@ -106,7 +106,7 @@
                 </div>
 
                 <div class="col-12 mb-4">
-                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i> Frame</h5>
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i> Frame & Album Cover</h5>
                     <div class="row g-4">
 
                         <div class="col-md-6 col-lg-3">
@@ -123,6 +123,13 @@
                                 <option *ngFor="let fr of dropdowns?.frameSizes" [value]="fr.id">{{ fr.name }}</option>
                             </select>
                             <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')" class="text-danger small mt-1">Frame size is required.</div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">No of AlbumCover</label>
+                            <input formControlName="noOfAlbumCover" type="number" class="form-control" min="0" placeholder="Enter No of Album Cover" />
+                            <div *ngIf="f['noOfAlbumCover']?.touched && f['noOfAlbumCover']?.hasError('required')" class="text-danger small mt-1">Number of Album Cover is required.</div>
+                            <div *ngIf="f['noOfAlbumCover']?.touched && f['noOfAlbumCover']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 Album cover.</div>
                         </div>
 
                         <!-- <div class="col-12" *ngIf="showAccessLink">
