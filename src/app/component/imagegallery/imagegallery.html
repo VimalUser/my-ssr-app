@@ -5,17 +5,16 @@
 </div>
 
 <section id="selctionSection" *ngIf="!galleryOpen">
-  <div class="container py-4">  
+  <div class="container py-4">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-between align-items-center">
         <button class="btn btn-link fs-4 heading-orange p-0" aria-label="Back" (click)="prevStep()">
           <i class="bi bi-arrow-left"></i>
         </button>
         <div>
-              <button class="btn btn-success rounded-pill fw-bold px-4 me-2"
-          (click)="nextStep()">
-          Next  <i class="bi bi-arrow-right-circle"></i>
-        </button>
+          <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
+            Next <i class="bi bi-arrow-right-circle"></i>
+          </button>
           <!-- <a class="fw-bold text-orange ms-1 cursor-pointer" style="font-size: 1.08rem" (click)="nextStep()">Next</a> -->
         </div>
       </div>
@@ -25,12 +24,12 @@
       <div class="col-12">
         <h3 class="fw-bold mb-2 heading-orange">Album Pictures</h3>
         <div class="mb-3 text-white">Select your favorite images to proceed in your album...</div>
-                <div class="mb-3 text-white">
-                  <p> Please select exactly {{clientDataload.noOfPics}} pictures from either 
-                    the traditional or candid categories to proceed to the next step</p>
-                  <!-- <p> You have already selected {{ clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length }} 
+        <div class="mb-3 text-white">
+          <p> Please select exactly {{clientDataload.noOfPics}} pictures from either
+            the traditional or candid categories to proceed to the next step</p>
+          <!-- <p> You have already selected {{ clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length }} 
                     /{{clientDataload.noOfPics}} images..</p> -->
-                </div>
+        </div>
 
       </div>
     </div>
@@ -40,14 +39,14 @@
         <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
         <div class="fw-semibold mt-2" style="font-size: 1.06rem" class="text-white">
           Traditional Photos <br />
-      <span >     {{ clientDataload.tranditionalAlbumSelection.length }} Selected </span> <br />
+          <span> {{ clientDataload.tranditionalAlbumSelection.length }} Selected </span> <br />
         </div>
       </div>
       <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(folderNames[1])">
         <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
         <div class="fw-semibold mt-2" style="font-size: 1.06rem" class="text-white">
           Candid Photos <br />
-       <span class="text-white">   {{ clientDataload.candidAlbumSelection.length }} selected</span><br />
+          <span class="text-white"> {{ clientDataload.candidAlbumSelection.length }} selected</span><br />
         </div>
       </div>
     </div>
@@ -56,8 +55,9 @@
       <div class="col-12">
         <h6 class="fw-bold mb-2 text-white"></h6>
         <div class="mb-3 text-secondary">
-         You have already selected {{ clientDataload.tranditionalAlbumSelection.length + clientDataload.candidAlbumSelection.length }} 
-                    /{{clientDataload.noOfPics}} images..
+          You have already selected {{ clientDataload.tranditionalAlbumSelection.length +
+          clientDataload.candidAlbumSelection.length }}
+          /{{clientDataload.noOfPics}} images..
         </div>
       </div>
     </div>
@@ -66,68 +66,63 @@
 
 <section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper">
   <div class="">
-  <div class="container-fluid header-static">
-    <div class="row mb-3">
-      <div class="col-12 d-flex justify-content-between align-items-center">
-        <div class="heading-orange">
-          <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
-          <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
-            {{ selectedFolderName }}
-          </h4>
+    <div class="container-fluid header-static">
+      <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+          <div class="heading-orange">
+            <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
+            <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
+              {{ selectedFolderName }}
+            </h4>
+          </div>
+          <button class="btn btn-primary btn-sm" (click)="saveSelection()">Save Selection</button>
         </div>
-        <button class="btn btn-primary btn-sm" (click)="saveSelection()">Save Selection</button>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-12">
+          <h5 class="" [innerHTML]="TotalSelectionMessage">
+
+          </h5>
+
+        </div>
       </div>
     </div>
-
-    <div class="row mb-2">
-      <div class="col-12">
-        <h5 class="" [innerHTML]="TotalSelectionMessage">
-          
-         </h5>
-
-      </div>
-    </div>
-</div>
     <div class="row">
-  <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
-  <div class="card custom-img-card position-relative"
-       [class.selected-card]="isSelected(img)"
-       (click)="openPreview(img); $event.stopPropagation()">
-       
-    <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" /> 
+      <div class="col-6 col-md-3 col-lg-2 mb-4" *ngFor="let img of paginatedImages">
+        <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)"
+          (click)="openPreview(img); $event.stopPropagation()">
 
-    <!-- Floating footer overlay -->
-    <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
-      <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
-        {{ fileNameFromUrl(img) }}
-      </span>
+          <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
 
-      <!-- Select icon (replaced eye icon) -->
-    <button class="btn btn-sm btn-select"
-        (click)="toggleSelection(img); $event.stopPropagation()"
-        [ngClass]="isSelected(img) ? 'selected-btn' : 'unselected-btn'"
-        title="Select">
-  <i class="bi" [ngClass]="isSelected(img) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
-</button>
+          <!-- Floating footer overlay -->
+          <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
+            <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
+              {{ fileNameFromUrl(img) }}
+            </span>
+
+            <!-- Select icon (replaced eye icon) -->
+            <button class="btn btn-sm btn-select" (click)="toggleSelection(img); $event.stopPropagation()"
+              [ngClass]="isSelected(img) ? 'selected-btn' : 'unselected-btn'" title="Select">
+              <i class="bi" [ngClass]="isSelected(img) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
-</div>
-
-</div>
 
 
-      <div class="row"  style="text-align: center;" *ngIf="images.length==0">     
-    <p>No images were uploaded in this section, Kindly reach out our team! </p>
-  </div>
+    <div class="row" style="text-align: center;" *ngIf="images.length==0">
+      <p>No images were uploaded in this section, Kindly reach out our team! </p>
+    </div>
     <!-- Pagination -->
     <div class="d-flex justify-content-center my-3" *ngIf="images.length>0">
       <button class="btn btn-outline-secondary btn-sm me-2" (click)="changePage(-1)" [disabled]="currentPage === 1">
         Prev
       </button>
       <span>Page {{ currentPage }} / {{ totalPages }}</span>
-      <button
-        class="btn btn-outline-secondary btn-sm ms-2"
-        (click)="changePage(1)"
+      <button class="btn btn-outline-secondary btn-sm ms-2" (click)="changePage(1)"
         [disabled]="currentPage === totalPages">
         Next
       </button>
@@ -135,55 +130,43 @@
   </div>
 
   <!-- Preview Section (unchanged if already implemented well) -->
- <!-- Preview Section -->
-<div class="preview-overlay" *ngIf="previewImageUrl" (click)="closePreview()">
-  <div class="preview-content preview-no-header" (click)="$event.stopPropagation()">
-    
-    <!-- Close Button -->
-   <button class="preview-close-btn"
-        (click)="closePreview()"
-        aria-label="Close">
-  &times;
-</button>
+  <!-- Preview Section -->
+  <div class="preview-overlay" *ngIf="previewImageUrl" (click)="closePreview()">
+    <div class="preview-content preview-no-header" (click)="$event.stopPropagation()">
 
-    <div class="preview-body-full">
-      <div class="preview-img-wrapper">
-        
-        <!-- Loading Spinner -->
-        <div class="preview-loader" *ngIf="previewLoading">
-          <div class="spinner"></div>
-          <span class="ms-2">Loading preview…</span>
+      <!-- Close Button -->
+      <button class="preview-close-btn" (click)="closePreview()" aria-label="Close">
+        &times;
+      </button>
+
+      <div class="preview-body-full">
+        <div class="preview-img-wrapper">
+
+          <!-- Loading Spinner -->
+          <div class="preview-loader" *ngIf="previewLoading">
+            <div class="spinner"></div>
+            <span class="ms-2">Loading preview…</span>
+          </div>
+          <button class="nav-arrow left-arrow" (click)="showPreviousImage($event)">
+            &#10094;
+          </button>
+          <!-- Image -->
+          <img [src]="previewImageUrl" class="preview-img-full" alt="preview" (load)="onPreviewImageLoad()"
+            [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
+
+          <button class="nav-arrow right-arrow" (click)="showNextImage($event)">
+            &#10095;
+          </button>
+
+          <!-- Select Toggle Button -->
+          <button class="btn btn-select preview-select-btn"
+            (click)="toggleSelection(previewImageUrl); $event.stopPropagation()"
+            [ngClass]="isSelected(previewImageUrl) ? 'selected-btn' : 'unselected-btn'" title="Select / Unselect">
+            <i class="bi" [ngClass]="isSelected(previewImageUrl) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
+          </button>
         </div>
- <button 
-    class="nav-arrow left-arrow"
-    (click)="showPreviousImage($event)">
-    &#10094;
-  </button>
-        <!-- Image -->
-        <img
-          [src]="previewImageUrl"
-          class="preview-img-full"
-          alt="preview"
-          (load)="onPreviewImageLoad()"
-          [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
-
-            <button 
-    class="nav-arrow right-arrow"
-    (click)="showNextImage($event)">
-    &#10095;
-  </button>
-
-        <!-- Select Toggle Button -->
-        <button
-          class="btn btn-select preview-select-btn"
-          (click)="toggleSelection(previewImageUrl); $event.stopPropagation()"
-          [ngClass]="isSelected(previewImageUrl) ? 'selected-btn' : 'unselected-btn'"
-          title="Select / Unselect">
-          <i class="bi" [ngClass]="isSelected(previewImageUrl) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
-        </button>
       </div>
     </div>
   </div>
-</div>
 
 </section>

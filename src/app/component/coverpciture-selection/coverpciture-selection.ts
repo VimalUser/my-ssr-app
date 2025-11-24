@@ -81,7 +81,9 @@ export class CoverpcitureSelection {
   }
 
   nextStep() {
-    if (this.pagelatestData.coverSelection.length < this.allowedSelectedPhotos) {
+    if (
+      this.pagelatestData.coverSelection.length < this.allowedSelectedPhotos
+    ) {
       this.notify.error(
         `Please select ${this.allowedSelectedPhotos}  picture for album cover!`
       );
@@ -121,13 +123,11 @@ export class CoverpcitureSelection {
   get TotalSelectionMessage(): string {
     const noofCover = this.allowedSelectedPhotos;
     const CoverPictureCount = this.pagelatestData.coverSelection.length;
-    
+
     const difference = noofCover - this.selectedItems.length;
 
     const message = `
- <span class=""> Selection(s) remaining: ${
-   difference
- } of ${this.allowedSelectedPhotos}</span>
+ <span class=""> Selection(s) remaining: ${difference} of ${this.allowedSelectedPhotos}</span>
 `;
     return message;
   }
@@ -159,7 +159,9 @@ export class CoverpcitureSelection {
       this.selectedItems.splice(idx, 1);
     } else {
       if (this.checkMaxSelectedCountReached()) {
-        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
+        this.notify.error(
+          'You have already selected required images, if you want to add more, please contact sales team.'
+        );
         return;
       }
 
@@ -238,7 +240,9 @@ export class CoverpcitureSelection {
 
     if (!item) {
       if (this.checkMaxSelectedCountReached()) {
-        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
+        this.notify.error(
+          'You have already selected required images, if you want to add more, please contact sales team.'
+        );
         this.loading = false;
         return;
       }
@@ -297,32 +301,32 @@ export class CoverpcitureSelection {
   }
 
   // Find current index
-getCurrentImageIndex(): number {
-  if(this.previewImageUrl === null) {
-    return -1;
-  } 
-  return this.paginatedImages.indexOf(this.previewImageUrl);
-}
-
-showNextImage(event: Event) {
-  event.stopPropagation();
-  let currentIndex = this.getCurrentImageIndex();
-  if (currentIndex < this.paginatedImages.length - 1) {
-    this.previewImageUrl = this.paginatedImages[currentIndex + 1];
-    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-  }else{
-    this.notify.error('You’ve reached the last image.');
+  getCurrentImageIndex(): number {
+    if (this.previewImageUrl === null) {
+      return -1;
+    }
+    return this.paginatedImages.indexOf(this.previewImageUrl);
   }
-}
 
-showPreviousImage(event: Event) {
-  event.stopPropagation();
-  let currentIndex = this.getCurrentImageIndex();
-  if (currentIndex > 0) {
-    this.previewImageUrl = this.paginatedImages[currentIndex - 1];
-    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-  }else{
-        this.notify.error('This is the first image.');
+  showNextImage(event: Event) {
+    event.stopPropagation();
+    let currentIndex = this.getCurrentImageIndex();
+    if (currentIndex < this.paginatedImages.length - 1) {
+      this.previewImageUrl = this.paginatedImages[currentIndex + 1];
+      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+    } else {
+      this.notify.error('You’ve reached the last image.');
+    }
   }
-}
+
+  showPreviousImage(event: Event) {
+    event.stopPropagation();
+    let currentIndex = this.getCurrentImageIndex();
+    if (currentIndex > 0) {
+      this.previewImageUrl = this.paginatedImages[currentIndex - 1];
+      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+    } else {
+      this.notify.error('This is the first image.');
+    }
+  }
 }

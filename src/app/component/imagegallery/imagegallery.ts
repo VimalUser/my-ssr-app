@@ -129,8 +129,9 @@ export class Imagegallery implements OnInit {
     const tradionalCount =
       this.clientDataload.tranditionalAlbumSelection.length;
     const CandidCount = this.clientDataload.candidAlbumSelection.length;
-    const addOtherTypeCount = this.isTraditional? CandidCount : tradionalCount;
-    const difference = noofPhotos - (this.selectedItems.length +addOtherTypeCount);
+    const addOtherTypeCount = this.isTraditional ? CandidCount : tradionalCount;
+    const difference =
+      noofPhotos - (this.selectedItems.length + addOtherTypeCount);
 
     const message = `
   <span class="">Saved Photos - </span> <span class="text-white">
@@ -164,7 +165,9 @@ export class Imagegallery implements OnInit {
       this.selectedItems.splice(idx, 1); //remove that item
     } else {
       if (this.isMaximumImagesSelected()) {
-        this.notify.error('You have already made required selction, if you want to add more, please contact sales team.');
+        this.notify.error(
+          'You have already made required selction, if you want to add more, please contact sales team.'
+        );
         return;
       }
       this.selectedItems.push({
@@ -217,7 +220,9 @@ export class Imagegallery implements OnInit {
 
     if (!item) {
       if (this.isMaximumImagesSelected()) {
-        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
+        this.notify.error(
+          'You have already selected required images, if you want to add more, please contact sales team.'
+        );
         return;
       }
       item = {
@@ -346,33 +351,32 @@ export class Imagegallery implements OnInit {
   }
 
   // Find current index
-getCurrentImageIndex(): number {
-  if(this.previewImageUrl === null) {
-    return -1;
-  } 
-  return this.paginatedImages.indexOf(this.previewImageUrl);
-}
-
-showNextImage(event: Event) {
-  event.stopPropagation();
-  let currentIndex = this.getCurrentImageIndex();
-  if (currentIndex < this.paginatedImages.length - 1) {
-    this.previewImageUrl = this.paginatedImages[currentIndex + 1];
-    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-  }else{
-    this.notify.error('You’ve reached the last image.');
+  getCurrentImageIndex(): number {
+    if (this.previewImageUrl === null) {
+      return -1;
+    }
+    return this.paginatedImages.indexOf(this.previewImageUrl);
   }
-}
 
-showPreviousImage(event: Event) {
-  event.stopPropagation();
-  let currentIndex = this.getCurrentImageIndex();
-  if (currentIndex > 0) {
-    this.previewImageUrl = this.paginatedImages[currentIndex - 1];
-    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-  }else{
-        this.notify.error('This is the first image.');
+  showNextImage(event: Event) {
+    event.stopPropagation();
+    let currentIndex = this.getCurrentImageIndex();
+    if (currentIndex < this.paginatedImages.length - 1) {
+      this.previewImageUrl = this.paginatedImages[currentIndex + 1];
+      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+    } else {
+      this.notify.error('You’ve reached the last image.');
+    }
   }
-}
 
+  showPreviousImage(event: Event) {
+    event.stopPropagation();
+    let currentIndex = this.getCurrentImageIndex();
+    if (currentIndex > 0) {
+      this.previewImageUrl = this.paginatedImages[currentIndex - 1];
+      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+    } else {
+      this.notify.error('This is the first image.');
+    }
+  }
 }

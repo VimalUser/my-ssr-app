@@ -1,92 +1,40 @@
-<div class="start-page-wrapper container-fluid py-3 px-2">
+<!-- home.component.html -->
 
-  <!-- === TOP CARD: SLIDER + WELCOME === -->
+<div class="container-fluid py-3 px-2">
   <div class="card shadow-sm border-0 rounded-4 p-3 mb-3 bg-white">
-    <div class="row align-items-stretch g-3">
-
-      <!-- LEFT: SLIDER -->
-      <div class="col-lg-8 col-md-12">
+    <div class="row align-items-center justify-content-center g-3">
+      <div class="col-12">
         <div class="slider-container">
-          <img
-            *ngFor="let img of adImages; let i = index"
-            [src]="img"
-            [class.active]="i === currentIndex"
-            alt="Advertisement"
-            class="slide-img"
-          />
-
-          <!-- arrows -->
-          <button
-            class="slider-arrow slider-arrow-left"
-            type="button"
-            (click)="prevSlide($event)">
-            ‹
-          </button>
-          <button
-            class="slider-arrow slider-arrow-right"
-            type="button"
-            (click)="nextSlide($event)">
-            ›
-          </button>
-
-          <!-- dots -->
-          <div class="slider-dots">
-            <button
-              *ngFor="let img of adImages; let i = index"
-              type="button"
-              class="slider-dot"
-              [class.active]="i === currentIndex"
-              (click)="goToSlide(i, $event)">
-            </button>
-          </div>
+          <img *ngFor="let img of adImages; let i = index" [src]="img" [class.active]="i === currentIndex"
+            alt="Advertisement" class="slide-img" />
         </div>
       </div>
-
-      <!-- RIGHT: TEXT / CTA -->
-      <div class="col-lg-4 col-md-12">
-        <div class="welcome-card h-100 d-flex flex-column justify-content-center">
-          <div>
-            <h5 class="fw-bold mb-1 welcome-title">
-              Hey {{ formLatestData.clientName }}... 👋
-            </h5>
-            <p class="mb-2 text-muted">
-              Pleasure to see you back!
-            </p>
-
-            <div class="fw-bold mb-2 text-dark">
-              What you need to do:
-            </div>
-            <ul class="mb-3 welcome-list">
-              <li>Select <b>{{ formLatestData.noOfPics }}</b> images for the album</li>
-              <li>Select <b>{{ formLatestData.noOfFrames }}</b> images for frames</li>
-              <li>Enter <b>name & event date</b> for the cover page</li>
-              <li>Select <b>one image</b> for the cover page</li>
-            </ul>
-          </div>
-
-          <div class="mt-2 welcome-actions">
-            <button
-              *ngIf="!hasSubmitted"
-              class="btn btn-warning text-dark fw-bold rounded-pill px-4"
-              (click)="nextStep()">
-              Start the process
-              <i class="bi bi-arrow-right ms-2"></i>
-            </button>
-
-            <div
-              *ngIf="hasSubmitted"
-              class="btn btn-info text-dark fw-bold rounded-pill px-4 btn-disabled">
-              Your selections are already submitted
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 
-  <!-- LOADER -->
-  <div *ngIf="isLoading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Loading..." />
+  <div class="p-3 rounded-4 bg-white shadow-sm">
+    <h5 class="fw-bold mb-1" style="color: black;">Hey {{this.formLatestData.clientName }} ...!</h5>
+    <div class="mb-2 text-muted">Pleasure to see you back,</div>
+    <div class="fw-bold mb-2" style="color: black;">Important message</div>
+    <ul class="mb-3 text-dark" style="list-style: disc inside;">
+      <li>Select {{this.formLatestData.noOfPics }} images for album</li>
+      <li>Select {{this.formLatestData.noOfFrames }} images for frame</li>
+      <li>Enter name and date for cover page</li>
+      <li>Select single image for cover page</li>
+    </ul>
+
+    <button *ngIf="!hasSubmitted" class="btn btn-warning text-dark fw-bold rounded-pill px-4" (click)="nextStep()">
+      Start the process <i class="bi bi-arrow-right ms-2"></i>
+    </button>
+
+    <div *ngIf="hasSubmitted" class="btn btn-info text-dark fw-bold rounded-pill px-4 btn-disabled"
+      style="cursor:none;">
+      Your selection were already submitted
+    </div>
+
   </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-container">
+  <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>
