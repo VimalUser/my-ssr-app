@@ -1,21 +1,44 @@
-/* Wrap everything so the page doesn't expand */
-.bi-folder2-open:hover {
-  cursor: pointer;
-}
-
-
-.gallery-wrapper,
-.gallery-grid-scroll,
-.card,
-.card-img-top {
-max-width: 100%;
-  box-sizing: border-box;
-}
+/* ---------- General ---------- */
 
 body {
   overflow-x: hidden;
 }
 
+textarea {
+  line-height: 1.1;
+}
+
+.bi-folder2-open:hover {
+  cursor: pointer;
+}
+
+.text-Orange {
+  color: #f57e3d;
+}
+
+.heading-orange {
+  color: #ef9333;
+  font-weight: bold;
+}
+
+.header-static {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: 10px;
+  padding-bottom: 0px;
+}
+
+
+/* ---------- Gallery / Cards ---------- */
+
+.gallery-wrapper,
+.gallery-grid-scroll,
+.card,
+.card-img-top {
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
 /* Fixed scrollable grid height */
 .gallery-grid-scroll {
@@ -39,7 +62,6 @@ body {
   transform: scale(1.03);
 }
 
-
 .fixed-img {
   width: 100%;
   height: 100%;
@@ -48,7 +70,7 @@ body {
 
 /* Highlight selected */
 .selected-card {
-  border:4px solid #13f721 !important;
+  border: 4px solid #05800d !important;
 }
 
 /* Floating footer overlay */
@@ -57,15 +79,14 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background:rgb(0 0 0 / 50%);
+  background: rgb(0 0 0 / 50%);
   font-weight: bold;
   color: white;
   font-size: 0.85rem;
   z-index: 5;
 }
 
-
-/* Overlay checkmark */
+/* Overlay checkmark (if you still use it) */
 .checkmark-overlay {
   position: absolute;
   top: 8px;
@@ -78,7 +99,7 @@ body {
   z-index: 10;
 }
 
-/* Fix Save Selection button */
+/* Save Selection button (fixed) */
 .btn-save-selection {
   position: fixed;
   top: 100px;
@@ -86,63 +107,202 @@ body {
   z-index: 1000;
 }
 
-/* Preview Styles */
-.preview-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 9999;
-  padding: 20px;
+/* Thumbnail eye icon (if used anywhere else) */
+.bi-eye {
+  font-weight: bolder;
+  font-size: 1.5rem;
 }
 
-.preview-content {
-  width: 100%; max-width: 900px; max-height: 95vh;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.btn-eye {
+  background-color: rgb(0 0 0 / 0%);
+  color: white;
+  border: 0px;
+  padding: 0px;
+  font-weight: bolder;
+}
+
+/* Selection button (used both in card footer and preview, overridden below) */
+.btn-select {
+  border: none;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Unselected status (white background, grey border) */
+.unselected-btn {
+  background-color: white;
+  color: black;
+  border: 2px solid #ddd;
+}
+
+/* Selected status (green border + icon) */
+.selected-btn {
+  background-color: white;
+  color: #28a745;
+  border: 2px solid #28a745;
+}
+
+/* Hover effect */
+.btn-select:hover {
+  transform: scale(1.1);
+}
+
+
+/* ---------- Preview Overlay & Dialog ---------- */
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+/* Old full-header version – kept in case something else still uses it */
+.preview-content.preview-full {
+  max-width: 1200px;
+  max-height: 96vh;
+  background: #3b3b3b;
   border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-.preview-header, .preview-footer {
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.1);
+/* Current full-image version (no header bar) */
+.preview-content.preview-no-header {
+  width: fit-content;          /* Fits to image size */
+  max-height: 96vh;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header (used only by preview-full, safe to keep) */
+.preview-header {
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #fff;
 }
 
+/* Generic preview body (for header version) */
 .preview-body {
-  padding: 14px;
-  overflow-y: auto;
-  max-height: max-content; /* Match image max height */
+  padding: 0;
+  flex: 1;
   display: flex;
-  justify-content: center; /* Center image horizontally */
-  align-items: center;     /* Center image vertically */
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
+/* Fullscreen body container (for current design) */
+.preview-body-full {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Wrapper that positions image + icons */
+.preview-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Old img selector (kept for safety, different class) */
 .preview-img {
-  width: 100%;       /* Make image take full width of container */
-  height: auto;      /* Maintain aspect ratio */
-  max-height: 60vh;  /* Keep max height to viewport */
-  object-fit: contain; /* Ensure whole image fits inside without cropping */
-  border-radius: 10px;
-  margin-bottom: 1rem;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100vh - 90px); /* viewport height minus header */
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
 }
-  
 
+/* Current full-screen style image */
+.preview-img-full {
+  max-width: 100%;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* Loader overlay */
 .preview-loader {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(240,240,240,.5);
+  background: rgba(20, 20, 20, 0.7);
   position: absolute;
   inset: 0;
   z-index: 2;
   font-size: 1rem;
+  color: #fff;
 }
+
+/* Custom close button (top-right of image) */
+.preview-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 30;
+}
+
+.preview-close-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+}
+
+/* Select toggle icon in bottom-right corner of preview */
+.preview-select-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  z-index: 20;
+}
+
+
+/* ---------- Loader Spinner ---------- */
 
 .spinner {
   width: 44px;
@@ -154,32 +314,49 @@ body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
+
+/* ---------- Responsive ---------- */
 
 @media (min-width: 992px) {
-    .col-lg-2 {
-        flex: 0 0 auto;
-        width: 20%;
-    }
+  .col-lg-2 {
+    flex: 0 0 auto;
+    width: 20%;
+  }
 }
 
-.bi-eye{
-      font-weight: bolder;
-    font-size: 1.5rem;
-}
-.btn-eye{
-    background-color: rgb(0 0 0 / 0%);
-    color: white;
-    border: 0px;
-    padding: 0px;
-    font-weight: bolder;
-}
-textarea{
-  line-height: 1.1;
+
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
 }
 
-.heading-orange{
-  color: #ef9333;
-  font-weight: bold;
-} 
+.left-arrow {
+  left: 16px;
+}
+
+.right-arrow {
+  right: 16px;
+}
+
+.nav-arrow:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: translateY(-50%) scale(1.1);
+}

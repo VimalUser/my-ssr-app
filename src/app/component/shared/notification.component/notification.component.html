@@ -1,6 +1,9 @@
 <div class="alert-container" *ngIf="notifications.length > 0">
   <div class="alert" [ngClass]="notifications[0].type">
-    {{ notifications[0].message }}
+   <i class="bi bi-x-circle-fill" *ngIf="notifications[0].type == 'error'" ></i>
+      <i class="bi bi-check-circle-fill" *ngIf="notifications[0].type == 'success'" ></i> 
+ 
+     {{ notifications[0].message }}
   </div>
 </div>
 

@@ -16,10 +16,14 @@ import { Router } from '@angular/router';
   standalone: true,
 })
 export class Albumstratpage implements OnInit {
-  user: LoggedInUser | null = null;
+   user: LoggedInUser | null = null;
   isLoading: boolean = false;
 
   formLatestData: clientData = new clientData();
+
+  adImages: string[] = [];
+  currentIndex = 0;
+  intervalId?: number;
 
   constructor(
     private clientDataService: ClientDataService,
@@ -29,38 +33,68 @@ export class Albumstratpage implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    // this.clientDataService.resetAll();
-    // this.clientDataService.triggerResetMenu();
+
     this.clientDataService.restoreUserFromStorage();
     this.clientDataService.resetClientDataOnly();
-     this.clientDataService.triggerNextStep(0);
-  // Automatically generate ad image names
-    this.adImages = Array.from({ length: 2 }, (_, i) => `assets/startpage-ad/ad_${i + 1}.png`);
+    this.clientDataService.triggerNextStep(0);
 
-    // Slide every 3 seconds
-    this.intervalId = window.setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
-    }, 3000);
+    // ad images: ad_1.png, ad_2.png, ...
+    this.adImages = Array.from(
+      { length: 2 },
+      (_, i) => `assets/startpage-ad/ad_${i + 1}.png`
+    );
 
+    this.startAutoSlide();
 
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
-
-
   }
-
-    adImages: string[] = [];
-  currentIndex = 0;
-  intervalId?: number;
-
- 
 
   ngOnDestroy(): void {
-    if (this.intervalId) clearInterval(this.intervalId);
+    if (this.intervalId) {
+      window.clearInterval(this.intervalId);
+    }
   }
 
+  /* ========== SLIDER LOGIC ========== */
+
+  private startAutoSlide(): void {
+    if (this.intervalId) {
+      window.clearInterval(this.intervalId);
+    }
+
+    this.intervalId = window.setInterval(() => {
+      this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
+    }, 4000);
+  }
+
+  nextSlide(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
+    this.startAutoSlide();
+  }
+
+  prevSlide(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.currentIndex =
+      (this.currentIndex - 1 + this.adImages.length) % this.adImages.length;
+    this.startAutoSlide();
+  }
+
+  goToSlide(index: number, event: Event): void {
+    event.stopPropagation();
+    this.currentIndex = index;
+    this.startAutoSlide();
+  }
+
+  /* ========== EXISTING LOGIC ========== */
+
   nextStep() {
-     this.clientDataService.triggerNextStep(1);
+    this.clientDataService.triggerNextStep(1);
     // this.router.navigate(['userhome/albumname']);
   }
 
@@ -69,8 +103,6 @@ export class Albumstratpage implements OnInit {
   }
 
   updateClinetData(clientDatafromDb: clientData) {
-    // const data: clientData = this.clientDataService.getData();
-
     const updated: clientData = {
       clientId: Number(clientDatafromDb.clientId) || 1,
       clientName: clientDatafromDb.clientName || '',
@@ -110,14 +142,12 @@ export class Albumstratpage implements OnInit {
       .getClientAlbumSelectionDetails(String(this.user?.clientId))
       .subscribe({
         next: (data) => {
-          // This is where you process the successful response
           console.log('API Response:', data);
           this.formLatestData = data;
           this.updateClinetData(this.formLatestData);
           this.isLoading = false;
         },
         error: (error) => {
-          // This is executed if the request fails (e.g., 404, 500)
           console.error('There was an error!', error);
           this.isLoading = false;
         },

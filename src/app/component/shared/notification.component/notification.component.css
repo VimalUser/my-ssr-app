@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 3500;
+  z-index: 19900;
   pointer-events: none; /* allows clicks to pass through */
 }
 
@@ -38,8 +38,16 @@
 
 /* alert color variants */
 
-.alert.success { background: #d4edda; color: #155724; }
-.alert.error   { background: #f8d7da; color: #721c24; }
+.alert.success { background: #02711d;
+    color: white;
+    font-weight: bolder;
+    border: 1px solid #dbcdb2; }
+.alert.error   {
+    background: #b10000;
+    color: #ffffff;
+    font-weight: bolder;
+    border: solid 1px #f9afaf;
+}  
 .alert.warning { background: #fff3cd; color: #856404; }
 .alert.info    { background: #cce5ff; color: #004085; }
 

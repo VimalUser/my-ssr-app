@@ -29,7 +29,7 @@ export class CoverpcitureSelection {
   currentPage = 1;
 
   selectedItems: AlbumSelectionItem[] = [];
-  allowedSelectedPhotos = 1; // Set your limit here
+  allowedSelectedPhotos = 0; // Set your limit here
   loading = true;
   previewLoading = false;
 
@@ -81,7 +81,7 @@ export class CoverpcitureSelection {
   }
 
   nextStep() {
-    if (this.pagelatestData.coverSelection.length < 1) {
+    if (this.pagelatestData.coverSelection.length < this.allowedSelectedPhotos) {
       this.notify.error(
         `Please select ${this.allowedSelectedPhotos}  picture for album cover!`
       );
@@ -159,7 +159,7 @@ export class CoverpcitureSelection {
       this.selectedItems.splice(idx, 1);
     } else {
       if (this.checkMaxSelectedCountReached()) {
-        this.notify.error('You have already selected required images');
+        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
         return;
       }
 
@@ -238,7 +238,7 @@ export class CoverpcitureSelection {
 
     if (!item) {
       if (this.checkMaxSelectedCountReached()) {
-        this.notify.error('You have already selected required images');
+        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
         this.loading = false;
         return;
       }
@@ -295,4 +295,34 @@ export class CoverpcitureSelection {
       },
     });
   }
+
+  // Find current index
+getCurrentImageIndex(): number {
+  if(this.previewImageUrl === null) {
+    return -1;
+  } 
+  return this.paginatedImages.indexOf(this.previewImageUrl);
+}
+
+showNextImage(event: Event) {
+  event.stopPropagation();
+  let currentIndex = this.getCurrentImageIndex();
+  if (currentIndex < this.paginatedImages.length - 1) {
+    this.previewImageUrl = this.paginatedImages[currentIndex + 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  }else{
+    this.notify.error('You’ve reached the last image.');
+  }
+}
+
+showPreviousImage(event: Event) {
+  event.stopPropagation();
+  let currentIndex = this.getCurrentImageIndex();
+  if (currentIndex > 0) {
+    this.previewImageUrl = this.paginatedImages[currentIndex - 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  }else{
+        this.notify.error('This is the first image.');
+  }
+}
 }

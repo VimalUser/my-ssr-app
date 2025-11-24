@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Notificationservice, Notification, Confirmation } from '../../../services/notificationservice';
+import {
+  Notificationservice,
+  Notification,
+  Confirmation,
+} from '../../../services/notificationservice';
 
 @Component({
   selector: 'app-notification',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css']
+  styleUrls: ['./notification.component.css'],
 })
 export class NotificationComponent implements OnInit {
   notifications: Notification[] = [];
@@ -16,10 +20,7 @@ export class NotificationComponent implements OnInit {
   constructor(private notificationservice: Notificationservice) {}
 
   ngOnInit() {
-    console.log('✅ NotificationComponent initialized');
-
     this.notificationservice.notifications$.subscribe((notification) => {
-      console.log('🔔 notification received', notification);
       this.notifications.push(notification);
 
       // remove after 3s (keeps UI simple)
@@ -29,7 +30,6 @@ export class NotificationComponent implements OnInit {
     });
 
     this.notificationservice.confirmations$.subscribe((confirmation) => {
-      console.log('⚡ Confirmation received:', confirmation);
       this.confirmation = confirmation;
     });
   }

@@ -180,7 +180,7 @@ export class Framepicturecomponent {
       this.selectedItems.splice(idx, 1); //remove
     } else {
       if (this.checkMaxSelectedCountReached()) {
-        this.notify.error('You have already selected required images');
+        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
         return;
       }
 
@@ -246,7 +246,7 @@ export class Framepicturecomponent {
 
     if (!item) {
       if (this.checkMaxSelectedCountReached()) {
-        this.notify.error('You have already selected required images');
+        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
         this.loading = false;
         return;
       }
@@ -328,4 +328,33 @@ export class Framepicturecomponent {
       },
     });
   }
+   // Find current index
+getCurrentImageIndex(): number {
+  if(this.previewImageUrl === null) {
+    return -1;
+  } 
+  return this.paginatedImages.indexOf(this.previewImageUrl);
+}
+
+showNextImage(event: Event) {
+  event.stopPropagation();
+  let currentIndex = this.getCurrentImageIndex();
+  if (currentIndex < this.paginatedImages.length - 1) {
+    this.previewImageUrl = this.paginatedImages[currentIndex + 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  }else{
+    this.notify.error('You’ve reached the last image.');
+  }
+}
+
+showPreviousImage(event: Event) {
+  event.stopPropagation();
+  let currentIndex = this.getCurrentImageIndex();
+  if (currentIndex > 0) {
+    this.previewImageUrl = this.paginatedImages[currentIndex - 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  }else{
+        this.notify.error('This is the first image.');
+  }
+}
 }

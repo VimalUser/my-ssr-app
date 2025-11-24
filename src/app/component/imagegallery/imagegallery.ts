@@ -30,7 +30,7 @@ export class Imagegallery implements OnInit {
   galleryOpen = false;
   previewLoading = false;
 
-  previewImage: string | null = null;
+  previewImageUrl: string | null = null;
   previewFileName = '';
   previewComment = '';
 
@@ -164,7 +164,7 @@ export class Imagegallery implements OnInit {
       this.selectedItems.splice(idx, 1); //remove that item
     } else {
       if (this.isMaximumImagesSelected()) {
-        this.notify.error('You have already made required selction');
+        this.notify.error('You have already made required selction, if you want to add more, please contact sales team.');
         return;
       }
       this.selectedItems.push({
@@ -191,7 +191,7 @@ export class Imagegallery implements OnInit {
   }
 
   openPreview(imgUrl: string) {
-    this.previewImage = imgUrl;
+    this.previewImageUrl = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
     const existing = this.selectedItems.find(
       (x) => x.fileName === this.previewFileName
@@ -205,7 +205,7 @@ export class Imagegallery implements OnInit {
   }
 
   closePreview() {
-    this.previewImage = null;
+    this.previewImageUrl = null;
     this.previewFileName = '';
     this.previewComment = '';
     this.previewLoading = false;
@@ -217,14 +217,14 @@ export class Imagegallery implements OnInit {
 
     if (!item) {
       if (this.isMaximumImagesSelected()) {
-        this.notify.error('You have already selected required images');
+        this.notify.error('You have already selected required images, if you want to add more, please contact sales team.');
         return;
       }
       item = {
         fileName: this.fileNameFromUrl(fileName),
         comment: '',
         type: 'image',
-        url: this.previewImage || '',
+        url: this.previewImageUrl || '',
         isTraditional: this.isTraditional,
       };
       this.selectedItems.push(item);
@@ -344,4 +344,35 @@ export class Imagegallery implements OnInit {
       },
     });
   }
+
+  // Find current index
+getCurrentImageIndex(): number {
+  if(this.previewImageUrl === null) {
+    return -1;
+  } 
+  return this.paginatedImages.indexOf(this.previewImageUrl);
+}
+
+showNextImage(event: Event) {
+  event.stopPropagation();
+  let currentIndex = this.getCurrentImageIndex();
+  if (currentIndex < this.paginatedImages.length - 1) {
+    this.previewImageUrl = this.paginatedImages[currentIndex + 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  }else{
+    this.notify.error('You’ve reached the last image.');
+  }
+}
+
+showPreviousImage(event: Event) {
+  event.stopPropagation();
+  let currentIndex = this.getCurrentImageIndex();
+  if (currentIndex > 0) {
+    this.previewImageUrl = this.paginatedImages[currentIndex - 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  }else{
+        this.notify.error('This is the first image.');
+  }
+}
+
 }
