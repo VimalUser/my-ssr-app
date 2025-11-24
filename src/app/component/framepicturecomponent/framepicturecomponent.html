@@ -22,63 +22,68 @@
         </div>
       </div>
     </div>
-    <!-- Frames in a Row: Portrait and Landscape side by side -->
-    <div class="row g-4">
-      <!-- Portrait Frame Column -->
-      <div class="col-12 col-md-6 d-flex align-items-stretch">
-        <div class="w-100 d-flex">
-          <div class="me-3">
-            <span class="bi bi-folder2-open" (click)="showGallery(true)" style="font-size: 3rem"></span>
-          </div>
-          <div class="fw-semibold align-self-center" (click)="showGallery(true)">
-            Portrait Frame <br>
-            <!-- <a class="btn-link" style="color: wheat;" (click)="showGallery(true)"> Select image</a><br>  -->
-            {{pagelatestData.portraitFrameSelection.length}} selected
 
-          </div>
+
+    <div class="row justify-content-start gx-3 gy-4 heading-orange">
+      <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(true)">
+        <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
+        <div class="fw-semibold mt-2" style="font-size: 1.06rem" class="text-white">
+          Portrait Frame <br />
+          <span> {{ pagelatestData.portraitFrameSelection.length }} Selected </span> <br />
         </div>
       </div>
-      <!-- Landscape Frame Column -->
-      <div class="col-12 col-md-6 d-flex align-items-stretch">
-        <div class="w-100 d-flex">
-          <div class="me-3">
-            <!-- <img
-              src="assets/frame.png"
-              alt="Landscape Frame"
-              class="frame-img" (click)="showGallery(true)"
-              style="max-width: 130px; height: auto" /> -->
-            <span class="bi bi-folder2-open" (click)="showGallery(true)" style="font-size: 3rem"></span>
-          </div>
-          <div class="fw-semibold align-self-center" (click)="showGallery(true)">
-            Landscape Frame<br>
-            <!-- <a class="btn-link" style="color: wheat;" (click)="showGallery(false)"> Select image</a><br>               -->
-            <span> {{pagelatestData.landscapeFrameSelection.length}} selected</span>
-          </div>
+      <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(false)">
+        <span class="bi bi-folder2-open" style="font-size: 3rem"></span>
+        <div class="fw-semibold mt-2" style="font-size: 1.06rem" class="text-white">
+          Landscape Frame <br />
+          <span class="text-white"> {{ pagelatestData.landscapeFrameSelection.length }} selected</span><br />
         </div>
       </div>
     </div>
+
+
+
   </div>
 </section>
 
 <section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper">
-  <div class="container-fluid py-4">
-    <div class="row mb-3">
-      <div class="col-12 d-flex justify-content-between align-items-center">
-        <div class="heading-orange">
-          <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
-          <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
-            {{ selectedFolderName }}
-          </h4>
-        </div>
-        <button class="btn btn-primary btn-sm" (click)="saveSelection()">Save Selection</button>
+  <div class="container-fluid header-static">
+  <div class="row mb-3">
+    <div class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div class="heading-orange">
+        <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
+        <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
+          {{ selectedFolderName }}
+        </h4>
       </div>
-    </div>
 
-    <div class="row mb-2">
-      <div class="col-12">
-        <h5 class="mb-3 text-white" [innerHTML]="TotalSelectionMessage"> </h5>
+      <div class="d-flex align-items-center gap-3">
+        <!-- Show selected only toggle -->
+        <div class="form-check form-switch text-white">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="showSelectedOnly"
+            [(ngModel)]="showSelectedOnly"
+            (change)="onShowSelectedToggle()" />
+          <label class="form-check-label" for="showSelectedOnly">
+            Show selected only
+          </label>
+        </div>
+
+        <button class="btn btn-primary btn-sm" (click)="saveSelection()">
+          Save Selection
+        </button>
       </div>
     </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-12">
+      <h5 [innerHTML]="TotalSelectionMessage"></h5>
+    </div>
+  </div>
+</div>
 
 
     <!-- Grid -->
@@ -107,8 +112,8 @@
     </div>
 
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center my-3">
+   <!-- Pagination -->
+    <div class="d-flex justify-content-center my-3" *ngIf="visibleImages.length > 0">
       <button class="btn btn-outline-secondary btn-sm me-2" (click)="changePage(-1)" [disabled]="currentPage === 1">
         Prev
       </button>
@@ -118,7 +123,7 @@
         Next
       </button>
     </div>
-  </div>
+ 
 </section>
 
 <!-- Fullscreen Preview -->

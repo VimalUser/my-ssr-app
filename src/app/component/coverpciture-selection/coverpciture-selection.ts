@@ -39,6 +39,7 @@ export class CoverpcitureSelection {
 
   pagelatestData: clientData = new clientData();
   apiImageResponse: any;
+  showSelectedOnly: boolean = false;
 
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(4);
@@ -95,15 +96,6 @@ export class CoverpcitureSelection {
   getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {
     this.apiImageResponse = data;
     this.images = data ? data.map((item) => item.imageUrl) : [];
-  }
-
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.images.length / this.pageSize));
-  }
-
-  get paginatedImages(): string[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.images.slice(start, start + this.pageSize);
   }
 
   changePage(step: number) {
@@ -328,5 +320,26 @@ export class CoverpcitureSelection {
     } else {
       this.notify.error('This is the first image.');
     }
+  }
+
+  // All images that should currently be visible (filtered or full)
+  get visibleImages(): string[] {
+    if (!this.showSelectedOnly) {
+      return this.images;
+    }
+    // only keep images that are selected
+    return this.images.filter((img) => this.isSelected(img));
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.visibleImages.length / this.pageSize));
+  }
+
+  get paginatedImages(): string[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.visibleImages.slice(start, start + this.pageSize);
+  }
+  onShowSelectedToggle() {
+    this.currentPage = 1;
   }
 }

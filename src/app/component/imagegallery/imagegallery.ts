@@ -33,6 +33,7 @@ export class Imagegallery implements OnInit {
   previewImageUrl: string | null = null;
   previewFileName = '';
   previewComment = '';
+  showSelectedOnly: boolean = false;
 
   clientDataload: clientData = new clientData();
 
@@ -80,8 +81,8 @@ export class Imagegallery implements OnInit {
     this.getImagesbyPath();
   }
 
-  gobackFolderSelection() {
-    const confirmCancelled = confirm(
+  async gobackFolderSelection() {
+    const confirmCancelled =await  this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
@@ -115,14 +116,14 @@ export class Imagegallery implements OnInit {
     this.clientDataService.triggerNextStep(3);
   }
 
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.images.length / this.pageSize));
-  }
+  // get totalPages(): number {
+  //   return Math.max(1, Math.ceil(this.images.length / this.pageSize));
+  // }
 
-  get paginatedImages(): string[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.images.slice(start, start + this.pageSize);
-  }
+  // get paginatedImages(): string[] {
+  //   const start = (this.currentPage - 1) * this.pageSize;
+  //   return this.images.slice(start, start + this.pageSize);
+  // }
 
   get TotalSelectionMessage(): string {
     const noofPhotos = Number(this.clientDataload.noOfPics) || 0;
@@ -264,14 +265,14 @@ export class Imagegallery implements OnInit {
     });
   }
 
-  saveSelection() {
+  async saveSelection() {
     // If Frame/Cover is NOT selected, save immediately.
     if (!this.isFrameOrCoverSelected()) {
       this.apiCalltoSave(this.updateModelWithLatestData());
       return;
     }
 
-    const confirmed = confirm(
+    const confirmed =await this.notify.confirm(
       'You have already selected Frame/Cover photos. Any changes will clear frame/cover selection and require you to reselect again.<br/> Do you want to proceed?'
     );
 
@@ -378,5 +379,27 @@ export class Imagegallery implements OnInit {
     } else {
       this.notify.error('This is the first image.');
     }
+  }
+
+  // All images that should currently be visible (filtered or full)
+  get visibleImages(): string[] {
+    if (!this.showSelectedOnly) {
+      return this.images;
+    }
+    // only keep images that are selected
+    return this.images.filter((img) => this.isSelected(img));
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.visibleImages.length / this.pageSize));
+  }
+
+  get paginatedImages(): string[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.visibleImages.slice(start, start + this.pageSize);
+  }
+
+  onShowSelectedToggle() {
+    this.currentPage = 1;
   }
 }

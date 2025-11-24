@@ -9,7 +9,7 @@
 
 <div class="confirm-overlay" *ngIf="confirmation">
   <div class="confirm-box">
-    <p class="confirm-message">{{ confirmation.message }}</p>
+    <p class="confirm-message" [innerHTML]="confirmation.message"></p>
     <div class="confirm-actions">
       <button class="btn confirm" (click)="respond(true)">
         {{ confirmation.confirmText || 'Yes' }}
