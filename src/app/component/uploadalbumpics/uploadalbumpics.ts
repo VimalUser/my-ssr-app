@@ -245,8 +245,8 @@ export class Uploadalbumpics implements OnInit {
     }
   }
 
-  onDeleteAll(category: string): void {
-    const confirmDelete = confirm(
+async onDeleteAll(category: string) {
+    const confirmDelete =await this.notify.confirm(
       `Are you sure to delete all the ${category} images?`
     );
     if (!confirmDelete) {

@@ -6,10 +6,14 @@ import { clientData } from '../../model/clientData';
 import { Router } from '@angular/router';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
+import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
+
 
 @Component({
   selector: 'app-useralbumsubmitform',
-  imports: [RouterLink,CommonModule],
+  imports: [RouterLink,CommonModule,FormsModule],
   templateUrl: './useralbumsubmitform.html',
   styleUrl: './useralbumsubmitform.css'
 })
@@ -18,12 +22,20 @@ export class Useralbumsubmitform implements OnInit {
   constructor(private clientDataService: ClientDataService,
     private router: Router,
     private userservice: userserviceapi,
-    private notify: Notificationservice
+    private notify: Notificationservice,
+    @Inject(PLATFORM_ID) private platformId: any
     
   ) {}
 
+
+
   clientData: clientData = new clientData();
   loading:boolean =false;
+  acks = {
+  terms: false,
+  privacy: false,
+  final: false
+};
 
 
  ngOnInit(): void {
@@ -37,19 +49,32 @@ export class Useralbumsubmitform implements OnInit {
  }
 
  submissionForm() {
-   this.loading =false;
-   const data: clientData = this.clientDataService.getData();
-    const updated: clientData = {
-      ...data,
-      status: 'Completed',
-      isSubmitted: true,
-    };
 
-    this.clientDataService.updateData(updated);
-    this.apiCalltoSave(updated);
-    
-    console.log('submit form ClientDataService:', updated);   
+   if (!this.allAcknowledged) {
+    this.notify.warning('Please confirm all acknowledgments before submitting.');
+    return;
   }
+  this.pdfDownload();
+
+   this.loading =false;
+  //  const data: clientData = this.clientDataService.getData();
+  //   const updated: clientData = {
+  //     ...data,
+  //     status: 'Completed',
+  //     isSubmitted: true,
+  //   };
+
+  //   this.clientDataService.updateData(updated);
+  //   this.apiCalltoSave(updated);
+    
+  }
+
+
+
+get allAcknowledged(): boolean {
+  return Object.values(this.acks).every(v => v === true);
+}
+
 
   apiCalltoSave(updateData: clientData) {
     console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
@@ -87,4 +112,27 @@ export class Useralbumsubmitform implements OnInit {
   nextStep() {
     this.clientDataService.triggerNextStep(4);
   }
+
+
+async pdfDownload() {
+  if (!isPlatformBrowser(this.platformId)) {
+    return; // Skip PDF generation on server
+  }
+
+  const element = document.getElementById('submitFormSection');
+  if (!element) return;
+
+  const html2pdf = (await import('html2pdf.js')).default;
+
+  const opt: any = {
+    margin: 10,
+    filename: 'album-submission-details.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
+
 }

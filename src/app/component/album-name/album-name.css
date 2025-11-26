@@ -2,18 +2,10 @@
   color: #fc9500 !important;
 }
 
-/* body.bright-mode input.form-control {
-  background: #fff !important;
-  color: #212529 !important;
-  border-color: #ced4da !important;
+.form-control {
+  font-weight: 550;
+  color: #000000 !important;
 }
-
-body.dark-mode input.form-control {
-  background: #181818 !important;
-  color: #fff !important;
-  border-color: #444 !important;
-} */
-
 
 .bg-gray-light input.form-control {
   background-color: #fff !important;
@@ -27,7 +19,6 @@ body.dark-mode input.form-control {
   border-color: #444 !important;
 }
 
-.heading-orange{
+.heading-orange {
   color: #ef9333;
-  font-weight: bold;
-} 
+}

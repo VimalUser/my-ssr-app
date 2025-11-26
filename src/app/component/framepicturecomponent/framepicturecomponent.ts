@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlbumSelectionItem } from '../../model/album-selection-item.model';
@@ -30,11 +30,7 @@ export class Framepicturecomponent {
 
   // Image gallery logic
   images: string[] = [];
-  pageSize = 50;
-  currentPage = 1;
-
   selectedItems: AlbumSelectionItem[] = [];
-
   loading = true;
   previewLoading = false;
 
@@ -49,6 +45,9 @@ export class Framepicturecomponent {
   apiImageResponse: any;
   showSelectedOnly: boolean = false;
 
+  batchSize = 30; // how many images to load per batch
+  displayCount = 0; // how many images currently shown
+
   ngOnInit(): void {
     this.loading = true;
     this.clientDataService.triggerNextStep(3);
@@ -58,17 +57,12 @@ export class Framepicturecomponent {
     console.log('Initial Client Data in frameselectin source:', this.images);
   }
 
-  resetPagination() {
-    this.currentPage = 1;
-  }
-
   showGallery(isPortrait: boolean) {
     this.loading = true;
     this.selectedItems = [];
     this.isPortrait = isPortrait;
     this.selectedFolderName = isPortrait ? 'Portrait Frame' : 'Landscape Frame';
     this.galleryOpen = true;
-    this.resetPagination();
 
     if (isPortrait) {
       this.selectedItems = [...this.pagelatestData.portraitFrameSelection];
@@ -80,8 +74,8 @@ export class Framepicturecomponent {
     else this.loading = false;
   }
 
-  gobackFolderSelection() {
-    const confirmCancelled = confirm(
+  async gobackFolderSelection() {
+    const confirmCancelled =await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
@@ -130,20 +124,6 @@ export class Framepicturecomponent {
     this.apiImageResponse = data;
     this.allowedSelectedPhotos = this.pagelatestData.noOfFrames;
     this.images = data ? data.map((item) => item.imageUrl) : [];
-  }
-
-  // get totalPages(): number {
-  //   return Math.max(1, Math.ceil(this.images.length / this.pageSize));
-  // }
-
-  // get paginatedImages(): string[] {
-  //   const start = (this.currentPage - 1) * this.pageSize;
-  //   return this.images.slice(start, start + this.pageSize);
-  // }
-
-  changePage(step: number) {
-    const next = this.currentPage + step;
-    if (next >= 1 && next <= this.totalPages) this.currentPage = next;
   }
 
   fileNameFromUrl(url: string): string {
@@ -195,7 +175,6 @@ export class Framepicturecomponent {
         url: imageUrl,
       });
     }
-    console.log('selected photos', this.selectedItems);
   }
 
   openPreview(imageUrl: string) {
@@ -271,15 +250,13 @@ export class Framepicturecomponent {
   }
 
   fetchData(clientId: string): void {
-    console.log('Fetching data from API...');
     this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
       next: (data) => {
-        console.log('API Response:', data);
         this.getImageUrls(data);
+        this.displayCount = Math.min(this.batchSize, this.images.length);
         this.loading = false;
       },
       error: (error) => {
-        console.log('There was an error!', error);
         this.loading = false;
       },
       complete: () => {
@@ -334,56 +311,84 @@ export class Framepicturecomponent {
       },
     });
   }
-  // Find current index
+ 
+   // Find current index
   getCurrentImageIndex(): number {
-    if (this.previewImageUrl === null) {
-      return -1;
-    }
-    return this.paginatedImages.indexOf(this.previewImageUrl);
+  if (this.previewImageUrl === null) {
+    return -1;
   }
+  return this.viewImages.indexOf(this.previewImageUrl);
+}
 
-  showNextImage(event: Event) {
-    event.stopPropagation();
-    let currentIndex = this.getCurrentImageIndex();
-    if (currentIndex < this.paginatedImages.length - 1) {
-      this.previewImageUrl = this.paginatedImages[currentIndex + 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('You’ve reached the last image.');
-    }
-  }
+showNextImage(event: Event) {
+  event.stopPropagation();
+  const list = this.viewImages;
+  const currentIndex = this.getCurrentImageIndex();
 
-  showPreviousImage(event: Event) {
-    event.stopPropagation();
-    let currentIndex = this.getCurrentImageIndex();
-    if (currentIndex > 0) {
-      this.previewImageUrl = this.paginatedImages[currentIndex - 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('This is the first image.');
-    }
+  if (currentIndex >= 0 && currentIndex < list.length - 1) {
+    this.previewImageUrl = list[currentIndex + 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  } else {
+    this.notify.error('You’ve reached the last image.');
   }
+}
+
+showPreviousImage(event: Event) {
+  event.stopPropagation();
+  const list = this.viewImages;
+  const currentIndex = this.getCurrentImageIndex();
+
+  if (currentIndex > 0) {
+    this.previewImageUrl = list[currentIndex - 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  } else {
+    this.notify.error('This is the first image.');
+  }
+}
 
   // All images that should currently be visible (filtered or full)
-get visibleImages(): string[] {
-  if (!this.showSelectedOnly) {
-    return this.images;
+  get visibleImages(): string[] {
+    if (!this.showSelectedOnly) {
+      return this.images;
+    }
+    return this.images.filter((img) => this.isSelected(img));
   }
-  // only keep images that are selected
-  return this.images.filter((img) => this.isSelected(img));
-}
 
-get totalPages(): number {
-  return Math.max(1, Math.ceil(this.visibleImages.length / this.pageSize));
-}
+  get viewImages(): string[] {
+    return this.visibleImages.slice(0, this.displayCount);
+  }
 
-get paginatedImages(): string[] {
-  const start = (this.currentPage - 1) * this.pageSize;
-  return this.visibleImages.slice(start, start + this.pageSize);
-}
+  loadMore() {
+    const remaining = this.visibleImages.length - this.displayCount;
+    if (remaining > 0) {
+      this.displayCount += Math.min(this.batchSize, remaining);
+    }
+  }
 
-onShowSelectedToggle() {
-  this.currentPage = 1;
+  onShowSelectedToggle() {
+    // reset to first batch of whatever is now visible
+    this.displayCount = Math.min(this.batchSize, this.visibleImages.length);
+  }
+
+  @HostListener('window:scroll', [])
+onWindowScroll() {
+  // Only apply when gallery is open
+  if (!this.galleryOpen) {
+    return;
+  }
+
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return; // safety for SSR, just in case
+  }
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const threshold = 200; // px before bottom to start loading
+  const pageHeight = document.body.offsetHeight;
+
+  // Are we near the bottom of the page?
+  if (scrollPosition >= pageHeight - threshold) {
+    this.loadMore();
+  }
 }
 
 

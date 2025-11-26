@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlbumSelectionItem } from '../../model/album-selection-item.model';
@@ -21,9 +21,6 @@ export class Imagegallery implements OnInit {
 
   // Image gallery logic
   images: string[] = [];
-  pageSize = 50;
-  currentPage = 1;
-
   selectedItems: AlbumSelectionItem[] = [];
 
   loading = true;
@@ -36,6 +33,8 @@ export class Imagegallery implements OnInit {
   showSelectedOnly: boolean = false;
 
   clientDataload: clientData = new clientData();
+  batchSize = 30; // how many images to load per batch
+  displayCount = 0; // how many images currently shown
 
   constructor(
     private clientDataService: ClientDataService,
@@ -51,10 +50,6 @@ export class Imagegallery implements OnInit {
     console.log('Initial Client Data in ImageGallery:', data);
   }
 
-  resetPagination() {
-    this.currentPage = 1;
-  }
-
   showGallery(folderName: string) {
     this.loading = true;
 
@@ -65,7 +60,6 @@ export class Imagegallery implements OnInit {
     this.selectedItems = [];
     const data = this.clientDataService.getData();
     this.clientDataload = data;
-    this.resetPagination();
     this.galleryOpen = true;
 
     if (folderName === this.folderNames[0]) {
@@ -82,7 +76,7 @@ export class Imagegallery implements OnInit {
   }
 
   async gobackFolderSelection() {
-    const confirmCancelled =await  this.notify.confirm(
+    const confirmCancelled = await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
@@ -116,15 +110,6 @@ export class Imagegallery implements OnInit {
     this.clientDataService.triggerNextStep(3);
   }
 
-  // get totalPages(): number {
-  //   return Math.max(1, Math.ceil(this.images.length / this.pageSize));
-  // }
-
-  // get paginatedImages(): string[] {
-  //   const start = (this.currentPage - 1) * this.pageSize;
-  //   return this.images.slice(start, start + this.pageSize);
-  // }
-
   get TotalSelectionMessage(): string {
     const noofPhotos = Number(this.clientDataload.noOfPics) || 0;
     const tradionalCount =
@@ -141,11 +126,6 @@ export class Imagegallery implements OnInit {
  <span class=""> Selection(s) remaining: ${difference} of ${noofPhotos}</span>
 `;
     return message;
-  }
-
-  changePage(step: number) {
-    const next = this.currentPage + step;
-    if (next >= 1 && next <= this.totalPages) this.currentPage = next;
   }
 
   fileNameFromUrl(url: string): string {
@@ -250,8 +230,8 @@ export class Imagegallery implements OnInit {
     console.log('Fetching data from API...');
     this.userService.getImagesbyType(clientId, folderPath).subscribe({
       next: (data) => {
-        console.log('API Response:', data);
         this.images = data;
+        this.displayCount = Math.min(this.batchSize, this.images.length);
         this.loading = false;
       },
       error: (error) => {
@@ -272,7 +252,7 @@ export class Imagegallery implements OnInit {
       return;
     }
 
-    const confirmed =await this.notify.confirm(
+    const confirmed = await this.notify.confirm(
       'You have already selected Frame/Cover photos. Any changes will clear frame/cover selection and require you to reselect again.<br/> Do you want to proceed?'
     );
 
@@ -282,21 +262,6 @@ export class Imagegallery implements OnInit {
     }
 
     // If the user cancels (clicks Cancel), the function returns, doing nothing.
-  }
-
-  saveSelection1() {
-    if (this.isFrameOrCoverSelected()) {
-      const confirmCancelled = confirm(
-        'You have already selected Frame/Cover photos,any changes will clear frame/cover selection and have reslect again.'
-      );
-      if (!confirmCancelled) {
-        return;
-      } else {
-        this.apiCalltoSave(this.updateModelWithLatestData());
-      }
-    }
-
-    this.apiCalltoSave(this.updateModelWithLatestData());
   }
 
   isFrameOrCoverSelected(): boolean {
@@ -353,53 +318,81 @@ export class Imagegallery implements OnInit {
 
   // Find current index
   getCurrentImageIndex(): number {
-    if (this.previewImageUrl === null) {
-      return -1;
-    }
-    return this.paginatedImages.indexOf(this.previewImageUrl);
+  if (this.previewImageUrl === null) {
+    return -1;
   }
+  return this.viewImages.indexOf(this.previewImageUrl);
+}
 
-  showNextImage(event: Event) {
-    event.stopPropagation();
-    let currentIndex = this.getCurrentImageIndex();
-    if (currentIndex < this.paginatedImages.length - 1) {
-      this.previewImageUrl = this.paginatedImages[currentIndex + 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('You’ve reached the last image.');
-    }
-  }
+showNextImage(event: Event) {
+  event.stopPropagation();
+  const list = this.viewImages;
+  const currentIndex = this.getCurrentImageIndex();
 
-  showPreviousImage(event: Event) {
-    event.stopPropagation();
-    let currentIndex = this.getCurrentImageIndex();
-    if (currentIndex > 0) {
-      this.previewImageUrl = this.paginatedImages[currentIndex - 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('This is the first image.');
-    }
+  if (currentIndex >= 0 && currentIndex < list.length - 1) {
+    this.previewImageUrl = list[currentIndex + 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  } else {
+    this.notify.error('You’ve reached the last image.');
   }
+}
+
+showPreviousImage(event: Event) {
+  event.stopPropagation();
+  const list = this.viewImages;
+  const currentIndex = this.getCurrentImageIndex();
+
+  if (currentIndex > 0) {
+    this.previewImageUrl = list[currentIndex - 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  } else {
+    this.notify.error('This is the first image.');
+  }
+}
 
   // All images that should currently be visible (filtered or full)
   get visibleImages(): string[] {
     if (!this.showSelectedOnly) {
       return this.images;
     }
-    // only keep images that are selected
     return this.images.filter((img) => this.isSelected(img));
   }
 
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.visibleImages.length / this.pageSize));
+  get viewImages(): string[] {
+    return this.visibleImages.slice(0, this.displayCount);
   }
 
-  get paginatedImages(): string[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.visibleImages.slice(start, start + this.pageSize);
+  loadMore() {
+    const remaining = this.visibleImages.length - this.displayCount;
+    if (remaining > 0) {
+      this.displayCount += Math.min(this.batchSize, remaining);
+    }
   }
 
   onShowSelectedToggle() {
-    this.currentPage = 1;
+    // reset to first batch of whatever is now visible
+    this.displayCount = Math.min(this.batchSize, this.visibleImages.length);
   }
+
+  @HostListener('window:scroll', [])
+onWindowScroll() {
+  // Only apply when gallery is open
+  if (!this.galleryOpen) {
+    return;
+  }
+
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return; // safety for SSR, just in case
+  }
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const threshold = 200; // px before bottom to start loading
+  const pageHeight = document.body.offsetHeight;
+
+  // Are we near the bottom of the page?
+  if (scrollPosition >= pageHeight - threshold) {
+    this.loadMore();
+  }
+}
+
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,11 +22,8 @@ export class CoverpcitureSelection {
 
   //folder selection logic
   galleryOpen = false;
-
   // Image gallery logic
   images: string[] = [];
-  pageSize = 50;
-  currentPage = 1;
 
   selectedItems: AlbumSelectionItem[] = [];
   allowedSelectedPhotos = 0; // Set your limit here
@@ -40,6 +37,9 @@ export class CoverpcitureSelection {
   pagelatestData: clientData = new clientData();
   apiImageResponse: any;
   showSelectedOnly: boolean = false;
+
+  batchSize = 30; // how many images to load per batch
+  displayCount = 0; // how many images currently shown
 
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(4);
@@ -56,19 +56,14 @@ export class CoverpcitureSelection {
     const selectionSection = document.getElementById('selctionSection');
     this.selectedItems = [];
     this.galleryOpen = true;
-    this.resetPagination();
     this.selectedItems = [...this.pagelatestData.coverSelection];
     if (this.images.length == 0)
       this.fetchData(this.pagelatestData.clientId.toString());
     else this.loading = false;
   }
 
-  resetPagination() {
-    this.currentPage = 1;
-  }
-
-  gobackFolderSelection() {
-    const confirmCancelled = confirm(
+  async gobackFolderSelection() {
+    const confirmCancelled = await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
@@ -98,11 +93,6 @@ export class CoverpcitureSelection {
     this.images = data ? data.map((item) => item.imageUrl) : [];
   }
 
-  changePage(step: number) {
-    const next = this.currentPage + step;
-    if (next >= 1 && next <= this.totalPages) this.currentPage = next;
-  }
-
   fileNameFromUrl(url: string): string {
     const filename = url.split('?')[0].split('/').pop() || '';
     return decodeURIComponent(filename);
@@ -124,7 +114,7 @@ export class CoverpcitureSelection {
     return message;
   }
 
-  isSelected(imgUrl: string): boolean {
+ isSelected(imgUrl: string): boolean {
     const fileName = this.fileNameFromUrl(imgUrl);
     return this.selectedItems.some(
       (x) =>
@@ -197,12 +187,11 @@ export class CoverpcitureSelection {
 
   fetchData(clientId: string): void {
     this.loading = true;
-    console.log('Fetching data from API...');
     this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
       next: (data) => {
         // This is where you process the successful response
-        console.log('API Response:', data);
         this.getImageUrls(data);
+         this.displayCount = Math.min(this.batchSize, this.images.length);
         this.loading = false;
       },
       error: (error) => {
@@ -270,13 +259,10 @@ export class CoverpcitureSelection {
     this.clientDataService.updateData(updated);
     this.pagelatestData = updated;
     return updated;
-    console.log('Saved to ClientDataService: cover', updated);
   }
 
   apiCalltoSave(updateData: clientData) {
     this.loading = true;
-    console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
-
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
         console.log('Save Response:', response);
@@ -292,54 +278,82 @@ export class CoverpcitureSelection {
     });
   }
 
-  // Find current index
+ // Find current index
   getCurrentImageIndex(): number {
-    if (this.previewImageUrl === null) {
-      return -1;
-    }
-    return this.paginatedImages.indexOf(this.previewImageUrl);
+  if (this.previewImageUrl === null) {
+    return -1;
   }
+  return this.viewImages.indexOf(this.previewImageUrl);
+}
 
-  showNextImage(event: Event) {
-    event.stopPropagation();
-    let currentIndex = this.getCurrentImageIndex();
-    if (currentIndex < this.paginatedImages.length - 1) {
-      this.previewImageUrl = this.paginatedImages[currentIndex + 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('You’ve reached the last image.');
-    }
-  }
+showNextImage(event: Event) {
+  event.stopPropagation();
+  const list = this.viewImages;
+  const currentIndex = this.getCurrentImageIndex();
 
-  showPreviousImage(event: Event) {
-    event.stopPropagation();
-    let currentIndex = this.getCurrentImageIndex();
-    if (currentIndex > 0) {
-      this.previewImageUrl = this.paginatedImages[currentIndex - 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('This is the first image.');
-    }
+  if (currentIndex >= 0 && currentIndex < list.length - 1) {
+    this.previewImageUrl = list[currentIndex + 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  } else {
+    this.notify.error('You’ve reached the last image.');
   }
+}
+
+showPreviousImage(event: Event) {
+  event.stopPropagation();
+  const list = this.viewImages;
+  const currentIndex = this.getCurrentImageIndex();
+
+  if (currentIndex > 0) {
+    this.previewImageUrl = list[currentIndex - 1];
+    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+  } else {
+    this.notify.error('This is the first image.');
+  }
+}
 
   // All images that should currently be visible (filtered or full)
   get visibleImages(): string[] {
     if (!this.showSelectedOnly) {
       return this.images;
     }
-    // only keep images that are selected
     return this.images.filter((img) => this.isSelected(img));
   }
 
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.visibleImages.length / this.pageSize));
+  get viewImages(): string[] {
+    return this.visibleImages.slice(0, this.displayCount);
   }
 
-  get paginatedImages(): string[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.visibleImages.slice(start, start + this.pageSize);
+  loadMore() {
+    const remaining = this.visibleImages.length - this.displayCount;
+    if (remaining > 0) {
+      this.displayCount += Math.min(this.batchSize, remaining);
+    }
   }
+
   onShowSelectedToggle() {
-    this.currentPage = 1;
+    // reset to first batch of whatever is now visible
+    this.displayCount = Math.min(this.batchSize, this.visibleImages.length);
   }
+
+  @HostListener('window:scroll', [])
+onWindowScroll() {
+  // Only apply when gallery is open
+  if (!this.galleryOpen) {
+    return;
+  }
+
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return; // safety for SSR, just in case
+  }
+
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const threshold = 200; // px before bottom to start loading
+  const pageHeight = document.body.offsetHeight;
+
+  // Are we near the bottom of the page?
+  if (scrollPosition >= pageHeight - threshold) {
+    this.loadMore();
+  }
+}
 }

@@ -38,9 +38,9 @@ export class AlbumName implements OnInit {
 
   }
 
-  goBack() {
+  async goBack() {
     // window.history.back();
-    const confirmCancelled = confirm(
+    const confirmCancelled =await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {

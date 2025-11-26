@@ -13,12 +13,11 @@ textarea {
 }
 
 .text-Orange {
-  color: #f57e3d;
+  color: #f57e3d !important;
 }
 
 .heading-orange {
   color: #ef9333;
-  font-weight: bold;
 }
 
 .header-static {
@@ -27,6 +26,7 @@ textarea {
   z-index: 10;
   padding-top: 10px;
   padding-bottom: 0px;
+  background-color: #000;
 }
 
 
@@ -183,7 +183,7 @@ textarea {
 
 /* Current full-image version (no header bar) */
 .preview-content.preview-no-header {
-  width: fit-content;
+  width: 100%;
   /* Fits to image size */
   max-height: 96vh;
   background: rgba(0, 0, 0, 0.85);
@@ -331,6 +331,28 @@ textarea {
     flex: 0 0 auto;
     width: 20%;
   }
+}
+@media (max-width: 575px) { /* Mobile */
+  .custom-img-card { height: 150px !important; }
+}
+
+@media (min-width: 576px) and (max-width: 991px) { /* Tablets */
+  .custom-img-card { height: 200px; }
+}
+
+@media (min-width: 992px) { /* Desktop */
+  .custom-img-card { height: 280px; }
+}
+
+
+.custom-img-card {
+  height: 260px; /* Increase as you like (220, 260, 300) */
+}
+
+.fixed-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 

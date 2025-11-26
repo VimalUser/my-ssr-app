@@ -16,7 +16,7 @@
       <div class="col-12 col-md-12 col-lg-12">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h3 class="fw-bold">Submit form</h3>
+            <h4 class="fw-bold">Submit form</h4>
             <p class="mb-4">
               Dear <span class="fw-semibold"> {{ clientData.clientName }}</span
               >,
@@ -58,6 +58,35 @@
               </li>
             </ul>
 
+              <p class="mb-4">
+                <i>: By clicking the submit button below, you confirm that
+                  all your selections are final and ready for processing.</i>
+                </p>
+
+                <div class="form-check mb-2">
+  <input class="form-check-input" type="checkbox" id="ack1" [(ngModel)]="acks.terms" />
+  <label class="form-check-label" for="ack1">
+    I agree to the Terms & Conditions.
+  </label>
+</div>
+
+<div class="form-check mb-2">
+  <input class="form-check-input" type="checkbox" id="ack2" [(ngModel)]="acks.privacy" />
+  <label class="form-check-label" for="ack2">
+    I confirm that I have reviewed my selection carefully.
+  </label>
+</div>
+
+<div class="form-check mb-3">
+  <input class="form-check-input" type="checkbox" id="ack3" [(ngModel)]="acks.final" />
+  <label class="form-check-label" for="ack3">
+    I understand that once submitted, changes cannot be made.
+  </label>
+</div>
+
+
+
+
             <p>
               We kindly request you to review everything carefully before
               submitting your choices to the company, as these will be used for
@@ -69,9 +98,13 @@
               <p class="mb-0 fw-semibold">{{ clientData.createdBy }},</p>
               <p class="mb-1 text-muted small">CRM</p>
               <p class="mb-3">Candy Express Photography.</p>
-              <button class="btn btn-warning px-4" (click)="submissionForm()">
-                Submit
-              </button>
+            
+             <button
+  class="btn btn-warning px-4"
+  (click)="submissionForm()"
+  [disabled]="!allAcknowledged || loading">
+  Submit
+</button>
             </div>
           </div>
         </div>
