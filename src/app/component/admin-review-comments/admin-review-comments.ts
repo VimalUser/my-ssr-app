@@ -14,6 +14,7 @@ import { MarkAsDoneDirective } from '../../shared/mark-as-done';
 export class AdminReviewComments implements OnInit {
   isLoading: boolean = false;
   checkboxMessage: string = '';
+  isReviewCommentsDone: boolean = false;
 
 
   constructor(

@@ -25,6 +25,7 @@ export class AdminDownloadSelection {
   noOfPics: any;
   loading: boolean = false;
   checkboxMessage: string = '';
+  isPhotoDownloadDone: boolean = false;
 
   constructor(
     private apiAdminService: newclientapi,

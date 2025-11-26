@@ -30,6 +30,7 @@ export class Uploadalbumpics implements OnInit {
   readonly MAX_FILE_SIZE_MB = 500; // 500 MB
   readonly MAX_FILE_SIZE_BYTES = this.MAX_FILE_SIZE_MB * 1024 * 1024;
   checkboxMessage: string = '';
+  isPhotoUploadDone: boolean = false;
 
 
   constructor(
@@ -271,6 +272,7 @@ async onDeleteAll(category: string) {
    onLoadingChange(loading: boolean) {
     console.log('Loading state changed upload pics:', loading);
     this.loading = loading;
+    this.cdr.detectChanges();
   }
     onMessageChange(msg: string) {
   this.checkboxMessage = msg;

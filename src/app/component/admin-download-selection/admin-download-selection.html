@@ -90,7 +90,8 @@
         </div>
     </div> -->
 
-    <div class="styled-card mb-4 p-4">
+    <div class="styled-card mb-4 p-4"
+    [ngClass]="{ 'highlight-border': !isPhotoDownloadDone }">
         <input type="checkbox" class="big-checkbox" appMarkAsDone
           [clientId]="adminData.clientId"
           adminScreen="photoDownload"
@@ -98,8 +99,9 @@
           confirmMessage="Are you sure to mark as done?"
           (loadingChange)="onLoadingChange($event)"
           (messageChange)="onMessageChange($event)"
+          (checkedChange)="isPhotoDownloadDone = $event"
         />
-        <label for="markDone" class="ms-2 fw-semibold">Mark Download as Done</label>
+        <label for="markDone" class="ms-2 fw-semibold"><b>Mark Download as Done</b></label>
         <!-- <br/>
         <span class="text-danger italic">{{checkboxMessage}}</span> -->
     </div>

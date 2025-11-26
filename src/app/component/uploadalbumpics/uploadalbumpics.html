@@ -106,7 +106,8 @@
     </div>
 
   </div>
-  <div class="styled-card mb-4 p-4">
+  <div class="styled-card mb-4 p-4"
+  [ngClass]="{ 'highlight-border': !isPhotoUploadDone }">
         <!-- <input type="checkbox" class="big-checkbox" id="markDone" [(ngModel)]="isMarkedDone" (change)="markAsDone($event)" /> -->
         <input type="checkbox" class="big-checkbox" appMarkAsDone
           [clientId]="clientIdNumber"
@@ -115,8 +116,9 @@
           confirmMessage="Are you sure to mark as done?"
           (loadingChange)="onLoadingChange($event)"
           (messageChange)="onMessageChange($event)"
+          (checkedChange)="isPhotoUploadDone = $event"
         />
-        <label for="markDone" class="ms-2 fw-semibold">Mark Upload as Done</label>
+        <label for="markDone" class="ms-2 fw-semibold"><b>Mark Upload as Done</b></label>
     </div>
 
 </div>

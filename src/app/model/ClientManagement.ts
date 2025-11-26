@@ -8,6 +8,7 @@ export interface DashBoardDto {
     percentage: number;
     progress: string;
     adminStatus: string;
+    videoStatus: string;
     noofComments: number;
 }
 
@@ -18,6 +19,11 @@ export interface ClientManagement {
     totalClients: number;
     completedProject: number;
     inprogressProject: number;
+    yetToStartProject: number;
+    loginInfoSentProject: number;
+    photosUploadedProject: number;
+    reviewCommentsProject: number;
+    photosDownloadedProject: number;
     dashBoardData: DashBoardDto[];
 }
 

@@ -276,4 +276,38 @@ h3 {
         /* Stronger shadow on hover */
     }
 
+    .highlight-border {
+  position: relative;
+  border-radius: 12px;
+  overflow: visible !important; /* important */
+  z-index: 2;
+}
+
+.highlight-border::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    #ffeb3b,
+    #f75c2d,
+    #ffeb3b,
+    #f75c2d
+  );
+  background-size: 300% 300%;
+  filter: blur(4px);
+  animation: movingGlow 3s linear infinite;
+  z-index: -1; /* sits behind card */
+}
+
+@keyframes movingGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
     
