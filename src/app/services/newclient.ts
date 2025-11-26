@@ -16,6 +16,10 @@ export interface DropdownResponse {
   frameSizes: DropdownItem[];
   albumMaterialTypes: DropdownItem[];
 }
+export interface ClientExpiryDate {
+  ClientId: string;
+  ExpiryDate: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +70,11 @@ export class newclientapi {
     localStorage.removeItem('accessToken');
   }
 
-
+  saveExpiryDate(id: string, expiryDate: string): Observable<any> {
+    var finalUrl = this.clientAlbumUrl + 'saveExpiryDate';
+    var data : ClientExpiryDate= { ClientId : id, ExpiryDate: expiryDate };
+    return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
+  }
   getAlbumDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'GetAlbumDetails';
     return this.http.get(`${finalUrl}?Id=${id}`);
