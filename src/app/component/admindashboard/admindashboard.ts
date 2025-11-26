@@ -42,7 +42,6 @@ export class Admindashboard implements OnInit {
   errorMessage = '';
   statusList: string[] = [];
   eventList: string[] = [];
-  statCards: { title: string; value: number | undefined; class: string }[] = [];
   clientDataList: DashBoardDto[] = [];
   currentPage = 1;
   pageSize = 10;
@@ -53,6 +52,9 @@ export class Admindashboard implements OnInit {
   selectedStatus: string = 'All Status';
   selectedEvent: string = 'All Events';
   filteredData: DashBoardDto[] = [];
+  totalCards: { title: string; value: number | undefined; class: string; group: string }[] = [];
+  adminCards: { title: string; value: number | undefined; class: string; group: string }[] = [];
+  clientCards: { title: string; value: number | undefined; class: string; group: string }[] = [];
 
   constructor(private router: Router, private apiService: newclientapi,
     private loggingService: LoggingService,
@@ -63,7 +65,7 @@ export class Admindashboard implements OnInit {
   ngOnInit(): void {
     this.fetchDashboardData();
   }
- 
+
   filteredClientDataList(): void {
     this.filteredData = this.clientDataList.filter(client => {
       const matchesSearch = this.searchText
@@ -94,12 +96,22 @@ export class Admindashboard implements OnInit {
         this.totalCount = data.totalClients || 0;
         this.clientData = data;
         this.clientDataList = this.clientData?.dashBoardData || [];
-        this.statCards = [
-          { title: 'Total Clients', value: this.clientData?.totalClients, class: '' },
-          { title: 'Completed Projects', value: this.clientData?.completedProject, class: 'text-success' },
-          { title: 'In Progress', value: this.clientData?.inprogressProject, class: 'text-warning' },
-          { title: 'Photos Selected', value: 0, class: 'text-primary' }
+
+        this.totalCards = [
+          { title: 'Total Clients', value: this.clientData?.totalClients, class: '', group: 'total' }];
+        this.adminCards = [
+          // Admin
+          { title: 'Login Info Sent', value: this.clientData?.loginInfoSentProject, class: 'text-warning', group: 'admin' },
+          { title: 'Photos Uploaded', value: this.clientData?.photosUploadedProject, class: 'text-warning', group: 'admin' },
+          { title: 'Reviewed Comments', value: this.clientData?.reviewCommentsProject, class: 'text-warning', group: 'admin' },
+          { title: 'Photos Downloaded', value: this.clientData?.photosDownloadedProject, class: 'text-success', group: 'admin' },
         ];
+        this.clientCards = [
+          // Client
+          { title: 'Yet to Start', value: this.clientData?.yetToStartProject, class: 'text-warning', group: 'client' },
+          { title: 'In Progress', value: this.clientData?.inprogressProject, class: 'text-warning', group: 'client' },
+          { title: 'Selection Completed', value: this.clientData?.completedProject, class: 'text-success', group: 'client' }];
+
         this.statusList = [...new Set(this.clientData.dashBoardData?.map(item => item.progress) || [])];
         this.eventList = [...new Set(this.clientData.dashBoardData?.map(item => item.eventType) || [])];
 

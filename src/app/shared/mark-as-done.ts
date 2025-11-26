@@ -16,6 +16,7 @@ export class MarkAsDoneDirective {
   @Input() confirmMessage = 'Are you sure to mark as done?';
   @Output() loadingChange = new EventEmitter<boolean>();
   @Output() messageChange = new EventEmitter<string>();
+  @Output() checkedChange = new EventEmitter<boolean>();
   private tooltipText: string = '';
 
   constructor(
@@ -45,23 +46,27 @@ export class MarkAsDoneDirective {
             if (this.adminScreen === 'photoUpload') {
               this.renderer.setProperty(this.el.nativeElement, 'disabled', adminStatus.photosUpload.isDisabled);
               this.renderer.setProperty(this.el.nativeElement, 'checked', adminStatus.photosUpload.isChecked);
+              this.checkedChange.emit(adminStatus.photosUpload.isChecked); // Emit checked status
               this.setTooltip(adminStatus);
             }
             else if (this.adminScreen === 'loginInfo') {
               this.renderer.setProperty(this.el.nativeElement, 'disabled', adminStatus.loginInfo.isDisabled);
               this.renderer.setProperty(this.el.nativeElement, 'checked', adminStatus.loginInfo.isChecked);
+              this.checkedChange.emit(adminStatus.loginInfo.isChecked); // Emit checked status
               this.setTooltip(adminStatus);
 
             }
             else if (this.adminScreen === 'photoDownload') {
               this.renderer.setProperty(this.el.nativeElement, 'disabled', adminStatus.photosDownload.isDisabled);
               this.renderer.setProperty(this.el.nativeElement, 'checked', adminStatus.photosDownload.isChecked);
+              this.checkedChange.emit(adminStatus.photosDownload.isChecked); // Emit checked status
               this.setTooltip(adminStatus);
 
             }
             else if (this.adminScreen === 'reviewComments') {
               this.renderer.setProperty(this.el.nativeElement, 'disabled', adminStatus.reviewComment.isDisabled);
               this.renderer.setProperty(this.el.nativeElement, 'checked', adminStatus.reviewComment.isChecked);
+              this.checkedChange.emit(adminStatus.reviewComment.isChecked); // Emit checked status
               this.setTooltip(adminStatus);
 
             }
@@ -148,23 +153,18 @@ export class MarkAsDoneDirective {
 
       if (response === true) {
         console.log('api success');
-        this.loadingChange.emit(false);
         await this.verifyStatusAndSetTooltip();
         this.notify.success(`${this.adminStatus} marked as done`);
       } else {
         console.log('api success and false');
-        this.loadingChange.emit(false);
         this.notify.error('Failed to mark as done');
       }
     } catch (error: any) {
       console.log('api error');
-
-      this.loadingChange.emit(false);
       console.error('Error:', error);
       this.notify.error(error.error?.message || 'An error occurred.');
     } finally {
       console.log('api finally');
-
       this.loadingChange.emit(false);
     }
   }

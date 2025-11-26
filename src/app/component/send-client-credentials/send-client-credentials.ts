@@ -25,6 +25,7 @@ export class SendClientCredentials {
   passcode: string = '';
   clientPhoneNo: string = '';
   checkboxMessage: string = '';
+  isLoginSentDone: boolean = false;
 
   private apiService = inject(newclientapi);
   

@@ -156,7 +156,8 @@
     </div>
   </div>
   <br/>
-  <div class="styled-card mb-4 p-4">
+  <div class="styled-card mb-4 p-4"
+  [ngClass]="{ 'highlight-border': !isReviewCommentsDone }">
         <input type="checkbox" class="big-checkbox" appMarkAsDone
           [clientId]="pageLatestAdminData.clientId"
           adminScreen="reviewComments"
@@ -164,8 +165,9 @@
           confirmMessage="Are you sure to mark as done?"
           (loadingChange)="onLoadingChange($event)"
           (messageChange)="onMessageChange($event)"
+          (checkedChange)="isReviewCommentsDone = $event"
         />
-        <label for="markDone" class="ms-2 fw-semibold">Mark reviewed comments as Done</label>
+        <label for="markDone" class="ms-2 fw-semibold"><b>Mark reviewed comments as Done</b></label>
     </div>
 </div>
 <div *ngIf="isLoading" class="loading-container">
