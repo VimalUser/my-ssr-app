@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  font-family: sans-serif;
+
   color: #333;
 }
 
@@ -23,7 +23,7 @@
 .header-info span {
   display: block;
   font-weight: bolder;
-  font-size: 1.8em;
+  /* font-size: 1.8em; */
 }
 
 .send-button {
@@ -141,7 +141,7 @@
 }
 
 .files-supported {
-  font-size: 0.85rem;
+  /* font-size: 0.85rem; */
   /* color: #555; */
   color: red;
   margin-left: auto;
@@ -150,17 +150,17 @@
 
 .info-row {
   margin-top: 5px;
-  font-size: 0.9rem;
+  /* font-size: 0.9rem; */
   color: #555;
 }
 
 .uploaded-count {
-  font-size: 1.4rem;
+  /* font-size: 1.4rem; */
   font-weight: bolder;
 }
 
 .file-count {
-  font-size: 1.2rem;
+  /* font-size: 1.2rem; */
   font-weight: bolder;
 
 }
@@ -256,8 +256,8 @@
 }
 
 h3 {
-  font-weight: bolder;
-  font-size: 1.5em;
+  /* font-weight: bolder; */
+  /* font-size: 1.5em; */
 }
 
 /* Card Style: Orange Border and Subtle Shadow (Main Cards) */

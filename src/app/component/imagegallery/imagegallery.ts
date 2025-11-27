@@ -33,6 +33,7 @@ export class Imagegallery implements OnInit {
   showSelectedOnly: boolean = false;
 
   clientDataload: clientData = new clientData();
+  loadingMore = false;
   batchSize = 30; // how many images to load per batch
   displayCount = 0; // how many images currently shown
 
@@ -317,16 +318,17 @@ export class Imagegallery implements OnInit {
   }
 
   // Find current index
-  getCurrentImageIndex(): number {
+ // Find current index in the full (filtered) list
+getCurrentImageIndex(): number {
   if (this.previewImageUrl === null) {
     return -1;
   }
-  return this.viewImages.indexOf(this.previewImageUrl);
+  return this.visibleImages.indexOf(this.previewImageUrl);
 }
 
 showNextImage(event: Event) {
   event.stopPropagation();
-  const list = this.viewImages;
+  const list = this.visibleImages;
   const currentIndex = this.getCurrentImageIndex();
 
   if (currentIndex >= 0 && currentIndex < list.length - 1) {
@@ -339,7 +341,7 @@ showNextImage(event: Event) {
 
 showPreviousImage(event: Event) {
   event.stopPropagation();
-  const list = this.viewImages;
+  const list = this.visibleImages;
   const currentIndex = this.getCurrentImageIndex();
 
   if (currentIndex > 0) {
@@ -351,48 +353,56 @@ showPreviousImage(event: Event) {
 }
 
   // All images that should currently be visible (filtered or full)
-  get visibleImages(): string[] {
-    if (!this.showSelectedOnly) {
-      return this.images;
-    }
-    return this.images.filter((img) => this.isSelected(img));
+get visibleImages(): string[] {
+  if (!this.showSelectedOnly) {
+    return this.images;
   }
+  return this.images.filter((img) => this.isSelected(img));
+}
 
-  get viewImages(): string[] {
-    return this.visibleImages.slice(0, this.displayCount);
-  }
+get viewImages(): string[] {
+  return this.visibleImages.slice(0, this.displayCount);
+}
 
-  loadMore() {
-    const remaining = this.visibleImages.length - this.displayCount;
-    if (remaining > 0) {
-      this.displayCount += Math.min(this.batchSize, remaining);
-    }
-  }
+onShowSelectedToggle() {
+  const total = this.visibleImages.length;
+  this.displayCount = Math.min(this.batchSize, total);
+}
 
-  onShowSelectedToggle() {
-    // reset to first batch of whatever is now visible
-    this.displayCount = Math.min(this.batchSize, this.visibleImages.length);
-  }
+@HostListener('window:scroll', [])
+onWindowScroll(): void {
+  // If gallery not open, ignore
+  if (!this.galleryOpen) return;
 
-  @HostListener('window:scroll', [])
-onWindowScroll() {
-  // Only apply when gallery is open
-  if (!this.galleryOpen) {
-    return;
-  }
+  const scrollPosition = window.scrollY + window.innerHeight;
+  const pageHeight = document.documentElement.scrollHeight;
+  const threshold = 300; // px before bottom
 
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return; // safety for SSR, just in case
-  }
+  const canLoadMore = this.displayCount < this.visibleImages.length;
 
-  const scrollPosition = window.innerHeight + window.scrollY;
-  const threshold = 200; // px before bottom to start loading
-  const pageHeight = document.body.offsetHeight;
-
-  // Are we near the bottom of the page?
-  if (scrollPosition >= pageHeight - threshold) {
+  if (canLoadMore && scrollPosition >= pageHeight - threshold) {
     this.loadMore();
   }
 }
+
+loadMore() {
+  const total = this.visibleImages.length;
+
+  // 🔒 No more images to load
+  if (this.loadingMore || this.displayCount >= total) {
+    this.loadingMore = false;
+    return;
+  }
+
+  this.loadingMore = true;
+
+  // Calculate next count safely
+  const nextCount = Math.min(this.displayCount + this.batchSize, total);
+  this.displayCount = nextCount;
+
+  this.loadingMore = false;
+}
+
+
 
 }

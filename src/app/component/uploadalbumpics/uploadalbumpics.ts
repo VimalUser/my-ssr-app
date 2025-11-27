@@ -271,7 +271,7 @@ async onDeleteAll(category: string) {
 
    onLoadingChange(loading: boolean) {
     console.log('Loading state changed upload pics:', loading);
-    this.loading = loading;
+    // this.loading = loading;
     this.cdr.detectChanges();
   }
     onMessageChange(msg: string) {
