@@ -2,16 +2,16 @@
   <div
     class="styled-card mb-4 p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
     <!-- <div class="header-section"> -->
-      <button class="back-button">
-        <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
-          style="width: 40px; height: 40px; cursor: pointer;" />
-      </button>
-      <div>
-        <h2 class="fw-bolder mb-0 text-dark">Client : {{clientData.clientName}}
-          <span class="text-muted mb-0"> | Order No : {{clientData.orderNumber}}</span>
-        </h2>
-      </div>
-      <div></div>
+    <button class="back-button">
+      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+        style="width: 40px; height: 40px; cursor: pointer;" />
+    </button>
+    <div>
+      <h2 class="fw-bolder mb-0 text-dark">Client : {{clientData.clientName}}
+        <span class="text-muted mb-0"> | Order No : {{clientData.orderNumber}}</span>
+      </h2>
+    </div>
+    <div></div>
     <!-- </div> -->
   </div>
 
@@ -25,16 +25,39 @@
       </div>
 
       <div class="upload-group">
+
+        <!-- Camera Dropdown -->
+        <div class="row g-2 align-items-center mb-2">
+
+          <!-- Label -->
+          <div class="col-12 col-sm-auto">
+            <label for="traditionalCamera" class="fw-semibold">
+              Select Camera:
+            </label>
+          </div>
+
+          <!-- Dropdown -->
+          <div class="col-12 col-sm-auto">
+            <select class="form-select" [(ngModel)]="selectedCamera['traditional']"
+              (change)="onCameraChange('traditional')" style="min-width: 150px;">
+              <option value="">Select Camera</option>
+              <option value="camera1">Camera 1</option>
+              <option value="camera2">Camera 2</option>
+              <option value="camera3">Camera 3</option>
+            </select>
+          </div>
+        </div>
+
         <input type="file" multiple (change)="onFileSelected($event, 'traditional')" class="file-input"
           #traditionalFileInput />
 
         <div class="button-row">
           <!-- Add Images -->
-          <button class="btn-modern add-btn" (click)="traditionalFileInput.click()"><i
-              class="fa fa-folder-open fav-icon"></i> Choose Images</button>
+          <button class="btn-modern add-btn" [disabled]="!selectedCamera['traditional']"
+            (click)="traditionalFileInput.click()"><i class="fa fa-folder-open fav-icon"></i> Choose Images</button>
 
           <!-- Wide Upload Button -->
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('traditional')"><i
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('traditional', selectedCamera['traditional'])"><i
               class="fa fa-upload fav-icon"></i> Upload</button>
 
           <!-- Wide Delete All Button -->
@@ -59,12 +82,35 @@
       </div>
 
       <div class="upload-group">
+        <!-- Camera Dropdown -->
+        <div class="row g-2 align-items-center mb-2">
+
+          <!-- Label -->
+          <div class="col-12 col-sm-auto">
+            <label for="candidCamera" class="fw-semibold">
+              Select Camera:
+            </label>
+          </div>
+
+          <!-- Dropdown -->
+          <div class="col-12 col-sm-auto">
+            <select class="form-select" [(ngModel)]="selectedCamera['candid']"
+              (change)="onCameraChange('candid')" style="min-width: 150px;">
+              <option value="">Select Camera</option>
+              <option value="camera1">Camera 1</option>
+              <option value="camera2">Camera 2</option>
+              <option value="camera3">Camera 3</option>
+            </select>
+          </div>
+
+        </div>
+
         <input type="file" multiple (change)="onFileSelected($event, 'candid')" class="file-input" #candidFileInput />
 
         <div class="button-row">
-          <button class="btn-modern add-btn" (click)="candidFileInput.click()"><i
+          <button class="btn-modern add-btn" [disabled]="!selectedCamera['candid']" (click)="candidFileInput.click()"><i
               class="fa fa-folder-open fav-icon"></i> Choose Images</button>
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('candid')"><i
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('candid', selectedCamera['candid'])"><i
               class="fa fa-upload fav-icon"></i> Upload</button>
           <button [disabled]="candidPhotosCount == 0" class="btn-modern delete-btn wide-btn"
             (click)="onDeleteAll('candid')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
@@ -91,7 +137,7 @@
         <div class="button-row">
           <button class="btn-modern add-btn" (click)="loginCoverFileInput.click()"><i
               class="fa fa-folder-open fav-icon"></i> Choose Images</button>
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('loginCover')"><i
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('loginCover','camera1')"><i
               class="fa fa-upload fav-icon"></i> Upload</button>
           <button [disabled]="loginCoverPhotosCount == 0" class="btn-modern delete-btn wide-btn"
             (click)="onDeleteAll('logincover')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
@@ -106,20 +152,14 @@
     </div>
 
   </div>
-  <div class="styled-card mb-4 p-4"
-  [ngClass]="{ 'highlight-border': !isPhotoUploadDone }">
-        <!-- <input type="checkbox" class="big-checkbox" id="markDone" [(ngModel)]="isMarkedDone" (change)="markAsDone($event)" /> -->
-        <input type="checkbox" class="big-checkbox" appMarkAsDone
-          [clientId]="clientIdNumber"
-          adminScreen="photoUpload"
-          adminStatus="Photos Uploaded"
-          confirmMessage="Are you sure to mark as done?"
-          (loadingChange)="onLoadingChange($event)"
-          (messageChange)="onMessageChange($event)"
-          (checkedChange)="isPhotoUploadDone = $event"
-        />
-        <label for="markDone" class="ms-2 fw-semibold"><b>Mark Upload as Done</b></label>
-    </div>
+  <div class="styled-card mb-4 p-4" [ngClass]="{ 'highlight-border': !isPhotoUploadDone }">
+    <!-- <input type="checkbox" class="big-checkbox" id="markDone" [(ngModel)]="isMarkedDone" (change)="markAsDone($event)" /> -->
+    <input type="checkbox" class="big-checkbox" appMarkAsDone [clientId]="clientIdNumber" adminScreen="photoUpload"
+      adminStatus="Photos Uploaded" confirmMessage="Are you sure to mark as done?"
+      (loadingChange)="onLoadingChange($event)" (messageChange)="onMessageChange($event)"
+      (checkedChange)="isPhotoUploadDone = $event" />
+    <label for="markDone" class="ms-2 fw-semibold"><b>Mark Upload as Done</b></label>
+  </div>
 
 </div>
 <div *ngIf="loading" class="loading-container">

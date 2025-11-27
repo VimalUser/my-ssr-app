@@ -1,0 +1,45 @@
+<div class="container mt-4">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="form-title fw-bold text-dark">
+            <button class="back-button">
+                <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+            </button>
+            Update Video Status
+        </h2>
+
+    </div>
+
+    <!-- Card -->
+    <div class="card shadow-sm p-4">
+
+        <h5 class="text-primary mb-3">
+            <i class="bi bi-camera-video me-2"></i> Please enter the Video Status below:
+        </h5>
+
+        <!-- Radio Buttons -->
+        <div class="form-check mb-2" *ngFor="let s of videoStatuses">
+            <input class="form-check-input" type="radio" name="videoStatus" [value]="s" [(ngModel)]="selectedStatus" />
+            <label class="form-check-label">{{ s }}</label>
+        </div>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-primary" (click)="saveStatus()">Save</button>
+        </div>
+
+    </div>
+
+    <!-- Mark done -->
+    <div class="p-3 mt-4 rounded" style="background: linear-gradient(90deg,#ff7a18,#ffb800);">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="isDone">
+            <label class="form-check-label text-white">
+                Mark video status update as Done
+            </label>
+        </div>
+    </div>
+
+</div>

@@ -19,6 +19,7 @@ import { AdminReviewComments } from './component/admin-review-comments/admin-rev
 import { Clientlogout } from './component/clientlogout/clientlogout';
 import { send } from 'process';
 import { SendClientCredentials } from './component/send-client-credentials/send-client-credentials';
+import { VideoStatus } from './component/video-status/video-status';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -42,6 +43,7 @@ export const routes: Routes = [
       { path: 'adminactions/:id', component: Adminactionshome },
       { path: 'download/:id',component:AdminDownloadSelection},
       { path: 'comments/:id',component:AdminReviewComments},
+      { path: 'videoStatus/:id',component:VideoStatus},
       
     ],
   },

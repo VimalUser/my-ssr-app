@@ -61,6 +61,13 @@ export class Uploadalbumpics implements OnInit {
   clientIdNumber: number = 0;
   public loading: boolean = false;
 
+  selectedCamera: any = {
+    traditional: '',
+    candid: '',
+    loginCover: ''
+  };
+
+
   ngOnInit(): void {
 
     this.route.paramMap.subscribe((params) => {
@@ -68,6 +75,12 @@ export class Uploadalbumpics implements OnInit {
       this.clientIdNumber = +this.clientId;
     });
     this.loadClientData();
+  }
+
+  onCameraChange(section: string) {
+    // Clear previously selected files when camera changes
+    if (section === 'traditional') this.selectedTraditionalFiles = [];
+    if (section === 'candid') this.selectedCandidFiles = [];
   }
 
   goBack() {
@@ -167,7 +180,7 @@ export class Uploadalbumpics implements OnInit {
   }
 
   // Triggers the API call to upload the selected images
-  onUpload(category: string): void {
+  onUpload(category: string, camera: string): void {
     let filesToUpload: File[] = [];
     switch (category) {
       case 'traditional':
@@ -207,7 +220,7 @@ export class Uploadalbumpics implements OnInit {
         formData.append('files', file, file.name);
       }
 
-      this.apiService.uploadImages(formData, category, +(this.clientId)).subscribe({
+      this.apiService.uploadImages(formData, category, camera, +(this.clientId)).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.notify.success(`Upload successful for ${category}`);
@@ -246,8 +259,8 @@ export class Uploadalbumpics implements OnInit {
     }
   }
 
-async onDeleteAll(category: string) {
-    const confirmDelete =await this.notify.confirm(
+  async onDeleteAll(category: string) {
+    const confirmDelete = await this.notify.confirm(
       `Are you sure to delete all the ${category} images?`
     );
     if (!confirmDelete) {
@@ -269,12 +282,12 @@ async onDeleteAll(category: string) {
 
   }
 
-   onLoadingChange(loading: boolean) {
+  onLoadingChange(loading: boolean) {
     console.log('Loading state changed upload pics:', loading);
     this.loading = loading;
     this.cdr.detectChanges();
   }
-    onMessageChange(msg: string) {
-  this.checkboxMessage = msg;
-}
+  onMessageChange(msg: string) {
+    this.checkboxMessage = msg;
+  }
 }
