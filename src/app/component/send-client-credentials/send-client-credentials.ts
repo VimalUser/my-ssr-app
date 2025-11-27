@@ -6,10 +6,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Notificationservice } from '../../services/notificationservice';
 import { CommonModule } from '@angular/common';
 import { MarkAsDoneDirective } from '../../shared/mark-as-done';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-send-client-credentials',
-  imports: [CommonModule, MarkAsDoneDirective],
+  imports: [CommonModule, MarkAsDoneDirective, FormsModule],
   templateUrl: './send-client-credentials.html',
   styleUrl: './send-client-credentials.css'
 })
@@ -26,9 +27,11 @@ export class SendClientCredentials {
   clientPhoneNo: string = '';
   checkboxMessage: string = '';
   isLoginSentDone: boolean = false;
+  expiryDate: string | null = null; // bind to date picker
+  today: string = '';
 
   private apiService = inject(newclientapi);
-  
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.id = params.get('id') ?? '';
@@ -36,9 +39,11 @@ export class SendClientCredentials {
     });
     if (this.id != '') {
       this.fetchData();
+      const now = new Date();
+      this.today = now.toISOString().split('T')[0]; // yyyy-MM-dd
     }
   }
-   goBack() {
+  goBack() {
     window.history.back();
   }
 
@@ -66,6 +71,7 @@ export class SendClientCredentials {
         this.accesslink = data.accessLink;
         this.passcode = data.passcode;
         this.clientPhoneNo = data.mobileNumber;
+        this.expiryDate = data.expiryDate ? this.formatDate(data.expiryDate) : '';
         this.apiResponse = data;
         this.isLoading = false;
 
@@ -83,6 +89,15 @@ export class SendClientCredentials {
       },
     });
   }
+
+  formatDate(dateString: any): string {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
 
   copyToClipboard(inputControlName: string, event: MouseEvent): void {
     event.preventDefault(); // Prevent form submission/navigation if the button is inside a form
@@ -112,20 +127,51 @@ export class SendClientCredentials {
 
 
   sendWhatsAppMessage() {
+    if (!this.expiryDate) return;
+    console.log('Sending credentials via WhatsApp for date:', this.expiryDate);
     const message = `Hello! 
                       \n Warm welcome from CandyExpress Photography.
                       \n You can start your photos selection process using below access link and passcode.
                       \n Your access link: ${this.accesslink}
                       \n Passcode: ${this.passcode}
+                      \n Link Expiry Date: ${this.expiryDate}
                       \n In case of any issues, feel free to reach out to us.`;
     const url = `https://wa.me/${this.clientPhoneNo}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
   }
-   onLoadingChange(loading: boolean) {
+  onLoadingChange(loading: boolean) {
     console.log('Loading state changed:', loading);
     this.isLoading = loading;
   }
-    onMessageChange(msg: string) {
-  this.checkboxMessage = msg;
-}
+  onMessageChange(msg: string) {
+    this.checkboxMessage = msg;
+  }
+  saveExpiryDate() {
+    if (!this.expiryDate) {
+      alert('Please select a date before saving.');
+      return;
+    }
+    // You can also call an API here to save
+    console.log('Saved Expiry Date:', this.expiryDate);
+    this.isLoading = true;
+    this.apiService.saveExpiryDate(this.id, this.expiryDate).subscribe({
+      next: (data) => {
+        console.log('Data:', data);
+        this.isLoading = false;
+        this.notify.success('Link Expiry date saved successfully.');
+      },
+      error: (error) => {
+        // This is executed if the request fails (e.g., 404, 500)
+        console.error('There was an error!', error);
+        this.errorMessage =
+          'Failed to save Link Expiry date. Check the server or network connection.';
+        this.notify.error(this.errorMessage);
+        this.isLoading = false;
+      },
+      complete: () => {
+        // Optional: Executed when the Observable completes
+        //console.log('Data fetching complete.');
+      },
+    });
+  }
 }
