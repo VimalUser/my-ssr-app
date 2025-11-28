@@ -29,6 +29,7 @@ export class SendClientCredentials {
   isLoginSentDone: boolean = false;
   expiryDate: string | null = null; // bind to date picker
   today: string = '';
+  isExpiryDateAvailable: boolean = false;
 
   private apiService = inject(newclientapi);
 
@@ -72,6 +73,8 @@ export class SendClientCredentials {
         this.passcode = data.passcode;
         this.clientPhoneNo = data.mobileNumber;
         this.expiryDate = data.expiryDate ? this.formatDate(data.expiryDate) : '';
+        this.isExpiryDateAvailable = this.expiryDate != '' ? true : false;
+        console.log('Expiry Date:', this.isExpiryDateAvailable);
         this.apiResponse = data;
         this.isLoading = false;
 
@@ -159,6 +162,9 @@ export class SendClientCredentials {
         console.log('Data:', data);
         this.isLoading = false;
         this.notify.success('Link Expiry date saved successfully.');
+        this.isExpiryDateAvailable = true;
+        console.log('Expiry Date:', this.isExpiryDateAvailable);
+
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
