@@ -94,15 +94,4 @@ export class Adminactionshome implements OnInit {
       complete: () => { },
     });
   }
-
-  sendWhatsAppMessage() {
-    const message = `Hello! 
-                      \n Warm welcome from CandyExpress Photography.
-                      \n You can start your photos selection process using below access link and passcode.
-                      \n Your access link: ${this.accessLink}
-                      \n Passcode: ${this.passcode}
-                      \n In case of any issues, feel free to reach out to us.`;
-    const url = `https://wa.me/${this.clientPhone}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-  }
 }

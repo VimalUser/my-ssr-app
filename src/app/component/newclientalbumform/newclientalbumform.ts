@@ -141,8 +141,8 @@ export class Newclientalbumform implements OnInit {
           this.isLoading = false;
           this.notify.success('Client album details saved successfully!');
           console.log('ID:', this.id);
-          if (this.id == '')
-            this.router.navigate(['/admindashboard']);
+          if (this.id != '')
+            this.router.navigate(['/admindashboard/uploadpictures', this.id]);
         },
         error: (error) => {
           console.error('Save Error:', error);
