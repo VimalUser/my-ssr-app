@@ -101,7 +101,7 @@ export class newclientapi {
     if (data.clientId != 0) {
       finalUrl = this.clientAlbumUrl + 'UpdateClientAlbum';
     }
-    return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
+    return this.http.post(`${finalUrl}`, data);
   }
 
   generateUserlogin(id: string): Observable<any> {

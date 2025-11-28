@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DropdownResponse, newclientapi } from '../../services/newclient';
@@ -24,7 +24,15 @@ export class Newclientalbumform implements OnInit {
   id: string = '';
   showAccessLink = false;
   isDisableAccessLink: boolean = false;
-  clientAlbumHeading : string = 'New Client Setup';
+  clientAlbumHeading: string = 'New Client Setup';
+  eventCounts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  isLoadingEvents: boolean = false;
+
+  get eventList(): FormArray<FormGroup> {
+    return this.clientForm.get('eventList') as FormArray<FormGroup>;
+  }
+
+
 
   get f() {
     return this.clientForm.controls;
@@ -43,7 +51,7 @@ export class Newclientalbumform implements OnInit {
     }
 
   }
- goBack() {
+  goBack() {
     window.history.back();
   }
   // This is the single, combined constructor
@@ -51,7 +59,7 @@ export class Newclientalbumform implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private notify:Notificationservice
+    private notify: Notificationservice
   ) {
     // Logic from the FormBuilder constructor
     this.clientForm = this.fb.group({
@@ -76,6 +84,8 @@ export class Newclientalbumform implements OnInit {
       createdBy: [''],
       updatedDate: [null],
       updatedBy: [''],
+      noOfEvents: [''],
+      eventList: this.fb.array<FormControl>([])
     });
   }
 
@@ -99,6 +109,32 @@ export class Newclientalbumform implements OnInit {
     }
   }
 
+  onEventCountChange() {
+    if (this.isLoadingEvents) return;
+
+    const count = this.clientForm.get('noOfEvents')?.value;
+    this.eventList.clear();
+
+    if (!count || count <= 0) return;
+
+    for (let i = 0; i < count; i++) {
+      this.eventList.push(this.createEventControl());
+    }
+  }
+
+
+  createEventControl(value?: any): FormGroup {
+    return this.fb.group({
+      order: [value?.order || 0],
+      name: [
+        value?.name || '',
+        [Validators.required, Validators.minLength(3), Validators.maxLength(50)]
+      ],
+      eventDate: [value?.eventDate || null]
+    });
+  }
+
+
   fetchData(): void {
     console.log('Fetching data from API...');
     this.isLoading = true;
@@ -110,6 +146,23 @@ export class Newclientalbumform implements OnInit {
         console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
         this.clientForm.patchValue(data);
+
+        this.isLoadingEvents = false;
+        this.clientForm.get('noOfEvents')?.setValue(data.eventList?.length || 0);
+        const eventArray = this.clientForm.get('eventList') as FormArray;
+        eventArray.clear();
+
+        if (data.eventList && data.eventList.length > 0) {
+          data.eventList.forEach((evt: any, index: number) => {
+            eventArray.push(this.createEventControl({
+              order: evt.order,
+              name: evt.name,
+              eventDate: evt.eventDate
+            }));
+          });
+        }
+        this.isLoadingEvents = false;
+
         console.log('Form Values:', this.clientForm.value);
         this.isLoading = false;
 
@@ -128,21 +181,37 @@ export class Newclientalbumform implements OnInit {
     });
   }
 
+  buildEventListPayload() {
+    return this.eventList.controls.map((ctrl, index) => ({
+      order: ctrl.get('order')?.value || index + 1,
+      name: ctrl.get('name')?.value,
+      eventDate: ctrl.get('eventDate')?.value
+    }));
+  }
+
+
+
   savedetails() {
     console.log('Saving client album details...');
     if (this.clientForm.valid) {
-      const clientAlbum = this.clientForm.value;
+
+      const clientAlbum = {
+        ...this.clientForm.value,
+        events: this.buildEventListPayload()
+      };
+
       this.isLoading = true;
       this.errorMessage = null;
+      console.log('Client Album Data to Save:', clientAlbum);
       this.apiService.saveClientAlbumDetails(clientAlbum).subscribe({
         next: (response) => {
           console.log('Save Response:', response);
           this.apiResponse = response;
           this.isLoading = false;
           this.notify.success('Client album details saved successfully!');
-          console.log('ID:', this.id);
-          if (this.id != '')
-            this.router.navigate(['/admindashboard/uploadpictures', this.id]);
+          var clientId = this.id != '' ? this.id : response.clientId;
+          console.log('ID:', clientId);
+          this.router.navigate(['/admindashboard/uploadpictures', clientId]);
         },
         error: (error) => {
           console.error('Save Error:', error);

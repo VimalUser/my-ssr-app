@@ -1,12 +1,13 @@
 <div class="container py-5">
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="form-title fw-bold text-dark">
-                           <button class="back-button">
-      <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
-        style="width: 40px; height: 40px; cursor: pointer;" />
-    </button>
-            {{clientAlbumHeading}}</h2>
+            <button class="back-button">
+                <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+            </button>
+            {{clientAlbumHeading}}
+        </h2>
         <button class="btn btn-warning fw-bold text-dark px-4" [disabled]="!clientForm.valid" (click)="onSave()">
             <i class="bi bi-save-fill me-2"></i> Save Client
         </button>
@@ -18,26 +19,38 @@
             <div class="row g-4">
 
                 <div class="col-12 mb-4">
-                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-person-lines-fill me-2"></i> Client & Event Details</h5>
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i
+                            class="bi bi-person-lines-fill me-2"></i> Client & Event Details</h5>
                     <div class="row g-4">
-                        
+
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">Order No</label>
-                            <input formControlName="orderNumber" type="text" class="form-control" placeholder="Enter Order No" maxlength="50" />
-                            <div *ngIf="f['orderNumber']?.touched && f['orderNumber']?.hasError('required')" class="text-danger small mt-1">Order number is required.</div>
+                            <input formControlName="orderNumber" type="text" class="form-control"
+                                placeholder="Enter Order No" maxlength="50" />
+                            <div *ngIf="f['orderNumber']?.touched && f['orderNumber']?.hasError('required')"
+                                class="text-danger small mt-1">Order number is required.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">Client Name</label>
-                            <input formControlName="clientName" type="text" class="form-control" placeholder="Enter Client Name" maxlength="100" />
-                            <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('required')" class="text-danger small mt-1">Client name is required.</div>
-                            <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('minlength')" class="text-danger small mt-1">Client name must be at least 3 characters.</div>
+                            <input formControlName="clientName" type="text" class="form-control"
+                                placeholder="Enter Client Name" maxlength="100" />
+                            <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('required')"
+                                class="text-danger small mt-1">Client name is required.</div>
+                            <div *ngIf="f['clientName']?.touched && f['clientName']?.hasError('minlength')"
+                                class="text-danger small mt-1">Client name must be at least 3 characters.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
-                            <label class="form-label fw-semibold">Date of Event</label>
-                            <input formControlName="eventDate" type="date" class="form-control" />
-                            <div *ngIf="f['eventDate']?.touched && f['eventDate']?.hasError('required')" class="text-danger small mt-1">Event date is required.</div>
+                            <label class="form-label fw-semibold">Mobile No</label>
+                            <input formControlName="mobileNumber" type="text" class="form-control" maxlength="10"
+                                placeholder="Enter Mobile no" />
+                            <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('required')"
+                                class="text-danger small mt-1">Mobile number is required.</div>
+                            <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('pattern')"
+                                class="text-danger small mt-1">Mobile number must be exactly 10 digits.</div>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
                         </div>
 
                         <div class="col-md-6 col-lg-3">
@@ -46,30 +59,67 @@
                                 <option value="" disabled>Select Event Type</option>
                                 <option *ngFor="let ev of dropdowns?.eventTypes" [value]="ev.id">{{ ev.name }}</option>
                             </select>
-                            <div *ngIf="f['eventTypeId']?.touched && f['eventTypeId']?.hasError('required')" class="text-danger small mt-1">Event type is required.</div>
+                            <div *ngIf="f['eventTypeId']?.touched && f['eventTypeId']?.hasError('required')"
+                                class="text-danger small mt-1">Event type is required.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
-                            <label class="form-label fw-semibold">Mobile No</label>
-                            <input formControlName="mobileNumber" type="text" class="form-control" maxlength="10" placeholder="Enter Mobile no" />
-                            <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('required')" class="text-danger small mt-1">Mobile number is required.</div>
-                            <div *ngIf="f['mobileNumber']?.touched && f['mobileNumber']?.hasError('pattern')" class="text-danger small mt-1">Mobile number must be exactly 10 digits.</div>
+                            <label class="form-label fw-semibold">Date of Event</label>
+                            <input formControlName="eventDate" type="date" class="form-control" />
+                            <div *ngIf="f['eventDate']?.touched && f['eventDate']?.hasError('required')"
+                                class="text-danger small mt-1">Event date is required.</div>
                         </div>
-                        
+
+                        <div class="col-md-6 col-lg-3">
+                            <label class="form-label fw-semibold">No. of Events</label>
+                            <select formControlName="noOfEvents" class="form-select" (change)="onEventCountChange()">
+                                <option value="" disabled>Select Count</option>
+                                <option *ngFor="let n of eventCounts" [value]="n">{{ n }}</option>
+                            </select>
+                        </div>
+                        <div formArrayName="eventList" class="col-12" *ngIf="eventList.length > 0">
+                            <div class="row g-4 mt-2">
+
+                                <div class="col-md-6 col-lg-3" *ngFor="let event of eventList.controls; let i = index"
+                                    [formGroupName]="i">
+
+                                    <label class="form-label fw-semibold">Event {{ i + 1 }}</label>
+
+                                    <!-- Event Name -->
+                                    <input formControlName="name" type="text" class="form-control"
+                                        placeholder="Enter Event Name" />
+
+                                    <div *ngIf="event.get('name')?.touched && event.get('name')?.hasError('required')"
+                                        class="text-danger small mt-1">
+                                        Event name is required.
+                                    </div>
+
+                                    <div *ngIf="event.get('name')?.touched && event.get('name')?.hasError('minlength')"
+                                        class="text-danger small mt-1">
+                                        Minimum 3 characters.
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="col-12 mb-4">
-                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-book-half me-2"></i> Album Specifications</h5>
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-book-half me-2"></i> Album
+                        Specifications</h5>
                     <div class="row g-4">
-                        
+
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">Type of album</label>
                             <select formControlName="albumMaterialTypeId" class="form-select">
                                 <option value="" disabled>Select Album Type</option>
-                                <option *ngFor="let am of dropdowns?.albumMaterialTypes" [value]="am.id">{{ am.name }}</option>
+                                <option *ngFor="let am of dropdowns?.albumMaterialTypes" [value]="am.id">{{ am.name }}
+                                </option>
                             </select>
-                            <div *ngIf="f['albumMaterialTypeId']?.touched && f['albumMaterialTypeId']?.hasError('required')" class="text-danger small mt-1">Album material type is required.</div>
+                            <div *ngIf="f['albumMaterialTypeId']?.touched && f['albumMaterialTypeId']?.hasError('required')"
+                                class="text-danger small mt-1">Album material type is required.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
@@ -78,42 +128,56 @@
                                 <option value="" disabled>Select Size</option>
                                 <option *ngFor="let al of dropdowns?.albumSizes" [value]="al.id">{{ al.name }}</option>
                             </select>
-                            <div *ngIf="f['albumSizeId']?.touched && f['albumSizeId']?.hasError('required')" class="text-danger small mt-1">Album size is required.</div>
+                            <div *ngIf="f['albumSizeId']?.touched && f['albumSizeId']?.hasError('required')"
+                                class="text-danger small mt-1">Album size is required.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">No of Albums</label>
-                            <input formControlName="noOfAlbums" type="number" class="form-control" min="0" placeholder="Enter No of Albums" />
-                            <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('required')" class="text-danger small mt-1">Number of albums is required.</div>
-                            <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 album.</div>
+                            <input formControlName="noOfAlbums" type="number" class="form-control" min="0"
+                                placeholder="Enter No of Albums" />
+                            <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('required')"
+                                class="text-danger small mt-1">Number of albums is required.</div>
+                            <div *ngIf="f['noOfAlbums']?.touched && f['noOfAlbums']?.hasError('min')"
+                                class="text-danger small mt-1">Must be at least 1 album.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">No of Sheets</label>
-                            <input formControlName="noOfSheets" type="number" class="form-control" min="0" placeholder="Enter No of Sheets" />
-                            <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('required')" class="text-danger small mt-1">Number of sheets is required.</div>
-                            <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 sheet.</div>
+                            <input formControlName="noOfSheets" type="number" class="form-control" min="0"
+                                placeholder="Enter No of Sheets" />
+                            <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('required')"
+                                class="text-danger small mt-1">Number of sheets is required.</div>
+                            <div *ngIf="f['noOfSheets']?.touched && f['noOfSheets']?.hasError('min')"
+                                class="text-danger small mt-1">Must be at least 1 sheet.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">No of Pics</label>
-                            <input formControlName="noOfPics" type="number" class="form-control" min="0" placeholder="Enter No of Pics" />
-                            <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('required')" class="text-danger small mt-1">Number of pics is required.</div>
-                            <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 pic.</div>
+                            <input formControlName="noOfPics" type="number" class="form-control" min="0"
+                                placeholder="Enter No of Pics" />
+                            <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('required')"
+                                class="text-danger small mt-1">Number of pics is required.</div>
+                            <div *ngIf="f['noOfPics']?.touched && f['noOfPics']?.hasError('min')"
+                                class="text-danger small mt-1">Must be at least 1 pic.</div>
                         </div>
-                        
+
                     </div>
                 </div>
 
                 <div class="col-12 mb-4">
-                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i> Frame & Album Cover</h5>
+                    <h5 class="mb-3 text-primary fw-bold border-bottom pb-2"><i class="bi bi-camera-fill me-2"></i>
+                        Frame & Album Cover</h5>
                     <div class="row g-4">
 
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">No of Frame</label>
-                            <input formControlName="noOfFrame" type="number" class="form-control" min="0" placeholder="Enter No of Frame" />
-                            <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('required')" class="text-danger small mt-1">Number of frames is required.</div>
-                            <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 frame.</div>
+                            <input formControlName="noOfFrame" type="number" class="form-control" min="0"
+                                placeholder="Enter No of Frame" />
+                            <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('required')"
+                                class="text-danger small mt-1">Number of frames is required.</div>
+                            <div *ngIf="f['noOfFrame']?.touched && f['noOfFrame']?.hasError('min')"
+                                class="text-danger small mt-1">Must be at least 1 frame.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
@@ -122,14 +186,18 @@
                                 <option value="" disabled>Select Size</option>
                                 <option *ngFor="let fr of dropdowns?.frameSizes" [value]="fr.id">{{ fr.name }}</option>
                             </select>
-                            <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')" class="text-danger small mt-1">Frame size is required.</div>
+                            <div *ngIf="f['frameSizeId']?.touched && f['frameSizeId']?.hasError('required')"
+                                class="text-danger small mt-1">Frame size is required.</div>
                         </div>
 
                         <div class="col-md-6 col-lg-3">
                             <label class="form-label fw-semibold">No of AlbumCover</label>
-                            <input formControlName="noOfAlbumCover" type="number" class="form-control" min="0" placeholder="Enter No of Album Cover" />
-                            <div *ngIf="f['noOfAlbumCover']?.touched && f['noOfAlbumCover']?.hasError('required')" class="text-danger small mt-1">Number of Album Cover is required.</div>
-                            <div *ngIf="f['noOfAlbumCover']?.touched && f['noOfAlbumCover']?.hasError('min')" class="text-danger small mt-1">Must be at least 1 Album cover.</div>
+                            <input formControlName="noOfAlbumCover" type="number" class="form-control" min="0"
+                                placeholder="Enter No of Album Cover" />
+                            <div *ngIf="f['noOfAlbumCover']?.touched && f['noOfAlbumCover']?.hasError('required')"
+                                class="text-danger small mt-1">Number of Album Cover is required.</div>
+                            <div *ngIf="f['noOfAlbumCover']?.touched && f['noOfAlbumCover']?.hasError('min')"
+                                class="text-danger small mt-1">Must be at least 1 Album cover.</div>
                         </div>
 
                         <!-- <div class="col-12" *ngIf="showAccessLink">
@@ -170,5 +238,5 @@
     </div>
 </div>
 <div *ngIf="isLoading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Uploading...">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>
