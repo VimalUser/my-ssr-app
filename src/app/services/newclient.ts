@@ -20,6 +20,10 @@ export interface ClientExpiryDate {
   ClientId: string;
   ExpiryDate: string;
 }
+export interface ClientVideoStatus {
+  ClientId: string;
+  VideoStatus: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +79,13 @@ export class newclientapi {
     var data : ClientExpiryDate= { ClientId : id, ExpiryDate: expiryDate };
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
+
+   saveVideoStatus(id: string, videoStatus: string): Observable<any> {
+    var finalUrl = this.clientAlbumUrl + 'saveVideoStatus';
+    var data : ClientVideoStatus= { ClientId : id, VideoStatus: videoStatus };
+    return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
+  }
+
   getAlbumDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'GetAlbumDetails';
     return this.http.get(`${finalUrl}?Id=${id}`);

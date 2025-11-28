@@ -124,5 +124,59 @@
 }
 
 
+/* Status Colors */
+.status-login {
+  background-color: #0d6efd; /* Blue */
+  color: white;
+}
+
+.status-uploaded {
+  background-color: #198754; /* Green */
+  color: white;
+}
+
+.status-reviewed {
+  background-color: #ffc107; /* Yellow */
+  color: black;
+}
+
+.status-downloaded {
+  background-color: #6f42c1; /* Purple */
+  color: white;
+}
+
+.status-pending {
+  background-color: #adb5bd; /* Grey */
+  color: black;
+}
+
+/* 🎨 Video Status Colors */
+.vs-started {
+  background-color: #0d6efd;  /* Blue */
+  color: white;
+}
+
+.vs-completed {
+  background-color: #198754;  /* Green */
+  color: white;
+}
+
+.vs-approval {
+  background-color: #ffc107;  /* Yellow */
+  color: black;
+}
+
+.vs-approved {
+  background-color: #6f42c1;  /* Purple */
+  color: white;
+}
+
+.vs-pending {
+  background-color: #adb5bd;  /* Grey */
+  color: black;
+}
+
+
+
 
 

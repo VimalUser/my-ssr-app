@@ -27,19 +27,11 @@
         </div>
 
         <div class="text-end mt-3">
-            <button class="btn btn-primary" (click)="saveStatus()">Save</button>
+            <button class="btn btn-primary" [disabled]="!selectedStatus"   (click)="saveVideoStatus()">Save</button>
         </div>
 
     </div>
-
-    <!-- Mark done -->
-    <div class="p-3 mt-4 rounded" style="background: linear-gradient(90deg,#ff7a18,#ffb800);">
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" [(ngModel)]="isDone">
-            <label class="form-check-label text-white">
-                Mark video status update as Done
-            </label>
-        </div>
-    </div>
-
+</div>
+<div *ngIf="isLoading" class="loading-container">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>
