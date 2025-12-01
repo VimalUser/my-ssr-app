@@ -291,17 +291,12 @@ h3 {
   right: -4px;
   bottom: -4px;
   border-radius: 14px;
-  background: linear-gradient(
-    90deg,
-    #ffeb3b,
-    #f75c2d,
-    #ffeb3b,
-    #f75c2d
-  );
+  background: linear-gradient(266deg, #f5f5ce, #f8f9f2, #f5e662);
   background-size: 300% 300%;
   filter: blur(4px);
   animation: movingGlow 3s linear infinite;
-  z-index: -1; /* sits behind card */
+  z-index: -1;
+  /* sits behind card */
 }
 
 @keyframes movingGlow {
