@@ -208,7 +208,7 @@ export class CoverpcitureSelection {
       clientId
     );
 
-    this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
+    this.userservice.getSelectedImagesbyClientId(clientId,'cover').subscribe({
       next: (data) => {
         // data expected: [{ imageUrl: '...' }, ...]
         this.apiImageResponse = data || [];

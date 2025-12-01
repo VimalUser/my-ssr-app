@@ -196,7 +196,7 @@
               </button>
 
               <!-- Portrait / Landscape popup -->
-              <div class="frame-popup" *ngIf="frameChoiceForFileName === fileNameFromUrl(img)"
+              <div class="frame-popup" *ngIf="frameChoiceForIdentity === getImageIdentity(img)"
                 (click)="$event.stopPropagation()">
                 <button class="frame-choice-btn" (click)="onFrameOrientationClick($event, img, 'portrait')">
                   <i class="bi bi-check2 me-1" *ngIf="isPortraitFrameSelected(img)"></i>
@@ -313,9 +313,9 @@
               </button>
 
               <div class="frame-popup preview-frame-popup" *ngIf="
-                  frameChoiceForFileName ===
-                  fileNameFromUrl(previewImageUrl!)
-                " (click)="$event.stopPropagation()">
+    frameChoiceForIdentity ===
+    getImageIdentity(previewImageUrl!)
+  " (click)="$event.stopPropagation()">
                 <button class="frame-choice-btn"
                   (click)="onFrameOrientationClick($event, previewImageUrl!, 'portrait')">
                   <i class="bi bi-check2 me-1" *ngIf="isPortraitFrameSelected(previewImageUrl!)"></i>

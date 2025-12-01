@@ -222,7 +222,7 @@ export class Framepicturecomponent {
     this.loading = true;
     console.log('Fetching selected images from API for frames, client:', clientId);
 
-    this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
+    this.userservice.getSelectedImagesbyClientId(clientId,'frame').subscribe({
       next: (data) => {
         // Expecting array like [{ imageUrl: '...' }, ...]
         this.apiImageResponse = data || [];

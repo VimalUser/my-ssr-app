@@ -30,13 +30,11 @@ export class Imagegallery implements OnInit {
   displayedImages: string[] = [];
   isLoadingMore = false;
 
-  // Album selections for current folder
-  selectedItems: AlbumSelectionItem[] = [];
-
-  // Frame + cover selections (global, across folders)
-  portraitFrameItems: AlbumSelectionItem[] = [];
-  landscapeFrameItems: AlbumSelectionItem[] = [];
-  coverItems: AlbumSelectionItem[] = [];
+  // Working selections
+  selectedItems: AlbumSelectionItem[] = []; // working album picks for current folder
+  portraitFrameItems: AlbumSelectionItem[] = []; // working global
+  landscapeFrameItems: AlbumSelectionItem[] = []; // working global
+  coverItems: AlbumSelectionItem[] = []; // working global
 
   loading = true;
   galleryOpen = false;
@@ -49,8 +47,8 @@ export class Imagegallery implements OnInit {
   // filter bar
   viewFilter: ViewFilter = 'all';
 
-  // frame popup state (by fileName)
-  frameChoiceForFileName: string | null = null;
+  // frame popup state uses strict identity
+  frameChoiceForIdentity: string | null = null;
 
   clientDataload: clientData = new clientData();
 
@@ -64,17 +62,17 @@ export class Imagegallery implements OnInit {
     this.clientDataService.triggerNextStep(2);
     this.loading = false;
 
+    // load saved data snapshot
     const data = this.clientDataService.getData();
-    this.clientDataload = data;
+    this.clientDataload = JSON.parse(JSON.stringify(data ?? {})) as clientData;
 
-    this.portraitFrameItems = [...(data.portraitFrameSelection ?? [])];
-    this.landscapeFrameItems = [...(data.landscapeFrameSelection ?? [])];
-    this.coverItems = [...(data.coverSelection ?? [])];
-
-    console.log('Initial Client Data in ImageGallery:', data);
+    // deep-clone and ensure sourceFolder on each saved item
+    this.portraitFrameItems = (JSON.parse(JSON.stringify(data?.portraitFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+    this.landscapeFrameItems = (JSON.parse(JSON.stringify(data?.landscapeFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+    this.coverItems = (JSON.parse(JSON.stringify(data?.coverSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
   }
 
-  // ---------- Navigation between steps ----------
+  // ---------- Navigation ----------
 
   prevStep() {
     this.clientDataService.triggerNextStep(1);
@@ -82,10 +80,10 @@ export class Imagegallery implements OnInit {
 
   nextStep() {
     const totalAlbumSelected =
-      this.clientDataload.tranditionalAlbumSelection.length +
-      this.clientDataload.candidAlbumSelection.length;
+      (this.clientDataload.tranditionalAlbumSelection?.length || 0) +
+      (this.clientDataload.candidAlbumSelection?.length || 0);
 
-    if (totalAlbumSelected < this.clientDataload.noOfPics) {
+    if (totalAlbumSelected < (this.clientDataload.noOfPics || 0)) {
       const alertMessage = `You have selected ${totalAlbumSelected} images. Please select a total of ${this.clientDataload.noOfPics} images to proceed.`;
       this.notify.error(alertMessage);
       return;
@@ -112,18 +110,23 @@ export class Imagegallery implements OnInit {
     this.displayedImages = [];
     this.selectedItems = [];
     this.viewFilter = 'all';
-    this.frameChoiceForFileName = null;
+    this.frameChoiceForIdentity = null;
 
+    // re-read fresh snapshot from service and deep clone for working edits
     const data = this.clientDataService.getData();
-    this.clientDataload = data;
+    this.clientDataload = JSON.parse(JSON.stringify(data ?? {})) as clientData;
 
     if (folderName === this.folderNames[0]) {
       this.isTraditional = true;
-      this.selectedItems = [...data.tranditionalAlbumSelection];
+      this.selectedItems = (JSON.parse(JSON.stringify(data?.tranditionalAlbumSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
     } else {
       this.isTraditional = false;
-      this.selectedItems = [...data.candidAlbumSelection];
+      this.selectedItems = (JSON.parse(JSON.stringify(data?.candidAlbumSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
     }
+
+    this.portraitFrameItems = (JSON.parse(JSON.stringify(data?.portraitFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+    this.landscapeFrameItems = (JSON.parse(JSON.stringify(data?.landscapeFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+    this.coverItems = (JSON.parse(JSON.stringify(data?.coverSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
 
     this.galleryOpen = true;
     this.getImagesbyPath();
@@ -131,10 +134,8 @@ export class Imagegallery implements OnInit {
 
   // ---------- Visible images & batching ----------
 
-  // All images visible under current filter
   get visibleImages(): string[] {
     const base = this.images;
-
     switch (this.viewFilter) {
       case 'album':
         return base.filter((img) => this.isAlbumSelected(img));
@@ -163,7 +164,6 @@ export class Imagegallery implements OnInit {
 
     this.isLoadingMore = true;
 
-    // small delay so the loading state is visible
     setTimeout(() => {
       const nextChunk = source.slice(
         alreadyShown,
@@ -182,78 +182,135 @@ export class Imagegallery implements OnInit {
     return this.displayedImages.length;
   }
 
-  // ---------- Helpers for folder type from URL ----------
+  // ---------- SIMPLE URL helpers (strict -3, -2, -1) ----------
+  // expects url like .../<phototype>/<cameratype>/<filename>
 
-  fileTypeFromUrl(url: string): string {
-    // returns "traditional" or "candid" (2nd last segment)
-    return url.split('?')[0].split('/').slice(-2, -1)[0] || '';
-  }
+ // expects url like .../<phototype>/<cameratype>/<filename>
+private getFileParts(url: string) {
+  const clean = (url || '').split('?')[0].split('#')[0];
+  const parts = clean.split('/').filter(p => p !== '');
+  const fileName = parts.length ? parts[parts.length - 1] : '';
+  const cameraFolder = parts.length >= 2 ? parts[parts.length - 2] : '';
+  const photoType = parts.length >= 3 ? parts[parts.length - 3] : '';
+  return { fileName, cameraFolder, photoType };
+}
 
-  private getCurrentFolderType(): string {
-    return this.isTraditional ? 'traditional' : 'candid';
-  }
 
   fileNameFromUrl(url: string): string {
-    const filename = url.split('?')[0].split('/').pop() || '';
-    return decodeURIComponent(filename);
+    return this.getFileParts(url).fileName;
+  }
+
+  // camera-level segment (used to disambiguate duplicate filenames)
+  fileTypeFromUrl(url: string): string {
+    return this.getFileParts(url).cameraFolder;
+  }
+
+  // parent phototype (persisted sourceFolder)
+  private getParentFolderFromUrl(url: string): string {
+    return this.getFileParts(url).photoType;
+  }
+
+  // popup identity: photoType|camera|filename (unique per physical image)
+  getImageIdentity(imgUrl: string | null): string {
+    if (!imgUrl) return '';
+    const p = this.getFileParts(imgUrl);
+    return `${p.photoType}|${p.cameraFolder}|${p.fileName}`;
+  }
+
+  // ---------- Ensure every loaded/saved item has sourceFolder set ----------
+  // (sourceFolder = phototype = segment -3). This prevents mismatch between badges and counts.
+
+  private ensureSourceFolderOnItem(item: AlbumSelectionItem): AlbumSelectionItem {
+    if (!item) return item;
+    if ((item as any)?.sourceFolder) return item;
+
+    if (item.url) {
+      const parts = this.getFileParts(item.url);
+      // persist parent phototype as sourceFolder
+      // @ts-ignore
+      (item as any).sourceFolder = parts.photoType || (item.isTraditional ? 'traditional' : 'candid');
+    } else {
+      // fallback to isTraditional boolean
+      // @ts-ignore
+      (item as any).sourceFolder = item.isTraditional ? 'traditional' : 'candid';
+    }
+    return item;
+  }
+
+  // ---------- Matching logic (strict: fileName + cameraFolder) ----------
+
+  private matchesUrlToItem(imgUrl: string, item: AlbumSelectionItem): boolean {
+  if (!imgUrl || !item || !item.url) return false;
+
+  const img = this.getFileParts(imgUrl);
+  const it = this.getFileParts(item.url);
+
+  // strict matching: phototype (parent) + cameraFolder + filename must all match
+  const samePhotoType = (img.photoType || '').toString().toLowerCase() === (it.photoType || '').toString().toLowerCase();
+  const sameCamera = (img.cameraFolder || '').toString().toLowerCase() === (it.cameraFolder || '').toString().toLowerCase();
+  const sameFile = (img.fileName || '') === (it.fileName || '');
+
+  return samePhotoType && sameCamera && sameFile;
+}
+
+
+  private matchesItemToItem(a: AlbumSelectionItem, b: AlbumSelectionItem): boolean {
+    if (!a || !b || !a.url || !b.url) return false;
+    const pa = this.getFileParts(a.url);
+    const pb = this.getFileParts(b.url);
+    return pa.fileName === pb.fileName && pa.cameraFolder === pb.cameraFolder;
+  }
+
+  // ---------- Folder membership helper (uses persisted sourceFolder) ----------
+
+  private isItemInFolder(item: AlbumSelectionItem, folderType: string): boolean {
+    if (!item) return false;
+    const itemSource = ((item as any)?.sourceFolder) ? (item as any).sourceFolder.toString().toLowerCase() : this.getParentFolderFromUrl(item.url || '').toString().toLowerCase();
+    return (itemSource || '').toString().toLowerCase() === folderType;
   }
 
   // ---------- Summary (per current folder) ----------
 
   private getAlbumCountInCurrentFolder(): number {
-    // selectedItems is always for current folder only
+    // selectedItems is always for the current folder (working copy)
     return this.selectedItems.length;
   }
 
   private getFrameCountInCurrentFolder(): number {
-    const currentFolderType = this.getCurrentFolderType();
-    const allFrames = [
-      ...(this.portraitFrameItems || []),
-      ...(this.landscapeFrameItems || []),
-    ];
-    return allFrames.filter(
-      (x) => this.fileTypeFromUrl(x.url) === currentFolderType
-    ).length;
-  }
+  const currentFolderType = this.getCurrentFolderType();
+  const allFrames = [
+    ...(this.portraitFrameItems || []),
+    ...(this.landscapeFrameItems || []),
+  ];
+
+  return allFrames.filter(item => {
+    if (!item || !item.url) return false;
+    const p = this.getFileParts(item.url);
+    return (p.photoType || '').toString().toLowerCase() === currentFolderType;
+  }).length;
+}
 
   private getCoverCountInCurrentFolder(): number {
     const currentFolderType = this.getCurrentFolderType();
-    return (this.coverItems || []).filter(
-      (x) => this.fileTypeFromUrl(x.url) === currentFolderType
-    ).length;
+    return (this.coverItems || []).filter((x) => this.isItemInFolder(x, currentFolderType)).length;
   }
 
   // public getters for template
-
-  get albumCountInCurrentFolder(): number {
-    return this.getAlbumCountInCurrentFolder();
-  }
-
-  get frameCountInCurrentFolder(): number {
-    return this.getFrameCountInCurrentFolder();
-  }
-
-  get coverCountInCurrentFolder(): number {
-    return this.getCoverCountInCurrentFolder();
-  }
+  get albumCountInCurrentFolder(): number { return this.getAlbumCountInCurrentFolder(); }
+  get frameCountInCurrentFolder(): number { return this.getFrameCountInCurrentFolder(); }
+  get coverCountInCurrentFolder(): number { return this.getCoverCountInCurrentFolder(); }
 
   // limits from server
-  get albumLimit(): number {
-    return Number(this.clientDataload.noOfPics) || 0;
-  }
-  get frameLimit(): number {
-    return Number(this.clientDataload.noOfFrames) || 0;
-  }
-  get coverLimit(): number {
-    return Number(this.clientDataload.noOfAlbumCover) || 0;
-  }
+  get albumLimit(): number { return Number(this.clientDataload.noOfPics) || 0; }
+  get frameLimit(): number { return Number(this.clientDataload.noOfFrames) || 0; }
+  get coverLimit(): number { return Number(this.clientDataload.noOfAlbumCover) || 0; }
 
   // overall counts (Traditional + Candid + current unsaved for this folder)
   get totalAlbumCount(): number {
     const current = this.selectedItems.length;
     const otherFolderSaved = this.isTraditional
-      ? this.clientDataload.candidAlbumSelection.length
-      : this.clientDataload.tranditionalAlbumSelection.length;
+      ? (this.clientDataload.candidAlbumSelection?.length || 0)
+      : (this.clientDataload.tranditionalAlbumSelection?.length || 0);
     return current + otherFolderSaved;
   }
 
@@ -305,30 +362,27 @@ export class Imagegallery implements OnInit {
   // ---------- Selection helpers ----------
 
   isAlbumSelected(imgUrl: string): boolean {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    return this.selectedItems.some((x) => x.fileName === fileName);
+    return this.selectedItems.some((item) => this.matchesUrlToItem(imgUrl, item));
   }
 
   isAnyFrameSelected(imgUrl: string): boolean {
-    return (
-      this.isPortraitFrameSelected(imgUrl) ||
-      this.isLandscapeFrameSelected(imgUrl)
-    );
+    return this.isPortraitFrameSelected(imgUrl) || this.isLandscapeFrameSelected(imgUrl);
   }
 
   isPortraitFrameSelected(imgUrl: string): boolean {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    return this.portraitFrameItems.some((x) => x.fileName === fileName);
+    return this.portraitFrameItems.some((item) => this.matchesUrlToItem(imgUrl, item));
   }
 
   isLandscapeFrameSelected(imgUrl: string): boolean {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    return this.landscapeFrameItems.some((x) => x.fileName === fileName);
+    return this.landscapeFrameItems.some((item) => this.matchesUrlToItem(imgUrl, item));
   }
 
   isCoverSelected(imgUrl: string): boolean {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    return this.coverItems.some((x) => x.fileName === fileName);
+    return this.coverItems.some((item) => this.matchesUrlToItem(imgUrl, item));
+  }
+
+  private getCurrentFolderType(): string {
+    return this.isTraditional ? 'traditional' : 'candid';
   }
 
   // ---------- Album selection ----------
@@ -336,49 +390,40 @@ export class Imagegallery implements OnInit {
   isMaximumAlbumSelected(): boolean {
     const current = this.selectedItems.length;
     const otherFolderSaved = this.isTraditional
-      ? this.clientDataload.candidAlbumSelection.length
-      : this.clientDataload.tranditionalAlbumSelection.length;
+      ? (this.clientDataload.candidAlbumSelection?.length || 0)
+      : (this.clientDataload.tranditionalAlbumSelection?.length || 0);
     const total = current + otherFolderSaved;
-    return total >= this.clientDataload.noOfPics;
+    return total >= (this.clientDataload.noOfPics || 0);
   }
 
   toggleAlbumSelection(imgUrl: string, event?: Event) {
     if (event) event.stopPropagation();
 
-    const fileName = this.fileNameFromUrl(imgUrl);
-    const idx = this.selectedItems.findIndex((x) => x.fileName === fileName);
+    const idx = this.selectedItems.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
 
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
     } else {
       if (this.isMaximumAlbumSelected()) {
-        this.notify.error(
-          'You have already selected the maximum number of album pictures.'
-        );
+        this.notify.error('You have already selected the maximum number of album pictures.');
         return;
       }
       this.selectedItems.push(this.buildSelectionItem(imgUrl, 'album'));
     }
 
-    if (this.viewFilter !== 'all') {
-      this.resetInfiniteScroll();
-    }
+    if (this.viewFilter !== 'all') this.resetInfiniteScroll();
   }
 
   // ---------- Frame selection ----------
 
   private get totalFrameSelected(): number {
-    return (
-      (this.portraitFrameItems?.length || 0) +
-      (this.landscapeFrameItems?.length || 0)
-    );
+    return (this.portraitFrameItems?.length || 0) + (this.landscapeFrameItems?.length || 0);
   }
 
   toggleFramePopup(imgUrl: string, event: Event) {
     event.stopPropagation();
-    const fileName = this.fileNameFromUrl(imgUrl);
-    this.frameChoiceForFileName =
-      this.frameChoiceForFileName === fileName ? null : fileName;
+    const id = this.getImageIdentity(imgUrl);
+    this.frameChoiceForIdentity = this.frameChoiceForIdentity === id ? null : id;
   }
 
   onFrameOrientationClick(
@@ -391,43 +436,36 @@ export class Imagegallery implements OnInit {
   }
 
   setFrameSelection(imgUrl: string, orientation: 'portrait' | 'landscape') {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    const target =
-      orientation === 'portrait'
-        ? this.portraitFrameItems
-        : this.landscapeFrameItems;
-    const other =
-      orientation === 'portrait'
-        ? this.landscapeFrameItems
-        : this.portraitFrameItems;
+    const target = orientation === 'portrait' ? this.portraitFrameItems : this.landscapeFrameItems;
+    const other = orientation === 'portrait' ? this.landscapeFrameItems : this.portraitFrameItems;
 
-    const targetIndex = target.findIndex((x) => x.fileName === fileName);
-    const otherIndex = other.findIndex((x) => x.fileName === fileName);
+    const targetIndex = target.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
+    const otherIndex = other.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
 
-    // already in this orientation → unselect
     if (targetIndex >= 0) {
       target.splice(targetIndex, 1);
     } else {
       if (otherIndex >= 0) {
         const moved = other.splice(otherIndex, 1)[0];
+        // @ts-ignore
+        moved.type = orientation;
         target.push(moved);
       } else {
-        if (this.totalFrameSelected >= this.clientDataload.noOfFrames) {
-          this.notify.error(
-            'You have already selected the maximum number of frame pictures.'
-          );
-          this.frameChoiceForFileName = null;
+        if (this.totalFrameSelected >= (this.clientDataload.noOfFrames || 0)) {
+          this.notify.error('You have already selected the maximum number of frame pictures.');
+          this.frameChoiceForIdentity = null;
           return;
         }
-        target.push(this.buildSelectionItem(imgUrl, orientation));
+        const item = this.buildSelectionItem(imgUrl, orientation);
+        // @ts-ignore
+        item.type = orientation;
+        target.push(item);
       }
     }
 
-    this.frameChoiceForFileName = null;
+    this.frameChoiceForIdentity = null;
 
-    if (this.viewFilter === 'frame') {
-      this.resetInfiniteScroll();
-    }
+    if (this.viewFilter === 'frame') this.resetInfiniteScroll();
   }
 
   // ---------- Cover selection ----------
@@ -435,54 +473,48 @@ export class Imagegallery implements OnInit {
   toggleCoverSelection(imgUrl: string, event?: Event) {
     if (event) event.stopPropagation();
 
-    const fileName = this.fileNameFromUrl(imgUrl);
-    const idx = this.coverItems.findIndex((x) => x.fileName === fileName);
+    const idx = this.coverItems.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
 
     if (idx >= 0) {
       this.coverItems.splice(idx, 1);
     } else {
-      if (this.coverItems.length >= this.clientDataload.noOfAlbumCover) {
-        this.notify.error(
-          'You have already selected the maximum number of cover pictures.'
-        );
+      if ((this.coverItems?.length || 0) >= (this.clientDataload.noOfAlbumCover || 0)) {
+        this.notify.error('You have already selected the maximum number of cover pictures.');
         return;
       }
       this.coverItems.push(this.buildSelectionItem(imgUrl, 'cover'));
     }
 
-    if (this.viewFilter === 'cover') {
-      this.resetInfiniteScroll();
-    }
+    if (this.viewFilter === 'cover') this.resetInfiniteScroll();
   }
 
-  // ---------- Build selection item (uses fileTypeFromUrl) ----------
+  // ---------- Build selection item (persist parent folder, include camera in url) ----------
 
-  private buildSelectionItem(
-    imgUrl: string,
-    type: string
-  ): AlbumSelectionItem {
-    const folderType = this.fileTypeFromUrl(imgUrl); // "traditional" or "candid"
-    const isTraditionalFlag = folderType.toLowerCase() === 'traditional';
+ private buildSelectionItem(imgUrl: string, type: string): AlbumSelectionItem {
+  const parts = this.getFileParts(imgUrl);
+  const item: AlbumSelectionItem = {
+    fileName: parts.fileName,
+    comment: '',
+    type,
+    url: imgUrl,
+    isTraditional: parts.photoType === 'traditional',
+    // persist parent folder for counts/save
+    // @ts-ignore
+    sourceFolder: parts.photoType,
+    // store cameraFolder for in-memory clarity (optional)
+    // @ts-ignore
+    cameraFolder: parts.cameraFolder,
+  };
+  return item;
+}
 
-    return {
-      fileName: this.fileNameFromUrl(imgUrl),
-      comment: '',
-      type: type,
-      url: imgUrl,
-      isTraditional: isTraditionalFlag,
-      // @ts-ignore if not defined in model
-      sourceFolder: folderType,
-    };
-  }
 
   // ---------- Preview ----------
 
   openPreview(imgUrl: string) {
     this.previewImageUrl = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
-    const existing = this.selectedItems.find(
-      (x) => x.fileName === this.previewFileName
-    );
+    const existing = this.selectedItems.find((x) => this.matchesUrlToItem(imgUrl, x));
     this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
   }
@@ -496,7 +528,7 @@ export class Imagegallery implements OnInit {
     this.previewFileName = '';
     this.previewComment = '';
     this.previewLoading = false;
-    this.frameChoiceForFileName = null;
+    this.frameChoiceForIdentity = null;
   }
 
   private getCurrentImageIndex(): number {
@@ -597,5 +629,15 @@ export class Imagegallery implements OnInit {
         this.notify.error('Failed to save your selection!');
       },
     });
+  }
+
+  // ---------- Helpers for folder selection screen counts (always read fresh from service) ----------
+
+  get traditionalSavedCount(): number {
+    return (this.clientDataService.getData().tranditionalAlbumSelection ?? []).length;
+  }
+
+  get candidSavedCount(): number {
+    return (this.clientDataService.getData().candidAlbumSelection ?? []).length;
   }
 }

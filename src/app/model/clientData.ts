@@ -10,6 +10,8 @@ export class clientData {
   noOfFrames: number = 0;
   noOfAlbumCover: number = 0;
   coverPic: string = '';
+  designTypeId: number = 0;
+  designType:string='';
   mobileNumber: string = '';
   eventTypeId: number = 0;
   albumSizeId: number = 0;

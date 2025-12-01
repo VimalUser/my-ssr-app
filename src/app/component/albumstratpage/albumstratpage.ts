@@ -98,6 +98,8 @@ export class Albumstratpage implements OnInit {
       eventType: '',
       albumSize: '',
       frameSize: '',
+      designTypeId: clientDatafromDb.designTypeId || 1,
+      designType: clientDatafromDb.designType || '',
       tranditionalAlbumSelection:
         clientDatafromDb.tranditionalAlbumSelection || [],
       candidAlbumSelection: clientDatafromDb.candidAlbumSelection || [],
