@@ -179,6 +179,46 @@ export class Admindashboard implements OnInit {
     this.router.navigate(['admindashboard/adminactions', id?.toString()]);
   }
 
+  getStatusClass(status: string | null | undefined) {
+    switch (status) {
+      case 'Login info Sent':
+        return 'status-login';
+
+      case 'Photos Uploaded':
+        return 'status-uploaded';
+
+      case 'Reviewed Comments':
+        return 'status-reviewed';
+
+      case 'Photos Downloaded':
+        return 'status-downloaded';
+
+      default:
+        return 'status-pending'; // Yet to Start
+    }
+  }
+
+  getVideoStatusClass(status: string | null | undefined) {
+    switch ((status || '').trim()) {
+      case 'Video editing started':
+        return 'vs-started';
+
+      case 'Video editing completed':
+        return 'vs-completed';
+
+      case 'Sent for Approval':
+        return 'vs-approval';
+
+      case 'Video Approved':
+        return 'vs-approved';
+
+      default:
+        return 'vs-pending'; // Yet to Start
+    }
+  }
+
+
+
 }
 
 

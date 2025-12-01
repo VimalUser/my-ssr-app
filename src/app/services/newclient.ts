@@ -20,6 +20,10 @@ export interface ClientExpiryDate {
   ClientId: string;
   ExpiryDate: string;
 }
+export interface ClientVideoStatus {
+  ClientId: string;
+  VideoStatus: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +79,13 @@ export class newclientapi {
     var data : ClientExpiryDate= { ClientId : id, ExpiryDate: expiryDate };
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
+
+   saveVideoStatus(id: string, videoStatus: string): Observable<any> {
+    var finalUrl = this.clientAlbumUrl + 'saveVideoStatus';
+    var data : ClientVideoStatus= { ClientId : id, VideoStatus: videoStatus };
+    return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
+  }
+
   getAlbumDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'GetAlbumDetails';
     return this.http.get(`${finalUrl}?Id=${id}`);
@@ -90,7 +101,7 @@ export class newclientapi {
     if (data.clientId != 0) {
       finalUrl = this.clientAlbumUrl + 'UpdateClientAlbum';
     }
-    return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
+    return this.http.post(`${finalUrl}`, data);
   }
 
   generateUserlogin(id: string): Observable<any> {
@@ -105,9 +116,9 @@ export class newclientapi {
       );
   }
 
-  uploadImages(formData: FormData, category: string, clientId: number): Observable<any> {
+  uploadImages(formData: FormData, category: string, camera: string, clientId: number): Observable<any> {
     // Construct the endpoint URL with query parameters
-    const endpoint = `${this.blobUrl}uploadParallelFiles?clientId=${clientId}&photoType=${category}`;
+    const endpoint = `${this.blobUrl}uploadParallelFiles?clientId=${clientId}&photoType=${category}&camera=${camera}`;
     console.log('Uploading to endpoint:', endpoint);
 
     // The backend expects files in the FormData, so pass the formData object directly
