@@ -25,7 +25,7 @@ export class Newclientalbumform implements OnInit {
   showAccessLink = false;
   isDisableAccessLink: boolean = false;
   clientAlbumHeading: string = 'New Client Setup';
-  eventCounts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  eventCounts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   isLoadingEvents: boolean = false;
 
   get eventList(): FormArray<FormGroup> {
