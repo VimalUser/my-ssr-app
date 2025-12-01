@@ -28,7 +28,7 @@
                   Please review your selections and confirm before final submission.
                 </p>
               </div>
-                <!-- <div class="status-chip">
+              <!-- <div class="status-chip">
                   <i class="bi bi-check2-circle me-1"></i>
                   Final step
                 </div> -->
@@ -116,10 +116,11 @@
                   </label>
                 </div>
 
-                <div class="ack-helper small mt-2 text-muted" *ngIf="!allAcknowledged">
+                <div class="ack-helper highlight  small mt-4" *ngIf="!allAcknowledged" role="alert">
                   <i class="bi bi-info-circle me-1"></i>
                   Please tick all the above to enable the submit button.
                 </div>
+
               </div>
 
               <!-- Footer / Signature + Actions -->
@@ -132,15 +133,18 @@
               </div>
             </div>
             <div class="mt-10 d-flex justify-content-end">
-              <button class="btn btn-warning px-4 mt-3 mt-md-0" (click)="submissionForm()"
+              <button class="btn btn-warning px-4 mt-3 mt-md-0 submit-btn" (click)="submissionForm()"
                 [disabled]="!allAcknowledged || loading">
+
                 <ng-container *ngIf="!loading; else loadingTpl">
-                  Submit &amp; download summary
+                  Submit &amp; Download Summary
                 </ng-container>
+
                 <ng-template #loadingTpl>
                   <span class="small-spinner me-2"></span>
                   Submitting…
                 </ng-template>
+
               </button>
             </div>
           </div>
