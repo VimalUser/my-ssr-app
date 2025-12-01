@@ -1,147 +1,207 @@
+<!-- Full page loader -->
+<div *ngIf="loading" class="loading-container">
+  <img src="assets/loading-spinner.gif" alt="Uploading..." />
+</div>
+
+<!-- Step 1: Cover intro / card -->
 <section id="selctionSection" *ngIf="!galleryOpen">
   <div class="container py-4">
     <!-- Header Row -->
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-between align-items-center">
-        <button class="btn btn-link fs-4 heading-orange p-0" aria-label="Back" (click)="prevStep()">
+        <button
+          class="btn btn-link fs-4 heading-orange p-0"
+          aria-label="Back"
+          (click)="prevStep()"
+        >
           <i class="bi bi-arrow-left"></i>
         </button>
         <div>
-          <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
+          <button
+            class="btn btn-success rounded-pill fw-bold px-4 me-2"
+            (click)="nextStep()"
+          >
             Next <i class="bi bi-arrow-right-circle"></i>
           </button>
         </div>
       </div>
     </div>
-    <!-- cover Picture Title -->
+
+    <!-- Cover Picture Title -->
     <div class="row">
       <div class="col-12">
         <h4 class="fw-bold mb-2 heading-orange">Cover Picture</h4>
         <div class="mb-3 text-white">
-          Select your favorite images to proceed in album cover page...
+          Review the images chosen for your album cover page.
         </div>
       </div>
     </div>
 
-    <div class="row g-8">
-      <!-- cover Column -->
+    <!-- Cover card -->
+    <div class="row g-3">
       <div class="col-12 col-md-6 d-flex align-items-stretch">
-        <div class="w-100 d-flex">
+        <div class="w-100 d-flex cover-card">
           <div class="me-3">
-            <img src="assets/albumcover.jpg" alt="Portrait Frame" class="frame-img"
-              style="max-width: 130px; height: auto" />
+            <img
+              src="assets/albumcover.jpg"
+              alt="Album cover sample"
+              class="cover-info-img"
+            />
           </div>
-          <div class="fw-semibold align-self-center">
-            Album Cover<br />
-            <a class="btn-link" style="color: wheat;" (click)="showGallery()"> Select image</a><br>
-            <p>
-              {{pagelatestData.coverSelection.length}} photo selected
+          <div class="fw-semibold align-self-center text-white">
+            <div class="mb-1">Album Cover</div>
+            <a class="btn-link text-warning" (click)="showGallery()">
+              View selected images
+            </a>
+            <p class="mb-0 mt-2 small">
+              {{ pagelatestData.coverSelection.length }} photo(s) selected
+              <span *ngIf="pagelatestData.noOfAlbumCover">
+                / {{ pagelatestData.noOfAlbumCover }}
+              </span>
             </p>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper">
+<!-- Step 2: Cover Gallery (view only) -->
+<section
+  id="gallerySection"
+  *ngIf="galleryOpen"
+  class="gallery-wrapper"
+>
   <div class="container-fluid header-static">
-    <div class="row mb-3">
-      <div class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="heading-orange">
-          <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
-          <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
-            Cover Picture
-          </h4>
-        </div>
-
-        <div class="d-flex align-items-center gap-3">
-          <!-- Show selected only toggle -->
-          <div class="form-check form-switch text-white">
-            <input class="form-check-input" type="checkbox" id="showSelectedOnly" [(ngModel)]="showSelectedOnly"
-              (change)="onShowSelectedToggle()" />
-            <label class="form-check-label" for="showSelectedOnly">
-              Show selected only
-            </label>
-          </div>
-
-          <button class="btn btn-primary btn-sm" (click)="saveSelection()">
-            Save Selection
-          </button>
-        </div>
-      </div>
-    </div>
-
+    <!-- Header -->
     <div class="row mb-2">
-      <div class="col-12">
-        <h5 [innerHTML]="TotalSelectionMessage"></h5>
+      <div
+        class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2"
+      >
+        <div class="heading-orange d-flex align-items-center gap-2">
+          <span
+            class="bi bi-arrow-left-circle fs-5"
+            (click)="gobackFolderSelection()"
+          ></span>
+          <div>
+            <h4
+              class="fw-bold d-inline-block m-0"
+              (click)="gobackFolderSelection()"
+            >
+              {{ selectedFolderName || 'Cover Picture' }}
+            </h4>
+            <div class="small text-muted">
+              Showing {{ images.length }} selected cover image(s)
+            </div>
+          </div>
+        </div>
+
+        <div class="text-end text-white small">
+          Total cover selected:
+          {{ pagelatestData.noOfAlbumCover || 0 }}&nbsp;cover(s)
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Grid -->
-  <div class="row">
-    <div class="col-6 col-md-4 col-lg-3 mb-4" *ngFor="let img of viewImages">
-      <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)"
-        (click)="openPreview(img); $event.stopPropagation()">
+  <div class="container-fluid mt-2">
+    <div class="row">
+      <div
+        class="col-6 col-md-4 col-lg-3 mb-4"
+        *ngFor="let img of images"
+      >
+        <div
+          class="card custom-img-card position-relative"
+          (click)="openPreview(img)"
+        >
+          <img
+            [src]="img"
+            class="card-img-top fixed-img"
+            alt="cover thumbnail"
+          />
 
-        <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
+          <!-- Simple footer with filename -->
+          <div
+            class="card-footer-overlay d-flex justify-content-center align-items-center px-2 py-1"
+          >
+            <span
+              class="text-truncate text-white"
+              [title]="fileNameFromUrl(img)"
+              style="max-width: 90%"
+            >
+              {{ fileNameFromUrl(img) }}
+            </span>
+          </div>
+        </div>
+      </div>
 
-        <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
-          <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
-            {{ fileNameFromUrl(img) }}
-          </span>
-          <button class="btn btn-sm btn-select" (click)="toggleSelection(img); $event.stopPropagation()"
-            [ngClass]="isSelected(img) ? 'selected-btn' : 'unselected-btn'">
-            <i class="bi" [ngClass]="isSelected(img) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
+      <!-- No covers found -->
+      <div
+        class="col-12 text-center text-white"
+        *ngIf="images.length === 0 && !loading"
+      >
+        <p class="mt-4">
+          No cover images were found for this order. Please go back and choose
+          a cover from the album selection step.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Preview -->
+  <div
+    class="preview-overlay"
+    *ngIf="previewImageUrl"
+    (click)="closePreview()"
+  >
+    <div
+      class="preview-content preview-no-header"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Close Button -->
+      <button
+        class="preview-close-btn"
+        (click)="closePreview()"
+        aria-label="Close"
+      >
+        &times;
+      </button>
+
+      <div class="preview-body-full">
+        <div class="preview-img-wrapper">
+          <!-- Loading Spinner -->
+          <div class="preview-loader" *ngIf="previewLoading">
+            <div class="spinner"></div>
+            <span class="ms-2">Loading preview…</span>
+          </div>
+
+          <!-- Left arrow -->
+          <button
+            class="nav-arrow left-arrow"
+            (click)="showPreviousImage($event)"
+          >
+            &#10094;
+          </button>
+
+          <!-- Image -->
+          <img
+            [src]="previewImageUrl"
+            class="preview-img-full"
+            alt="preview"
+            (load)="onPreviewImageLoad()"
+            [style.visibility]="previewLoading ? 'hidden' : 'visible'"
+          />
+
+          <!-- Right arrow -->
+          <button
+            class="nav-arrow right-arrow"
+            (click)="showNextImage($event)"
+          >
+            &#10095;
           </button>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- Fullscreen Preview -->
-<div class="preview-overlay" *ngIf="previewImageUrl" (click)="closePreview()">
-  <div class="preview-content preview-no-header" (click)="$event.stopPropagation()">
-
-    <!-- Close Button -->
-    <button class="preview-close-btn" (click)="closePreview()" aria-label="Close">
-      &times;
-    </button>
-
-    <div class="preview-body-full">
-      <div class="preview-img-wrapper">
-
-        <!-- Loading Spinner -->
-        <div class="preview-loader" *ngIf="previewLoading">
-          <div class="spinner"></div>
-          <span class="ms-2">Loading preview…</span>
-        </div>
-        <button class="nav-arrow left-arrow" (click)="showPreviousImage($event)">
-          &#10094;
-        </button>
-        <!-- Image -->
-        <img [src]="previewImageUrl" class="preview-img-full" alt="preview" (load)="onPreviewImageLoad()"
-          [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
-
-        <button class="nav-arrow right-arrow" (click)="showNextImage($event)">
-          &#10095;
-        </button>
-        <!-- Select Toggle Button -->
-        <button class="btn btn-select preview-select-btn"
-          (click)="toggleSelection(previewImageUrl); $event.stopPropagation()"
-          [ngClass]="isSelected(previewImageUrl) ? 'selected-btn' : 'unselected-btn'" title="Select / Unselect">
-          <i class="bi" [ngClass]="isSelected(previewImageUrl) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div *ngIf="loading" class="loading-container">
-  <img src="assets/loading-spinner.gif" alt="Uploading...">
-  <!-- <p>Uploading, please wait...</p> -->
-</div>

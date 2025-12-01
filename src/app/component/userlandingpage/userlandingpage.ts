@@ -10,7 +10,7 @@ import {
 } from '@angular/router';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { filter } from 'rxjs/operators';
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-userlandingpage',
   imports: [CommonModule, FormsModule, RouterOutlet, RouterModule],
@@ -134,6 +134,7 @@ export class Userlandingpage implements OnInit {
   // }
 
   isLightTheme = false; // false = dark (black) by default
+   isSidebarCollapsed = false;  // new variable for sidebar state
 
   toggleTheme() {
     this.isLightTheme = !this.isLightTheme;
@@ -144,5 +145,26 @@ export class Userlandingpage implements OnInit {
     localStorage.removeItem('accessToken');
     // Implement logout logic here, e.g., clear session, redirect to login page
     console.log('User logged out');
+  }
+
+  
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
+  onNavClick(item: any, event: Event) {
+    if (item.disabled) {
+      event.preventDefault();
+      return;
+    }
+
+    // Auto-close mobile sidebar
+    if (window.innerWidth < 992) {
+      const offcanvasEl = document.getElementById('mainSidebar');
+      if (offcanvasEl) {
+        const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl) || new bootstrap.Offcanvas(offcanvasEl);
+        offcanvas.hide();
+      }
+    }
   }
 }

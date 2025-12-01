@@ -1,81 +1,69 @@
 <div class="container py-4">
+
+  <!-- Top header row (same as start page style) -->
   <div class="row mb-3">
     <div class="col-12 d-flex justify-content-between align-items-center">
-      <button
-        class="btn btn-link fs-4 heading-orange p-0"
-        aria-label="Back"
-        (click)="goBack()">
+      <button class="btn btn-link fs-4 heading-orange p-0" aria-label="Back" (click)="goBack()">
         <i class="bi bi-arrow-left"></i>
       </button>
+
       <div>
-        <button
-          class="btn btn-warning rounded-pill fw-bold px-4 me-2"
-          (click)="onSave()">
+        <button class="btn btn-warning rounded-pill fw-bold px-4 me-2" (click)="onSave()">
           Save
         </button>
-        <button class="btn btn-success rounded-pill fw-bold px-4 me-2"
-          (click)="nextStep()">
-          Next  <i class="bi bi-arrow-right-circle"></i>
+        <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
+          Next <i class="bi bi-arrow-right-circle"></i>
         </button>
-        <!-- <a
-          class="fw-bold text-orange ms-1 cursor-pointer"
-          style="font-size: 1.08rem"
-          (click)="nextStep()"
-          >Next</a> -->
       </div>
     </div>
   </div>
 
+  <!-- Main content row: left aligned step card (similar to start page) -->
   <div class="row">
-    <div class="col-12">
-      <h4 class="fw-bold mb-2 heading-orange">Album name</h4>
-      <div class="mb-3 text-white">
-        Kindly enter your name to proceed in your album...
+    <div class="col-lg-12 col-md-11 col-sm-11">
+      <div class="user-step-card">
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="fw-bold mb-0 heading-orange">Album name</h4>
+
+          <!-- adjust step text if needed -->
+        </div>
+
+        <p class="mb-4 step-subtitle">
+          Kindly enter your album title and event date to continue.
+        </p>
+
+        <form class="mb-2" novalidate>
+          <div class="mb-4">
+            <label for="coupleName" class="form-label step-label">
+              Couple Name for Album
+            </label>
+            <input type="text" id="coupleName" class="form-control step-input" placeholder="E.g. Arun & Priya"
+              maxlength="30" [(ngModel)]="formData.albumName" name="albumName" />
+          </div>
+
+          <div class="mb-3">
+            <label for="albumDate" class="form-label step-label">
+              Event Date
+            </label>
+            <div class="mb-3">
+              <label for="albumDate" class="form-label step-label">Event Date</label>
+              <input type="date" id="albumDate" class="form-control step-input" [(ngModel)]="formData.albumEventDate"
+                name="albumDate" (click)="openDatePicker($event)" />
+            </div>
+
+          </div>
+        </form>
+
+        <div class="small mt-1">
+          You can edit these details later before final submission.
+        </div>
+
       </div>
-
-      <form class="mb-4" novalidate>
-        <div class="mb-4">
-          <label for="coupleName" class="form-label text-white"
-            >Couple Name for Album</label
-          >
-          <input
-            type="text"
-            id="coupleName"
-            class="form-control"
-            placeholder="Enter your name"
-            maxlength="30"
-            [(ngModel)]="formData.albumName"
-            name="albumName" />
-        </div>
-
-        <div class="mb-4">
-          <label for="albumDate" class="form-label text-white"
-            >Date for Album</label
-          >
-          <input
-            type="date"
-            id="albumDate"
-            class="form-control border-secondary"
-            placeholder="Select date"
-            [(ngModel)]="formData.albumEventDate"
-            name="albumDate" />
-        </div>
-      </form>
-      <!-- <div class="mb-3">
-        <a class="text-primary fw-semibold d-block mb-2" href="#">
-          Look you preview <i class="bi bi-eye"></i>
-        </a>
-        <img
-          src="assets/albumcover.jpg"
-          alt="Album Preview"
-          class="img-fluid rounded shadow-sm"
-          style="max-width: 120px" />
-        <div class="text-white mt-1">Preview</div>
-      </div> -->
     </div>
   </div>
 </div>
- <div *ngIf="isLoading" class="loading-container">
-    <img src="assets/loading-spinner.gif" alt="Uploading...">
-    <!-- <p>Uploading, please wait...</p> -->
+
+<div *ngIf="isLoading" class="loading-container">
+  <img src="assets/loading-spinner.gif" alt="Uploading...">
 </div>

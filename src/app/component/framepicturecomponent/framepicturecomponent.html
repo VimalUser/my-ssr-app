@@ -1,3 +1,9 @@
+<!-- Loader for full page -->
+<div *ngIf="loading" class="loading-container">
+  <img src="assets/loading-spinner.gif" alt="Loading..." />
+</div>
+
+<!-- Frame type selection screen -->
 <section id="selctionSection" *ngIf="!galleryOpen">
   <div class="container py-4">
     <!-- Header Row -->
@@ -6,143 +12,163 @@
         <button class="btn btn-link fs-4 heading-orange p-0" aria-label="Back" (click)="prevStep()">
           <i class="bi bi-arrow-left"></i>
         </button>
-        <div>
-          <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
-            Next <i class="bi bi-arrow-right-circle"></i>
-          </button>
-        </div>
+        <button class="btn btn-success rounded-pill fw-bold px-4" (click)="nextStep()">
+          Next
+          <i class="bi bi-arrow-right-circle ms-1"></i>
+        </button>
       </div>
     </div>
-    <!-- Frame Picture Title -->
+
+    <!-- Title & description -->
     <div class="row">
       <div class="col-12">
-        <h4 class="fw-bold mb-2 heading-orange">Frame Picture</h4>
-        <div class="mb-3 text-white">
-          Select your favorite images to proceed in frame...
+        <h4 class="fw-bold mb-2 heading-orange">Frame Pictures</h4>
+        <div class="mb-2 text-white">
+          Review the images chosen for your frames.
+        </div>
+        <div class="text-secondary small">
+          Total frames selected:
+          {{
+          (pagelatestData.portraitFrameSelection.length || 0) +
+          (pagelatestData.landscapeFrameSelection.length || 0)
+          }}
+          / {{ pagelatestData.noOfFrames }}
         </div>
       </div>
     </div>
 
-
-    <div class="row justify-content-start gx-3 gy-4 heading-orange">
+    <!-- Portrait / Landscape frame folders -->
+    <div class="row justify-content-start gx-3 gy-4 heading-orange mt-3">
       <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(true)">
-        <span class="bi bi-folder2-open" style="font-size: 3rem !important"></span>
-        <div class="fw-semibold mt-2" class="text-white">
+        <!-- <span class="bi bi-folder2-open folder-icon"></span> -->
+        <i class="bi bi-collection folder-icon"></i>
+
+        <div class="fw-semibold mt-2 text-white">
           Portrait Frame <br />
-          <span> {{ pagelatestData.portraitFrameSelection.length }} Selected </span> <br />
+          <span class="folder-meta">
+            {{ pagelatestData.portraitFrameSelection.length }} selected
+          </span>
         </div>
       </div>
+
       <div class="col-6 col-md-4 col-lg-3 text-center" (click)="showGallery(false)">
-        <span class="bi bi-folder2-open" style="font-size: 3rem !important"></span>
-        <div class="fw-semibold mt-2" class="text-white">
+        <!-- <span class="bi bi-folder2-open folder-icon"></span> -->
+        <i class="bi bi-collection folder-icon"></i>
+
+
+        <div class="fw-semibold mt-2 text-white">
           Landscape Frame <br />
-          <span class="text-white"> {{ pagelatestData.landscapeFrameSelection.length }} selected</span><br />
+          <span class="folder-meta">
+            {{ pagelatestData.landscapeFrameSelection.length }} selected
+          </span>
         </div>
       </div>
     </div>
-
-
-
   </div>
 </section>
 
-<section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper">
-  <div class="container-fluid header-static">
-    <div class="row mb-3">
-      <div class="col-12 d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="heading-orange">
-          <span class="bi bi-arrow-left-circle fs-5 me-2" (click)="gobackFolderSelection()"></span>
-          <h4 class="fw-bold d-inline-block m-0" (click)="gobackFolderSelection()">
-            {{ selectedFolderName }}
-          </h4>
-        </div>
-
-        <div class="d-flex align-items-center gap-3">
-          <!-- Show selected only toggle -->
-          <div class="form-check form-switch text-white">
-            <input class="form-check-input" type="checkbox" id="showSelectedOnly" [(ngModel)]="showSelectedOnly"
-              (change)="onShowSelectedToggle()" />
-            <label class="form-check-label" for="showSelectedOnly">
-              Show selected only
-            </label>
+<!-- Gallery Section (read-only) -->
+<section id="gallerySection" *ngIf="galleryOpen" class="gallery-wrapper bg-dark-section">
+  <div class="container-fluid">
+    <!-- Sticky header -->
+    <div class="header-static">
+      <div class="row mb-2 align-items-center">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2 heading-orange">
+            <span class="bi bi-arrow-left-circle fs-5 cursor-pointer" (click)="gobackFolderSelection()"></span>
+            <div>
+              <h4 class="fw-bold d-inline-block m-0 heading-orange cursor-pointer" (click)="gobackFolderSelection()">
+                {{ selectedFolderName }}
+              </h4>
+              <div class="small text-muted">
+                Showing {{ images.length }} frame
+                {{ images.length === 1 ? 'image' : 'images' }}
+              </div>
+            </div>
           </div>
 
-          <button class="btn btn-primary btn-sm" (click)="saveSelection()">
-            Save Selection
-          </button>
+          <div class="text-end text-white small">
+            Total frames selected:
+            {{
+            (pagelatestData.portraitFrameSelection.length || 0) +
+            (pagelatestData.landscapeFrameSelection.length || 0)
+            }}
+            / {{ pagelatestData.noOfFrames }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Folder-specific summary -->
+      <div class="row mb-2">
+        <div class="col-12">
+          <div class="folder-summary text-white small">
+            <strong>
+              {{ isPortrait ? 'Portrait' : 'Landscape' }} frames selected:
+            </strong>
+            {{ images.length }}
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="row mb-2">
-      <div class="col-12">
-        <h5 [innerHTML]="TotalSelectionMessage"></h5>
+    <!-- Grid -->
+    <div class="row mt-2">
+      <div class="col-6 col-md-4 col-lg-3 mb-4" *ngFor="let img of images">
+        <div class="card custom-img-card position-relative" (click)="openPreview(img)">
+          <img [src]="img" class="card-img-top fixed-img" alt="frame image" loading="lazy" decoding="async" />
+
+          <!-- Optional filename overlay -->
+          <div class="card-footer-overlay d-flex justify-content-center align-items-center px-2 py-1">
+            <span class="text-truncate text-white small" [title]="fileNameFromUrl(img)">
+              {{ fileNameFromUrl(img) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- No images in this folder -->
+      <div class="col-12 text-center text-white mt-4" *ngIf="images.length === 0">
+        <p>No frame images found in this folder.</p>
       </div>
     </div>
   </div>
 
+  <!-- Fullscreen Preview -->
+  <div class="preview-overlay" *ngIf="previewImageUrl" (click)="closePreview()">
+    <div class="preview-content preview-no-header" (click)="$event.stopPropagation()">
+      <!-- Close Button -->
+      <button class="preview-close-btn" (click)="closePreview()" aria-label="Close">
+        &times;
+      </button>
 
-  <!-- Grid -->
-  <div class="row">
-    <div class="col-6 col-md-4 col-lg-3 mb-4" *ngFor="let img of viewImages">
-      <div class="card custom-img-card position-relative" [class.selected-card]="isSelected(img)"
-        (click)="openPreview(img); $event.stopPropagation()">
+      <div class="preview-body-full">
+        <div class="preview-img-wrapper">
+          <!-- Mobile tap zones (only on mobile) -->
+          <div *ngIf="isMobileView" class="tap-zone tap-zone-left" (click)="showPreviousImage($event)"></div>
 
-        <img [src]="img" class="card-img-top fixed-img" alt="thumbnail" />
+          <div *ngIf="isMobileView" class="tap-zone tap-zone-right" (click)="showNextImage($event)"></div>
 
-        <div class="card-footer-overlay d-flex justify-content-between align-items-center px-2 py-1">
-          <span class="text-truncate text-white" [title]="fileNameFromUrl(img)" style="max-width: 70%">
-            {{ fileNameFromUrl(img) }}
-          </span>
-          <button class="btn btn-sm btn-select" (click)="toggleSelection(img); $event.stopPropagation()"
-            [ngClass]="isSelected(img) ? 'selected-btn' : 'unselected-btn'">
-            <i class="bi" [ngClass]="isSelected(img) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
+          <!-- Loading Spinner -->
+          <div class="preview-loader" *ngIf="previewLoading">
+            <div class="spinner"></div>
+            <span class="ms-2">Loading preview…</span>
+          </div>
+
+          <!-- Left arrow -->
+          <button class="nav-arrow left-arrow" (click)="showPreviousImage($event)">
+            &#10094;
+          </button>
+
+          <!-- Image -->
+          <img [src]="previewImageUrl" class="preview-img-full" alt="preview" (load)="onPreviewImageLoad()"
+            [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
+
+          <!-- Right arrow -->
+          <button class="nav-arrow right-arrow" (click)="showNextImage($event)">
+            &#10095;
           </button>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- Fullscreen Preview -->
-<div class="preview-overlay" *ngIf="previewImageUrl" (click)="closePreview()">
-  <div class="preview-content preview-no-header" (click)="$event.stopPropagation()">
-
-    <!-- Close Button -->
-    <button class="preview-close-btn" (click)="closePreview()" aria-label="Close">
-      &times;
-    </button>
-
-    <div class="preview-body-full">
-      <div class="preview-img-wrapper">
-
-        <!-- Loading Spinner -->
-        <div class="preview-loader" *ngIf="previewLoading">
-          <div class="spinner"></div>
-          <span class="ms-2">Loading preview…</span>
-        </div>
-        <button class="nav-arrow left-arrow" (click)="showPreviousImage($event)">
-          &#10094;
-        </button>
-        <!-- Image -->
-        <img [src]="previewImageUrl" class="preview-img-full" alt="preview" (load)="onPreviewImageLoad()"
-          [style.visibility]="previewLoading ? 'hidden' : 'visible'" />
-        <button class="nav-arrow right-arrow" (click)="showNextImage($event)">
-          &#10095;
-        </button>
-        <!-- Select Toggle Button -->
-        <button class="btn btn-select preview-select-btn"
-          (click)="toggleSelection(previewImageUrl); $event.stopPropagation()"
-          [ngClass]="isSelected(previewImageUrl) ? 'selected-btn' : 'unselected-btn'" title="Select / Unselect">
-          <i class="bi" [ngClass]="isSelected(previewImageUrl) ? 'bi-check-circle-fill' : 'bi-circle'"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div *ngIf="loading" class="loading-container">
-  <img src="assets/loading-spinner.gif" alt="Uploading...">
-  <!-- <p>Uploading, please wait...</p> -->
-</div>

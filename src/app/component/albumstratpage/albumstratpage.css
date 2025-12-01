@@ -1,35 +1,438 @@
-/* --- Responsive slider that fits image height --- */
+/* =========== THEME TOKENS (local to this page) =========== */
 
+.home-page {
+  --bg-main: radial-gradient(circle at top left, #27213f, #0b0b0f 55%, #000000);
+  --card-bg: rgba(15, 15, 24, 0.98);
+  --card-border: rgba(255, 255, 255, 0.04);
+  --accent: #ffb300;
+  --accent-soft: rgba(255, 179, 0, 0.12);
+  --accent-strong: #ffb300;
+  --text-main: #f9fafb;
+  --text-soft: #9ca3af;
+  --chip-bg: rgba(148, 163, 184, 0.12);
+  --success: #22c55e;
+  --success-soft: rgba(34, 197, 94, 0.12);
+}
+
+/* =========== LAYOUT =========== */
+
+.home-page {
+  min-height: 100vh;
+  background: var(--bg-main);
+  color: var(--text-main);
+  position: relative;
+}
+
+.home-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem; /* room under top navbar */
+  padding-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+/* Reusable premium card look */
+.premium-card {
+ background: rgba(20, 20, 30, 0.97); /* slightly lighter than pure black */  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(18px);
+}
+
+/* =========== TOP SLIDER =========== */
+
+.slider-card {
+  padding: 0.75rem 0.75rem 0.9rem;
+}
+
+.slider-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* small tag above slider */
+.slider-badge {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.6rem;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.68rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--text-soft);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  z-index: 2;
+}
+
+/* slider container */
 .slider-container {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: 10px;
-  background: #000;           /* fallback while image loads */
+  border-radius: 16px;
+  background: #000;
 }
 
-/* base img style: responsive, takes full width, height auto */
+/* base img style */
 .slide-img {
   width: 100%;
   height: auto;
-  display: none;              /* hidden by default */
-  transition: opacity 0.5s ease-in-out;
+  display: none;
+  transition: opacity 0.45s ease-in-out, transform 0.45s ease-in-out;
 }
 
-/* only active image is shown */
 .slide-img.active {
   display: block;
   opacity: 1;
+  transform: scale(1.01);
 }
 
-/* optional: small shadow so it looks like a nice banner */
 .slider-container .slide-img.active {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
 }
 
-/* mobile tweak (optional, but keeps things neat) */
+/* =========== CONTENT CARD =========== */
+
+.content-card {
+  flex: 1 0 auto;
+}
+
+/* inner spacing, allow flex column */
+.content-inner {
+  padding: 1.3rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* greeting row */
+.welcome-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.welcome-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.welcome-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+/* user initial avatar */
+.user-initial {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #111827;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* chips / pills */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pill-soft {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-soft);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.pill-success {
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid rgba(34, 197, 94, 0.6);
+}
+
+/* summary row chips */
+.summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.75rem;
+  background: var(--chip-bg);
+  color: var(--text-main);
+}
+
+/* steps */
+.steps-wrapper {
+  margin-bottom: 1.1rem;
+}
+
+.steps-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-soft);
+  margin-bottom: 0.4rem;
+}
+
+.steps-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.35rem 0;
+}
+
+.step-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.step-text {
+  flex: 1;
+}
+
+.step-label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.step-caption {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+
+/* CTA area */
+.cta-wrapper {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.cta-note {
+  font-size: 0.75rem;
+  color: var(--text-soft);
+}
+
+/* main button */
+.start-btn {
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  background: linear-gradient(135deg, #facc15, #f97316);
+  color: #111827;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+}
+
+.start-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.75);
+}
+
+.start-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.65);
+}
+
+/* submitted state */
+.submitted-state .btn {
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* =========== LOADING OVERLAY =========== */
+
+.loading-container {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.loading-card {
+  background: #020617;
+  border-radius: 18px;
+  padding: 1.2rem 1.4rem;
+  text-align: center;
+  color: var(--text-main);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* =========== MOBILE TUNING =========== */
+
 @media (max-width: 576px) {
-  .slider-container {
-    border-radius: 12px;
+  /* make whole layout flex and height aware */
+  .home-wrapper {
+    padding-top: 0.7rem;
+    gap: 0.8rem;
   }
+
+  /* top slider takes 25% of screen */
+  .slider-card {
+    height: 16vh;
+    display: flex;
+    padding: 0rem;
+  }
+
+  .slider-inner,
+  .slider-container {
+    height: 100%;
+  }
+
+  /* image fills full height */
+  .slide-img.active {
+    width: 100%;
+    height: 100%;
+    /* object-fit: cover; */
+  }
+
+  /* content takes remaining height */
+  .content-card {
+    flex: 1 0 auto;
+    display: flex;
+  }
+
+  .welcome-title {
+    font-size: 1.1rem;
+  }
+
+  .welcome-row {
+    align-items: flex-start;
+  }
+
+  .content-inner {
+    padding: 1rem 0.9rem 1rem;
+  }
+}
+
+/* =========== LARGER SCREENS =========== */
+
+@media (min-width: 768px) {
+  .home-wrapper {
+    max-width: 100%;   /* full width */
+    margin: 0;         /* no centering */
+    padding-top: 1.5rem;
+  }
+
+  /* .slider-card {
+    height: 185px;
+  } */
+
+  .content-inner {
+    padding: 1.5rem 1.5rem 1.3rem;
+  }
+
+  .welcome-title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .home-wrapper {
+    max-width: 100%;   /* keep full width */
+  }
+}
+
+/* Make all text sharp and readable */
+.content-card,
+.slider-card,
+.content-inner,
+.steps-wrapper,
+.steps-list,
+.welcome-title,
+.welcome-subtitle,
+.step-label,
+.step-caption,
+.chip,
+.pill,
+.cta-note {
+  color: #ffffff !important;
+}
+
+/* Premium white title */
+.welcome-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff !important;
+}
+
+/* Subtitle: softer, but readable */
+.welcome-subtitle {
+  font-size: 0.95rem;
+  color: #d1d5db !important;
+  letter-spacing: 0.3px;
+}
+
+/* Step labels – readable and clear */
+.step-label {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Step description (caption) */
+.step-caption {
+  font-size: 0.85rem;
+}
+
+/* Pills and Chips - white text */
+.pill,
+.chip {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* CTA text – stronger clarity */
+.cta-note {
+  color: #d1d5db !important;
+  font-size: 0.85rem;
+}
+
+/* Make icons visible too */
+.step-icon i,
+.chip i,
+.pill i {
+  color: #ffffff !important;
 }

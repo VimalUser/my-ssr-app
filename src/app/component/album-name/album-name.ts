@@ -37,6 +37,10 @@ export class AlbumName implements OnInit {
     this.isLoading = false;
 
   }
+  openDatePicker(event: any) {
+  event.target.showPicker();
+}
+
 
   async goBack() {
     // window.history.back();

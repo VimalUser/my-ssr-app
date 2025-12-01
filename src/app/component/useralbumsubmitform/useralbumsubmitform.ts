@@ -57,15 +57,15 @@ export class Useralbumsubmitform implements OnInit {
   this.pdfDownload();
 
    this.loading =false;
-  //  const data: clientData = this.clientDataService.getData();
-  //   const updated: clientData = {
-  //     ...data,
-  //     status: 'Completed',
-  //     isSubmitted: true,
-  //   };
+   const data: clientData = this.clientDataService.getData();
+    const updated: clientData = {
+      ...data,
+      status: 'Completed',
+      isSubmitted: true,
+    };
 
-  //   this.clientDataService.updateData(updated);
-  //   this.apiCalltoSave(updated);
+    this.clientDataService.updateData(updated);
+    this.apiCalltoSave(updated);
     
   }
 
@@ -96,8 +96,8 @@ get allAcknowledged(): boolean {
 
   displaySubmittedSection(){
 
-    const submitFormSection = document.getElementById('submitFormSection');
-    const submissionConfirmation = document.getElementById('submissionConfirmation'); 
+    const submitFormSection = document.getElementById('submitFormSectionMain');
+    const submissionConfirmation = document.getElementById('submitFormSectionMain'); 
     
     if (submitFormSection && submissionConfirmation) {
       submitFormSection.style.display = 'none';

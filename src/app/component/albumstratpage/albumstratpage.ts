@@ -33,39 +33,49 @@ export class Albumstratpage implements OnInit {
     // this.clientDataService.triggerResetMenu();
     this.clientDataService.restoreUserFromStorage();
     this.clientDataService.resetClientDataOnly();
-     this.clientDataService.triggerNextStep(0);
-  // Automatically generate ad image names
-    this.adImages = Array.from({ length: 2 }, (_, i) => `assets/startpage-ad/ad_${i + 1}.png`);
+    this.clientDataService.triggerNextStep(0);
+    // Automatically generate ad image names
+    this.adImages = Array.from(
+      { length: 1},
+      (_, i) => `assets/startpage-ad/ad_${i + 1}.png`
+    );
 
     // Slide every 3 seconds
     this.intervalId = window.setInterval(() => {
       this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
     }, 3000);
 
-
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
-
-
   }
 
-    adImages: string[] = [];
+  adImages: string[] = [];
   currentIndex = 0;
   intervalId?: number;
-
- 
 
   ngOnDestroy(): void {
     if (this.intervalId) clearInterval(this.intervalId);
   }
 
   nextStep() {
-     this.clientDataService.triggerNextStep(1);
+    this.clientDataService.triggerNextStep(1);
     // this.router.navigate(['userhome/albumname']);
   }
 
   get hasSubmitted(): boolean {
     return this.formLatestData.status.toLowerCase().trim() == 'completed';
+  }
+
+  get albumCount(): number {
+    return this.formLatestData?.noOfPics || 0;
+  }
+
+  get framesCount(): number {
+    return this.formLatestData?.noOfFrames || 0;
+  }
+
+  get coverCount(): number {
+    return this.formLatestData?.noOfAlbumCover || 0;
   }
 
   updateClinetData(clientDatafromDb: clientData) {
@@ -79,6 +89,7 @@ export class Albumstratpage implements OnInit {
       albumEventDate: clientDatafromDb.albumEventDate || '',
       noOfPics: Number(clientDatafromDb.noOfPics) || 0,
       noOfFrames: Number(clientDatafromDb.noOfFrames) || 0,
+      noOfAlbumCover: Number(clientDatafromDb.noOfAlbumCover) || 0,
       coverPic: '',
       mobileNumber: clientDatafromDb.mobileNumber || '',
       eventTypeId: 0,

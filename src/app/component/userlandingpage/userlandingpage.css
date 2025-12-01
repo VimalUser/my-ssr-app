@@ -1,97 +1,199 @@
+.navbar-custom {
+  background: linear-gradient(90deg, #fff8f1, #ffe2c7, #ffc999);
+}
+
+
+.navbar-custom .btn:hover {
+  background-color: rgba(252, 89, 0, 0.1) !important;
+  border-color: #fc5900 !important;
+}
+
+
+
+/* ===== Base light/dark backgrounds ===== */
 .bg-gray-light {
   background-color: #e9ecef !important;
   color: #212529 !important;
 }
+
 .bg-gray-sidebar {
   background-color: #f8f9fa !important;
   color: #212529 !important;
 }
-.sidebar-light .nav-link {
-  color: #444 !important;
+
+.bg-dark {
+  background-color: #0b0b10 !important;
+  color: #fff !important;
 }
+
+/* ===== PREMIUM SIDEBAR THEME ===== */
+
+/* Sidebar base – full width when expanded */
+.sidebar {
+  width: 230px;
+  flex: 0 0 230px;         /* 👈 lock flex-basis to 230px */
+  max-width: 230px;        /* 👈 prevents Bootstrap col from overriding */
+  position: relative;
+  transition:
+    width 0.25s ease,
+    flex-basis 0.25s ease,
+    max-width 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Dark theme: gradient, soft glow */
+.sidebar-dark {
+  background: radial-gradient(circle at top left, #181827, #050509 55%, #020203) !important;
+  box-shadow: 12px 0 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Light theme: soft premium gray */
+.sidebar-light {
+  background: linear-gradient(180deg, #fdfdfd, #f3f4f6) !important;
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar menu spacing */
+.sidebar-menu {
+  margin-top: 0.25rem;
+}
+
+/* Nav links – pill style */
+.sidebar .nav-link {
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease,
+    border-color 0.18s ease;
+}
+
+/* Dark sidebar idle links */
+.sidebar-dark .nav-link {
+  color: #cbd5f5 !important;
+  background: transparent;
+}
+
+/* Light sidebar idle links */
+.sidebar-light .nav-link {
+  color: #374151 !important;
+}
+
+/* Hover state */
+.sidebar .nav-link:hover {
+  transform: translateX(2px);
+}
+
+/* Active state – brand pill */
+.sidebar-dark .nav-link.active,
+.sidebar-dark .nav-link:hover {
+  background: linear-gradient(135deg, #fc5900, #ffb347);
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
 .sidebar-light .nav-link.active,
 .sidebar-light .nav-link:hover {
   background: #fc5900 !important;
   color: #fff !important;
+  border-color: #fc5900;
 }
 
-/* Dark Mode */
-.bg-dark {
-  background-color: #121212 !important;
-  color: #fff !important;
-}
-.sidebar-dark .nav-link {
-  color: #ddd !important;
-}
-.sidebar-dark .nav-link.active,
-.sidebar-dark .nav-link:hover {
-  background: #fc5900 !important;
-  color: #fff !important;
+/* Icons */
+.nav-icon {
+  font-size: 1.1rem;
 }
 
-/* Navbar brand */
-.text-orange {
-  color: #fc5900 !important;
+/* ===== COLLAPSED SIDEBAR (DESKTOP) ===== */
+/* Icon-only bar, sidebar gets thinner */
+
+.sidebar-collapsed {
+  width: 74px;            /* visual width */
+  flex: 0 0 74px;         /* 👈 shrink flex-basis */
+  max-width: 74px;
 }
 
-/* Offcanvas close button in dark mode */
+.sidebar-collapsed .sidebar-menu {
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+}
+
+/* Hide label when collapsed, keep icons centered */
+.sidebar-collapsed .link-label {
+  display: none;
+}
+
+.sidebar-collapsed .nav-link {
+  justify-content: center;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+}
+
+/* Main content (col) animates nicely when sidebar changes width */
+.main-expanded {
+  transition: margin-left 0.25s ease;
+}
+
+/* ===== Collapse button inside sidebar (bottom) ===== */
+.sidebar-collapse-btn {
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: transparent;
+}
+
+.sidebar-dark .sidebar-collapse-btn {
+  color: #e5e7eb;
+}
+
+.sidebar-light .sidebar-collapse-btn {
+  color: #374151;
+}
+
+.sidebar-collapse-btn:hover {
+  background: rgba(252, 89, 0, 0.12);
+  border-color: #fc5900;
+}
+
+/* ===== Offcanvas close button in dark mode ===== */
 .btn-close-white {
   filter: invert(1) brightness(1.5);
 }
 
-/* Hamburger with translucent background */
-.navbar-toggler {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  border-radius: 0.375rem;
-}
-
-.navbar-toggler-icon {
-  filter: invert(1) brightness(1.2);
-}
-
-/* Active nav link styling */
-.nav-link.active {
-  background: #fc5900 !important;
-  color: #fff !important;
-  border-radius: 8px;
-}
-
-/* Input styling */
-.form-control.bg-dark {
-  background-color: #121212 !important;
-  color: #fff !important;
-  border: none !important;
-}
-.form-control.bg-light {
-  background-color: #fff !important;
-  color: #212529 !important;
-  border: 1px solid #ced4da !important;
-}
-
-/* Theme toggle button */
-.btn-outline-secondary {
-  color: #ced4da;
-  border-color: #6c757d;
-}
-.btn-outline-secondary:hover,
-.btn-outline-secondary:focus {
-  background-color: #fc5900;
-  border-color: #fc5900;
-  color: #fff;
+/* Preserve your existing colors */
+.text-orange {
+  color: #fc5900 !important;
 }
 
 .main-transparent {
   background: transparent !important;
 }
 
-.card.glass {
-  background: rgba(40,40,40,0.55) !important;
-  backdrop-filter: blur(8px);
-  border-radius: 2rem;
-  box-shadow: 0 8px 32px #2223;
+/* ===== Small circular toggle in navbar (if you still use it) ===== */
+.sidebar-toggle-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
-.heading-orange{
-  color: #ef9333;
-} 
+.sidebar-toggle-btn:hover {
+  transform: scale(1.05);
+}
+
+.sidebar-toggle-btn i {
+  font-size: 1.1rem;
+}

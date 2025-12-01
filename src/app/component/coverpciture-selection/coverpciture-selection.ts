@@ -1,12 +1,10 @@
-import { Component, HostListener } from '@angular/core';
-import { ClientDataService } from '../../shared/ClientDataService';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AlbumSelectionItem } from '../../model/album-selection-item.model';
+import { ClientDataService } from '../../shared/ClientDataService';
 import { clientData } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
-
 @Component({
   selector: 'app-coverpciture-selection',
   imports: [CommonModule, FormsModule],
@@ -20,157 +18,141 @@ export class CoverpcitureSelection {
     private notify: Notificationservice
   ) {}
 
-  //folder selection logic
+  // UI state
+  loading = true;
   galleryOpen = false;
-  // Image gallery logic
+  selectedFolderName = '';
+
+  // Data from clientDataService
+  pagelatestData: clientData = new clientData();
+
+  // API image data: [{ imageUrl: '...' }, ...]
+  apiImageResponse: Array<{ imageUrl: string }> = [];
+
+  // URLs actually shown in the grid (only selected covers)
   images: string[] = [];
 
-  selectedItems: AlbumSelectionItem[] = [];
-  allowedSelectedPhotos = 0; // Set your limit here
-  loading = true;
-  previewLoading = false;
-
+  // Preview
   previewImageUrl: string | null = null;
   previewFileName = '';
-  previewComment = '';
+  previewLoading = false;
 
-  pagelatestData: clientData = new clientData();
-  apiImageResponse: any;
-  showSelectedOnly: boolean = false;
-
-  batchSize = 30; // how many images to load per batch
-  displayCount = 0; // how many images currently shown
+  // mobile flag (if you want special tap zones later)
+  isMobileView = false;
 
   ngOnInit(): void {
+    // This page is step 4 in your flow (Album=2, Frame=3, Cover=4, Submit=5)
     this.clientDataService.triggerNextStep(4);
-    this.loading = true;
+
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
     this.loading = false;
-    console.log('Initial Client Data in cover source:', this.images);
-  }
 
-  showGallery() {
-    this.loading = true;
-    const gallerySection = document.getElementById('gallerySection');
-    const selectionSection = document.getElementById('selctionSection');
-    this.selectedItems = [];
-    this.galleryOpen = true;
-    this.selectedItems = [...this.pagelatestData.coverSelection];
-    if (this.images.length == 0)
-      this.fetchData(this.pagelatestData.clientId.toString());
-    else this.loading = false;
-  }
-
-  async gobackFolderSelection() {
-    const confirmCancelled = await this.notify.confirm(
-      'Are you sure to go back? Unsaved changes will be lost.'
-    );
-    if (!confirmCancelled) {
-      return;
+    if (typeof window !== 'undefined') {
+      this.isMobileView = window.innerWidth <= 768;
     }
-    this.galleryOpen = false;
+
+    console.log('Cover viewer - client data:', this.pagelatestData);
   }
+
+  @HostListener('window:resize', [])
+  onWindowResize() {
+    if (typeof window !== 'undefined') {
+      this.isMobileView = window.innerWidth <= 768;
+    }
+  }
+
+  // ---------- Navigation between steps ----------
 
   prevStep() {
+    // Go back to Frame selection step
     this.clientDataService.triggerNextStep(3);
   }
 
   nextStep() {
-    if (
-      this.pagelatestData.coverSelection.length < this.allowedSelectedPhotos
-    ) {
+    const requiredCovers = Number(this.pagelatestData.noOfAlbumCover) || 0;
+    const selectedCovers = this.pagelatestData.coverSelection?.length || 0;
+
+    if (requiredCovers > 0 && selectedCovers < requiredCovers) {
       this.notify.error(
-        `Please select ${this.allowedSelectedPhotos}  picture for album cover!`
+        `Please select ${requiredCovers} cover picture(s) before proceeding.`
       );
       return;
     }
+
+    // Move to final submit step
     this.clientDataService.triggerNextStep(5);
   }
 
-  getImageUrls(data: Array<{ imageUrl: string }> | null | undefined): void {
-    this.apiImageResponse = data;
-    this.images = data ? data.map((item) => item.imageUrl) : [];
+  // ---------- Folder-like open (view only) ----------
+
+  async gobackFolderSelection() {
+    const confirmed = await this.notify.confirm(
+      'Go back to cover selection options screen?'
+    );
+    if (!confirmed) return;
+
+    this.galleryOpen = false;
+    this.selectedFolderName = '';
+    this.images = [];
+    this.previewImageUrl = null;
   }
+
+  showGallery() {
+    this.loading = true;
+    this.galleryOpen = true;
+    this.selectedFolderName = 'Album Cover';
+
+    // If we already have API data, just rebuild the list
+    if (this.apiImageResponse.length > 0) {
+      this.rebuildImagesFromCoverSelection();
+      this.loading = false;
+    } else {
+      const clientId = this.pagelatestData.clientId?.toString() || '';
+      if (clientId) {
+        this.fetchData(clientId);
+      } else {
+        console.error('No clientId found in pagelatestData');
+        this.loading = false;
+      }
+    }
+  }
+
+  // ---------- Helpers ----------
 
   fileNameFromUrl(url: string): string {
     const filename = url.split('?')[0].split('/').pop() || '';
     return decodeURIComponent(filename);
   }
 
-  fileTypeFromUrl(url: string): string {
-    return url.split('?')[0].split('/').slice(-2, -1)[0] || '';
-  }
+  /**
+   * Combine coverSelection (from clientData) + apiImageResponse (from API)
+   * → build images[] that we display.
+   */
+  private rebuildImagesFromCoverSelection(): void {
+    const coverSelection = this.pagelatestData.coverSelection || [];
+    const selectedFileNames = new Set(
+      coverSelection.map((x) => (x.fileName || '').trim())
+    );
 
-  get TotalSelectionMessage(): string {
-    const noofCover = this.allowedSelectedPhotos;
-    const CoverPictureCount = this.pagelatestData.coverSelection.length;
+    const allUrls = this.apiImageResponse.map((item) => item.imageUrl);
 
-    const difference = noofCover - this.selectedItems.length;
+    // Keep only those URLs whose filename is in coverSelection
+    this.images = allUrls.filter((url) =>
+      selectedFileNames.has(this.fileNameFromUrl(url))
+    );
 
-    const message = `
- <span class=""> Selection(s) remaining: ${difference} of ${this.allowedSelectedPhotos}</span>
-`;
-    return message;
-  }
-
- isSelected(imgUrl: string): boolean {
-    const fileName = this.fileNameFromUrl(imgUrl);
-    return this.selectedItems.some(
-      (x) =>
-        x.fileName === fileName &&
-        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imgUrl)
+    console.log(
+      'Cover viewer → images rebuilt. Count:',
+      this.images.length
     );
   }
 
-  doesthisfileExistInSelection(fileName: string, image: string): number {
-    const idx = this.selectedItems.findIndex(
-      (x) =>
-        x.fileName === fileName &&
-        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(image)
-    );
-
-    return idx;
-  }
-
-  toggleSelection(imgageUrl: string) {
-    const fileName = this.fileNameFromUrl(imgageUrl);
-    const idx = this.doesthisfileExistInSelection(fileName, imgageUrl);
-
-    if (idx >= 0) {
-      this.selectedItems.splice(idx, 1);
-    } else {
-      if (this.checkMaxSelectedCountReached()) {
-        this.notify.error(
-          'You have already selected required images, if you want to add more, please contact sales team.'
-        );
-        return;
-      }
-
-      this.selectedItems.push({
-        fileName: fileName,
-        comment: '',
-        type: 'cover',
-        url: imgageUrl,
-      });
-    }
-
-    console.log('selected photos', this.selectedItems);
-  }
-
-  checkMaxSelectedCountReached() {
-    return this.selectedItems.length >= this.allowedSelectedPhotos;
-  }
+  // ---------- Preview ----------
 
   openPreview(imageUrl: string) {
     this.previewImageUrl = imageUrl;
     this.previewFileName = this.fileNameFromUrl(imageUrl);
-    const existing = this.selectedItems.find(
-      (x) =>
-        x.fileName === this.previewFileName &&
-        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imageUrl)
-    );
-    this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
   }
 
@@ -181,179 +163,69 @@ export class CoverpcitureSelection {
   closePreview() {
     this.previewImageUrl = null;
     this.previewFileName = '';
-    this.previewComment = '';
     this.previewLoading = false;
   }
 
+  private getCurrentImageIndex(): number {
+    if (!this.previewImageUrl) return -1;
+    return this.images.indexOf(this.previewImageUrl);
+  }
+
+  showNextImage(event: Event) {
+    event.stopPropagation();
+    const list = this.images;
+    const idx = this.getCurrentImageIndex();
+
+    if (idx >= 0 && idx < list.length - 1) {
+      this.previewImageUrl = list[idx + 1];
+      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+      this.previewLoading = true;
+    } else {
+      this.notify.error('You’ve reached the last image.');
+    }
+  }
+
+  showPreviousImage(event: Event) {
+    event.stopPropagation();
+    const list = this.images;
+    const idx = this.getCurrentImageIndex();
+
+    if (idx > 0) {
+      this.previewImageUrl = list[idx - 1];
+      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
+      this.previewLoading = true;
+    } else {
+      this.notify.error('This is the first image.');
+    }
+  }
+
+  // ---------- API (important) ----------
+
   fetchData(clientId: string): void {
     this.loading = true;
+    console.log(
+      'Fetching selected images from API for cover page, clientId:',
+      clientId
+    );
+
     this.userservice.getSelectedImagesbyClientId(clientId).subscribe({
       next: (data) => {
-        // This is where you process the successful response
-        this.getImageUrls(data);
-         this.displayCount = Math.min(this.batchSize, this.images.length);
+        // data expected: [{ imageUrl: '...' }, ...]
+        this.apiImageResponse = data || [];
+        console.log('Cover viewer API response:', this.apiImageResponse);
+
+        // Now that we have URLs, rebuild the cover images
+        this.rebuildImagesFromCoverSelection();
         this.loading = false;
       },
       error: (error) => {
-        // This is executed if the request fails (e.g., 404, 500)
-        console.log('There was an error!', error);
+        console.error('Cover viewer API error:', error);
         this.loading = false;
+        this.images = [];
       },
       complete: () => {
         this.loading = false;
       },
     });
   }
-
-  getitemfromSelection(imageUrl: string): any {
-    const fileName = this.fileNameFromUrl(imageUrl);
-    return this.selectedItems.find(
-      (x) =>
-        x.fileName === fileName &&
-        this.fileTypeFromUrl(x.url) === this.fileTypeFromUrl(imageUrl)
-    );
-  }
-
-  savePreviewComment() {
-    this.loading = true;
-    const imageUrl = this.previewImageUrl || '';
-    let item = this.getitemfromSelection(imageUrl);
-
-    if (!item) {
-      if (this.checkMaxSelectedCountReached()) {
-        this.notify.error(
-          'You have already selected required images, if you want to add more, please contact sales team.'
-        );
-        this.loading = false;
-        return;
-      }
-
-      item = {
-        fileName: this.fileNameFromUrl(imageUrl),
-        comment: '',
-        type: 'cover',
-        url: this.previewImageUrl || '',
-      };
-
-      this.selectedItems.push(item);
-    }
-
-    item.comment = this.previewComment;
-    this.loading = false;
-    this.closePreview();
-  }
-
-  saveSelection() {
-    this.apiCalltoSave(this.updateModelWithLatestData());
-  }
-
-  updateModelWithLatestData() {
-    const existingData: clientData = this.clientDataService.getData();
-
-    const updated: clientData = {
-      ...existingData,
-      coverSelection: [...this.selectedItems],
-      status: 'Inprogress',
-    };
-
-    this.clientDataService.updateData(updated);
-    this.pagelatestData = updated;
-    return updated;
-  }
-
-  apiCalltoSave(updateData: clientData) {
-    this.loading = true;
-    this.userservice.saveUserAlbumDetails(updateData).subscribe({
-      next: (response) => {
-        console.log('Save Response:', response);
-        this.loading = false;
-        this.notify.success('Your Selection/unselection saved successfully!');
-        this.galleryOpen = false;
-      },
-      error: (error) => {
-        console.log('Save Error:', error);
-        this.loading = false;
-        this.notify.error('Failed to save your selection!');
-      },
-    });
-  }
-
- // Find current index
-  getCurrentImageIndex(): number {
-  if (this.previewImageUrl === null) {
-    return -1;
-  }
-  return this.viewImages.indexOf(this.previewImageUrl);
-}
-
-showNextImage(event: Event) {
-  event.stopPropagation();
-  const list = this.viewImages;
-  const currentIndex = this.getCurrentImageIndex();
-
-  if (currentIndex >= 0 && currentIndex < list.length - 1) {
-    this.previewImageUrl = list[currentIndex + 1];
-    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-  } else {
-    this.notify.error('You’ve reached the last image.');
-  }
-}
-
-showPreviousImage(event: Event) {
-  event.stopPropagation();
-  const list = this.viewImages;
-  const currentIndex = this.getCurrentImageIndex();
-
-  if (currentIndex > 0) {
-    this.previewImageUrl = list[currentIndex - 1];
-    this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-  } else {
-    this.notify.error('This is the first image.');
-  }
-}
-
-  // All images that should currently be visible (filtered or full)
-  get visibleImages(): string[] {
-    if (!this.showSelectedOnly) {
-      return this.images;
-    }
-    return this.images.filter((img) => this.isSelected(img));
-  }
-
-  get viewImages(): string[] {
-    return this.visibleImages.slice(0, this.displayCount);
-  }
-
-  loadMore() {
-    const remaining = this.visibleImages.length - this.displayCount;
-    if (remaining > 0) {
-      this.displayCount += Math.min(this.batchSize, remaining);
-    }
-  }
-
-  onShowSelectedToggle() {
-    // reset to first batch of whatever is now visible
-    this.displayCount = Math.min(this.batchSize, this.visibleImages.length);
-  }
-
-  @HostListener('window:scroll', [])
-onWindowScroll() {
-  // Only apply when gallery is open
-  if (!this.galleryOpen) {
-    return;
-  }
-
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return; // safety for SSR, just in case
-  }
-
-  const scrollPosition = window.innerHeight + window.scrollY;
-  const threshold = 200; // px before bottom to start loading
-  const pageHeight = document.body.offsetHeight;
-
-  // Are we near the bottom of the page?
-  if (scrollPosition >= pageHeight - threshold) {
-    this.loadMore();
-  }
-}
 }
