@@ -31,9 +31,10 @@ export class Albumstratpage implements OnInit {
     this.isLoading = true;
     // this.clientDataService.resetAll();
     // this.clientDataService.triggerResetMenu();
-    this.clientDataService.restoreUserFromStorage();
-    this.clientDataService.resetClientDataOnly();
+    // this.clientDataService.restoreUserFromStorage();
+    // this.clientDataService.resetClientDataOnly();
     this.clientDataService.triggerNextStep(0);
+
     // Automatically generate ad image names
     this.adImages = Array.from(
       { length: 1},

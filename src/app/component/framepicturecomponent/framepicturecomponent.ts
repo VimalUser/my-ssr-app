@@ -84,7 +84,7 @@ export class Framepicturecomponent {
 
     if (totalFramesSelected < this.pagelatestData.noOfFrames) {
       this.notify.error(
-        `Please select ${this.pagelatestData.noOfFrames} picture(s) for frame!`
+        `Please select ${this.pagelatestData.noOfFrames} picture(s) for frame in image selection page!`
       );
       return;
     }

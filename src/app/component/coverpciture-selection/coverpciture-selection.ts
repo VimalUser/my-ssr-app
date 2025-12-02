@@ -75,7 +75,7 @@ export class CoverpcitureSelection {
 
     if (requiredCovers > 0 && selectedCovers < requiredCovers) {
       this.notify.error(
-        `Please select ${requiredCovers} cover picture(s) before proceeding.`
+        `Please select ${requiredCovers} cover picture(s) in image selection page before proceeding.`
       );
       return;
     }
