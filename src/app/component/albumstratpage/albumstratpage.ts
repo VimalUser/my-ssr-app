@@ -99,7 +99,7 @@ export class Albumstratpage implements OnInit {
       eventType: '',
       albumSize: '',
       frameSize: '',
-      designTypeId: clientDatafromDb.designTypeId || 1,
+      designTypeId: clientDatafromDb.designTypeId || 0,
       designType: clientDatafromDb.designType || '',
       tranditionalAlbumSelection:
         clientDatafromDb.tranditionalAlbumSelection || [],
@@ -115,24 +115,20 @@ export class Albumstratpage implements OnInit {
     };
 
     this.clientDataService.updateData(updated);
-    console.log('startpage form ClientDataService:', updated);
   }
 
   fetchData(): void {
-    console.log('Fetching data from API...');
     this.userService
       .getClientAlbumSelectionDetails(String(this.user?.clientId))
       .subscribe({
         next: (data) => {
           // This is where you process the successful response
-          console.log('API Response:', data);
           this.formLatestData = data;
           this.updateClinetData(this.formLatestData);
           this.isLoading = false;
         },
         error: (error) => {
           // This is executed if the request fails (e.g., 404, 500)
-          console.error('There was an error!', error);
           this.isLoading = false;
         },
         complete: () => {},

@@ -70,16 +70,13 @@ export class Adminactionshome implements OnInit {
     };
 
     this.adminDataService.updateData(updated);
-    console.log('Admin actions from adminDataService:', updated);
   }
 
   fetchData(): void {
     this.loading = true;
-    console.log('Fetching data from API...');
     this.userService.getClientAlbumSelectionDetails(this.clientId).subscribe({
       next: (data) => {
         // This is where you process the successful response
-        console.log('API Response:', data);
         this.accessLink = data.accessLink || '';
         this.passcode = data.passCode || '';
         this.clientPhone = data.mobileNumber || '';
@@ -88,8 +85,6 @@ export class Adminactionshome implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
       },
       complete: () => { },
     });

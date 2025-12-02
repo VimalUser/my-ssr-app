@@ -101,7 +101,6 @@ export class Uploadalbumpics implements OnInit {
         },
         error: err => {
           this.notify.error('Error fetching folder counts');
-          console.error('Error fetching folder counts', err);
         }
       });
   }
@@ -224,7 +223,6 @@ export class Uploadalbumpics implements OnInit {
         next: (response: any) => {
           this.loading = false;
           this.notify.success(`Upload successful for ${category}`);
-          console.log(`Upload successful for ${category}:`, response);
           // Clear the selection ONLY after a successful upload
           this.clearSelection(category);
           // Optional: Re-fetch counts from the API to update the UI
@@ -233,14 +231,12 @@ export class Uploadalbumpics implements OnInit {
         error: (error: any) => {
           this.loading = false;
           this.notify.error(`Upload failed for ${category}`);
-          console.error(`Upload failed for ${category}:`, error);
           // Do not clear the selection if the upload fails
         }
       });
     } else {
       this.loading = false;
       this.notify.warning('No files selected to upload.');
-      console.warn('No files selected to upload.');
     }
   }
 
@@ -269,7 +265,6 @@ export class Uploadalbumpics implements OnInit {
     this.loading = true;
     this.apiService.deleteImages(category, +this.clientId).subscribe({
       next: (response: any) => {
-        console.log('Delete response:', response);
         this.notify.success(`All ${category} images deleted.`);
         this.loading = false;
         this.loadClientData();
@@ -283,7 +278,6 @@ export class Uploadalbumpics implements OnInit {
   }
 
   onLoadingChange(loading: boolean) {
-    console.log('Loading state changed upload pics:', loading);
     // this.loading = loading;
     this.cdr.detectChanges();
   }

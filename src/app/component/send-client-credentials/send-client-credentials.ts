@@ -58,37 +58,28 @@ export class SendClientCredentials {
   }
 
   fetchData(): void {
-    console.log('Fetching data from API...');
     this.isLoading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
     this.apiService.getAlbumDetails(this.id).subscribe({
       next: (data) => {
-        console.log('Fetching data from API...' + data);
-        // This is where you process the successful response
-        console.log('API Response:', data);
-        console.log('Access Link:', data.accessLink);
-        console.log('Passcode:', data.passcode);
-        console.log('Mobile Number:', data.mobileNumber);
+        // This is where you process the successful response       
         this.accesslink = data.accessLink;
         this.passcode = data.passcode;
         this.clientPhoneNo = data.mobileNumber;
         this.expiryDate = data.expiryDate ? this.formatDate(data.expiryDate) : '';
         this.isExpiryDateAvailable = this.expiryDate != '' ? true : false;
-        console.log('Expiry Date:', this.isExpiryDateAvailable);
         this.apiResponse = data;
         this.isLoading = false;
 
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
         this.isLoading = false;
       },
       complete: () => {
         // Optional: Executed when the Observable completes
-        console.log('Data fetching complete.');
       },
     });
   }
@@ -110,7 +101,6 @@ export class SendClientCredentials {
     if (valueToCopy) {
       // 2. Use the modern Clipboard API
       navigator.clipboard.writeText(valueToCopy).then(() => {
-        console.log(`Copied ${inputControlName} successfully:`, valueToCopy);
 
         // Optional: Provide visual feedback (e.g., a toast or temporary icon change)
         const button = (event.target as HTMLElement).closest('button');
@@ -122,7 +112,6 @@ export class SendClientCredentials {
         }
 
       }).catch(err => {
-        console.error('Could not copy text: ', err);
         // Fallback or error handling
       });
     }
@@ -131,7 +120,6 @@ export class SendClientCredentials {
 
   sendWhatsAppMessage() {
     if (!this.expiryDate) return;
-    console.log('Sending credentials via WhatsApp for date:', this.expiryDate);
     const message = `Hello! 
                       \n Warm welcome from CandyExpress Photography.
                       \n You can start your photos selection process using below access link and passcode.
@@ -143,7 +131,6 @@ export class SendClientCredentials {
     window.open(url, "_blank");
   }
   onLoadingChange(loading: boolean) {
-    console.log('Loading state changed:', loading);
     this.isLoading = loading;
   }
   onMessageChange(msg: string) {
@@ -155,20 +142,16 @@ export class SendClientCredentials {
       return;
     }
     // You can also call an API here to save
-    console.log('Saved Expiry Date:', this.expiryDate);
     this.isLoading = true;
     this.apiService.saveExpiryDate(this.id, this.expiryDate).subscribe({
       next: (data) => {
-        console.log('Data:', data);
         this.isLoading = false;
         this.notify.success('Link Expiry date saved successfully.');
         this.isExpiryDateAvailable = true;
-        console.log('Expiry Date:', this.isExpiryDateAvailable);
 
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
         this.errorMessage =
           'Failed to save Link Expiry date. Check the server or network connection.';
         this.notify.error(this.errorMessage);
@@ -176,7 +159,6 @@ export class SendClientCredentials {
       },
       complete: () => {
         // Optional: Executed when the Observable completes
-        //console.log('Data fetching complete.');
       },
     });
   }

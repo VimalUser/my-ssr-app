@@ -25,11 +25,8 @@ export class AdminReviewComments implements OnInit {
   ngOnInit(): void {
 
      this.adminDataService.data$.subscribe(data => {
-      if (data) {
-        console.log("Received admin data in review comments:", data);
-        this.pageLatestAdminData = data;
-       
-        console.log("Traditional count:", this.pageLatestAdminData);
+      if (data) {        
+        this.pageLatestAdminData = data;       
     }
     });
   }

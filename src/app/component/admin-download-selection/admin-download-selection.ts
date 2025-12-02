@@ -50,7 +50,6 @@ export class AdminDownloadSelection {
         this.landscapeFrameCount = this.adminData.landscapeFrameSelection.length;
         this.coverCount = this.adminData.coverSelection.length;
         this.noOfPics = this.adminData.noOfPics;
-        console.log("Traditional count:", this.traditionalCount);
       }
     });
   }
@@ -61,7 +60,6 @@ export class AdminDownloadSelection {
   // component.ts
   download(): void {
     this.loading = true;
-    console.log('Fetching data from API...');
 
     this.apiAdminService.downloadpictures1(this.adminData.clientId)
       .subscribe({
@@ -92,13 +90,11 @@ export class AdminDownloadSelection {
           this.notify.success("Download completed");
         },
         error: (error) => {
-          console.error('Error fetching data from API:', error);
           this.loading = false;
           this.notify.error(error.error?.message || 'An error occurred while fetching data.');
         },
         complete: () => {
           this.loading = false;
-          console.log('Data fetching complete.');
         }
       });
   }

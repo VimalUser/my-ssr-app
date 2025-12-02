@@ -31,7 +31,6 @@ export class ClientDataService {
           const parsed: clientData = JSON.parse(stored);
           this.dataSubject.next(parsed);
         } catch (e) {
-          console.warn('Failed to parse stored clientData', e);
           this.dataSubject.next(new clientData());
         }
       } else {
@@ -57,7 +56,6 @@ export class ClientDataService {
       noOfFrames: 0,
       coverPic: '',
     });
-    console.log('🧹 Client data reset only');
   }
 
   getData(): clientData {
@@ -101,7 +99,6 @@ export class ClientDataService {
           const user: LoggedInUser = JSON.parse(stored);
           this.currentUserSubject.next(user);
         } catch (e) {
-          console.error('Failed to parse stored user', e);
           localStorage.removeItem('loggedInUser');
         }
       }

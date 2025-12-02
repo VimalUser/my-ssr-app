@@ -48,24 +48,20 @@ export class VideoStatus implements OnInit  {
   }
 
   fetchData() {
-    console.log('Fetching data from API...');
     this.isLoading = true;
     this.apiService.getAlbumDetails(this.id).subscribe({
       next: (data) => {
-        console.log('Fetching data from API...' + data);
         // This is where you process the successful response
         this.apiResponse = data;
         this.selectedStatus = data.videoStatus;
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('There was an error!', error);
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
         this.isLoading = false;
       },
       complete: () => {
-        console.log('Data fetching complete.');
       },
     });
   }
@@ -79,21 +75,17 @@ export class VideoStatus implements OnInit  {
     this.isLoading = true;
     this.apiService.saveVideoStatus(this.id, this.selectedStatus).subscribe({
       next: (data) => {
-        console.log('Data:', data);
         this.isLoading = false;
         this.notify.success('Video status saved successfully.');
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
         this.errorMessage =
           'Failed to save Link Expiry date. Check the server or network connection.';
         this.notify.error(this.errorMessage);
         this.isLoading = false;
       },
-      complete: () => {
-        // Optional: Executed when the Observable completes
-        //console.log('Data fetching complete.');
+      complete: () => {     
       },
     });
   }

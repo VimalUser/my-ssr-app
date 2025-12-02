@@ -52,7 +52,6 @@ export class CoverpcitureSelection {
       this.isMobileView = window.innerWidth <= 768;
     }
 
-    console.log('Cover viewer - client data:', this.pagelatestData);
   }
 
   @HostListener('window:resize', [])
@@ -112,7 +111,6 @@ export class CoverpcitureSelection {
       if (clientId) {
         this.fetchData(clientId);
       } else {
-        console.error('No clientId found in pagelatestData');
         this.loading = false;
       }
     }
@@ -140,11 +138,6 @@ export class CoverpcitureSelection {
     // Keep only those URLs whose filename is in coverSelection
     this.images = allUrls.filter((url) =>
       selectedFileNames.has(this.fileNameFromUrl(url))
-    );
-
-    console.log(
-      'Cover viewer → images rebuilt. Count:',
-      this.images.length
     );
   }
 
@@ -203,23 +196,17 @@ export class CoverpcitureSelection {
 
   fetchData(clientId: string): void {
     this.loading = true;
-    console.log(
-      'Fetching selected images from API for cover page, clientId:',
-      clientId
-    );
+   
 
     this.userservice.getSelectedImagesbyClientId(clientId,'cover').subscribe({
       next: (data) => {
         // data expected: [{ imageUrl: '...' }, ...]
         this.apiImageResponse = data || [];
-        console.log('Cover viewer API response:', this.apiImageResponse);
-
         // Now that we have URLs, rebuild the cover images
         this.rebuildImagesFromCoverSelection();
         this.loading = false;
       },
       error: (error) => {
-        console.error('Cover viewer API error:', error);
         this.loading = false;
         this.images = [];
       },

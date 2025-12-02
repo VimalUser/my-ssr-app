@@ -56,9 +56,6 @@ export class Framepicturecomponent {
     if (typeof window !== 'undefined') {
       this.isMobileView = window.innerWidth <= 768;
     }
-
-    console.log('Frame viewer - client data:', this.pagelatestData);
-
     // If you want to prefetch immediately (optional):
     // this.fetchData(this.pagelatestData.clientId.toString());
   }
@@ -121,7 +118,6 @@ export class Framepicturecomponent {
       if (clientId) {
         this.fetchData(clientId);
       } else {
-        console.error('No clientId found in pagelatestData');
         this.loading = false;
       }
     }
@@ -154,14 +150,6 @@ export class Framepicturecomponent {
     // Only show URLs whose filename is in the selected file list
     this.images = allUrls.filter((url) =>
       selectedFileNames.has(this.fileNameFromUrl(url))
-    );
-
-    console.log(
-      'Rebuilt images for folder',
-      this.selectedFolderName,
-      '→',
-      this.images.length,
-      'items'
     );
   }
 
@@ -220,20 +208,17 @@ export class Framepicturecomponent {
 
   fetchData(clientId: string): void {
     this.loading = true;
-    console.log('Fetching selected images from API for frames, client:', clientId);
 
     this.userservice.getSelectedImagesbyClientId(clientId,'frame').subscribe({
       next: (data) => {
         // Expecting array like [{ imageUrl: '...' }, ...]
         this.apiImageResponse = data || [];
-        console.log('Frameviewer API response:', this.apiImageResponse);
 
         // Now that we have URLs, rebuild the images for the current folder
         this.rebuildImagesForCurrentFolder();
         this.loading = false;
       },
       error: (error) => {
-        console.error('Frameviewer API error:', error);
         this.loading = false;
         this.images = [];
       },

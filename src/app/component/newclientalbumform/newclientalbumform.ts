@@ -104,7 +104,6 @@ export class Newclientalbumform implements OnInit {
     }
     if (this.clientForm.valid) {
       // Implement your save logic here
-      console.log(this.clientForm.value);
       this.savedetails();
     }
   }
@@ -136,14 +135,11 @@ export class Newclientalbumform implements OnInit {
 
 
   fetchData(): void {
-    console.log('Fetching data from API...');
     this.isLoading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
     this.apiService.getAlbumDetails(this.id).subscribe({
       next: (data) => {
-        console.log('Fetching data from API...' + data);
         // This is where you process the successful response
-        console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
         this.clientForm.patchValue(data);
 
@@ -162,21 +158,17 @@ export class Newclientalbumform implements OnInit {
           });
         }
         this.isLoadingEvents = false;
-
-        console.log('Form Values:', this.clientForm.value);
         this.isLoading = false;
 
       },
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
-        console.error('There was an error!', error);
         this.errorMessage =
           'Failed to load data. Check the server or network connection.';
         this.isLoading = false;
       },
       complete: () => {
         // Optional: Executed when the Observable completes
-        console.log('Data fetching complete.');
       },
     });
   }
@@ -192,7 +184,6 @@ export class Newclientalbumform implements OnInit {
 
 
   savedetails() {
-    console.log('Saving client album details...');
     if (this.clientForm.valid) {
 
       const clientAlbum = {
@@ -202,19 +193,15 @@ export class Newclientalbumform implements OnInit {
 
       this.isLoading = true;
       this.errorMessage = null;
-      console.log('Client Album Data to Save:', clientAlbum);
       this.apiService.saveClientAlbumDetails(clientAlbum).subscribe({
         next: (response) => {
-          console.log('Save Response:', response);
           this.apiResponse = response;
           this.isLoading = false;
           this.notify.success('Client album details saved successfully!');
           var clientId = this.id != '' ? this.id : response.clientId;
-          console.log('ID:', clientId);
           this.router.navigate(['/admindashboard/uploadpictures', clientId]);
         },
         error: (error) => {
-          console.error('Save Error:', error);
           this.notify.error('Failed to save client album details.');
           this.errorMessage = 'Failed to save client album details.';
           this.isLoading = false;
@@ -248,7 +235,6 @@ export class Newclientalbumform implements OnInit {
     if (valueToCopy) {
       // 2. Use the modern Clipboard API
       navigator.clipboard.writeText(valueToCopy).then(() => {
-        console.log(`Copied ${inputControlName} successfully:`, valueToCopy);
 
         // Optional: Provide visual feedback (e.g., a toast or temporary icon change)
         const button = (event.target as HTMLElement).closest('button');
@@ -260,8 +246,6 @@ export class Newclientalbumform implements OnInit {
         }
 
       }).catch(err => {
-        console.error('Could not copy text: ', err);
-        // Fallback or error handling
       });
     }
   }

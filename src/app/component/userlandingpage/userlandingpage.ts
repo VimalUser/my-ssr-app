@@ -98,7 +98,6 @@ export class Userlandingpage implements OnInit {
   ];
 
   nextStep(menuItem: number) {
-    console.log('currentStepIndex', this.currentStepIndex);
     this.activateMenuByName(menuItem);
     // if (this.currentStepIndex < this.menuItems.length - 1) {
     //   this.currentStepIndex++;
@@ -125,14 +124,6 @@ export class Userlandingpage implements OnInit {
     }
   }
 
-  // resetWizardFlow() {
-  //   this.currentStepIndex = 0;
-  //   this.menuItems.forEach((item, i) => {
-  //     item.disabled = i !== 0;
-  //   });
-  //   console.log('🔄 Wizard flow reset');
-  // }
-
   isLightTheme = false; // false = dark (black) by default
    isSidebarCollapsed = false;  // new variable for sidebar state
 
@@ -143,8 +134,6 @@ export class Userlandingpage implements OnInit {
 
   logout() {
     localStorage.removeItem('accessToken');
-    // Implement logout logic here, e.g., clear session, redirect to login page
-    console.log('User logged out');
   }
 
   

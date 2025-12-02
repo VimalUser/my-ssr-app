@@ -51,18 +51,15 @@ export class Logincode {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('clientData');
-      console.log("retreivng from storage");
     }
     this.loading = true;
     // Subscribe to query params
     setTimeout(() => {
       this.route.queryParamMap.subscribe((params) => {
         this.user = params.get('user');
-        console.log('Login Code:', this.user);
 
         if (!this.user || this.user.trim() === '') {
           this.loading = false;
-          console.log("inside error");
           this.notify.error('Please enter the exact URL you received to proceed');
           return;
         }
@@ -71,7 +68,6 @@ export class Logincode {
         this.userService.checkClientUrlInfo(this.user).subscribe({
           next: (res: any) => {
             this.userInfo = res;
-            console.log('User Info from API:', this.userInfo);
             const loggedInUser: LoggedInUser = {
               clientId: this.userInfo.clientId,
               clientName: this.userInfo.clientName,
@@ -110,7 +106,6 @@ export class Logincode {
     }
 
     const passcode = this.loginForm.get('passcode')?.value;
-    console.log('validating login...');
     this.userLogin.user = this.user;
     this.userLogin.passcode = passcode;
 

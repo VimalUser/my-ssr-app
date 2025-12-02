@@ -576,7 +576,6 @@ private getFileParts(url: string) {
         this.loading = false;
       },
       error: (error) => {
-        console.log('There was an error!', error);
         this.loading = false;
       },
       complete: () => {
@@ -612,19 +611,14 @@ private getFileParts(url: string) {
 
   apiCalltoSave(updateData: clientData) {
     this.loading = true;
-
-    console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
-
     this.userService.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
-        console.log('Save Response:', response);
         this.loading = false;
         this.notify.success('Your selections saved successfully!');
         this.galleryOpen = false;
         this.selectedFolderName = '';
       },
       error: (error) => {
-        console.log('Save Error:', error);
         this.loading = false;
         this.notify.error('Failed to save your selection!');
       },

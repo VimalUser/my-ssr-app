@@ -77,7 +77,6 @@ export class MarkAsDoneDirective {
         },
         error: (err) => {
           setTimeout(() => {
-            console.error('Error checking eligibility:', err);
             this.renderer.setProperty(this.el.nativeElement, 'disabled', false);
             this.renderer.setProperty(this.el.nativeElement, 'checked', false);
             this.tooltipText = 'Eligibility check failed. Please try again.';
@@ -152,19 +151,14 @@ export class MarkAsDoneDirective {
       }).toPromise();
 
       if (response === true) {
-        console.log('api success');
         await this.verifyStatusAndSetTooltip();
         this.notify.success(`${this.adminStatus} marked as done`);
       } else {
-        console.log('api success and false');
         this.notify.error('Failed to mark as done');
       }
     } catch (error: any) {
-      console.log('api error');
-      console.error('Error:', error);
       this.notify.error(error.error?.message || 'An error occurred.');
     } finally {
-      console.log('api finally');
       this.loadingChange.emit(false);
     }
   }

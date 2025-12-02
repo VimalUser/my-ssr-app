@@ -92,7 +92,6 @@ export class Admindashboard implements OnInit {
 
     this.apiService.getClientManagementData(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        console.log('Dashboard data fetched:', data);
         this.totalCount = data.totalClients || 0;
         this.clientData = data;
         this.clientDataList = this.clientData?.dashBoardData || [];

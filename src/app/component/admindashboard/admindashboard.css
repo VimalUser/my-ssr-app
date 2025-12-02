@@ -1,6 +1,5 @@
 .badge {
-  font-size: 0.8rem;
-  border-radius: 0.5rem;
+  border-radius: 0.4rem;
 }
 
 .table th {
@@ -13,7 +12,7 @@
 
 /* Mobile spacing */
 @media (max-width: 576px) {
-  h2 {
+  /* h2 {
     font-size: 1.3rem;
   }
 
@@ -28,7 +27,7 @@
   .table td,
   .table th {
     font-size: 0.85rem;
-  }
+  } */
 
   .loading-container {
   position: fixed;
@@ -85,10 +84,9 @@
 
 .badge-status {
   display: inline-block;
-  padding: 0.35rem 0.9rem;
+  padding: 0.25rem 0.75rem;
   font-weight: 500;
   border-radius: 50px;
-  font-size: 0.9rem;
   white-space: nowrap; /* prevents text from breaking into multiple lines */
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
@@ -103,7 +101,7 @@
 
 @media (max-width: 576px) { /* small screens */
   .badge-status {
-    font-size: 0.75rem;
+    /* font-size: 0.75rem; */
     padding: 0.25rem 0.6rem;
   }
 }
@@ -118,7 +116,7 @@
 @media (max-width: 576px) {
   .dashboard-toolbar .form-control,
   .dashboard-toolbar .form-select {
-    font-size: 0.875rem;
+    /* font-size: 0.875rem; */
     padding: 0.35rem 0.75rem;
   }
 }

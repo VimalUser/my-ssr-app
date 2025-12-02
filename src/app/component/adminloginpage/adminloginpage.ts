@@ -52,7 +52,6 @@ export class Adminloginpage {
   }
 
   validateLogin(email: string, password: string) {
-    console.log('validating login...');
     this.loading = true;
     this.errorMessage = null; // 2. Call the service method and subscribe to the Observable
     this.userLogin.email = email;
@@ -61,9 +60,7 @@ export class Adminloginpage {
     this.apiService.validateUserLogin(this.userLogin).subscribe({
       next: (data) => {
         // This is where you process the successful response
-        console.log('API Response:', data);
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
-        console.log('Parsed Response:', this.apiResponse);
         this.adminDataService.setUserName(this.apiResponse.username);
         if (this.apiResponse.accessToken != null && this.apiResponse.accessToken != undefined) {
           this.router.navigate(['/admindashboard']);
@@ -80,7 +77,6 @@ export class Adminloginpage {
       },
       complete: () => {
         // Optional: Executed when the Observable completes
-        console.log('Data fetching complete.');
       },
     });
   }

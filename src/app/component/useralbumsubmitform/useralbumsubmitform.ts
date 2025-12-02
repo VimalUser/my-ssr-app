@@ -45,7 +45,6 @@ export class Useralbumsubmitform implements OnInit {
     const data = this.clientDataService.getData();
     this.clientData = data;
     this.loading = false;
-    console.log('Initial Client Data in Useralbumsubmitform:', data);
   }
 
   submissionForm() {
@@ -77,18 +76,15 @@ export class Useralbumsubmitform implements OnInit {
 
 
   apiCalltoSave(updateData: clientData) {
-    console.log('Payload sent to API:', JSON.stringify(updateData, null, 2));
 
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: (response) => {
-        console.log('Save Response:', response);
         this.notify.success('Your data saved successfully!');
         this.displaySubmittedSection();
         this.pdfDownload();
         this.loading = false;
       },
       error: (error) => {
-        console.log('Save Error:', error);
         this.notify.error('Failed to save your data!');
         this.loading = false;
       },

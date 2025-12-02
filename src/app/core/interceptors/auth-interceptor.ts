@@ -21,8 +21,6 @@ export const AuthInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     ? localStorage.getItem('accessToken')
     : null;
 
-  console.log('Interceptor running', req.url, token);
-
   let authReq = req;
   if (token && !isRefresh) {
     authReq = req.clone({
