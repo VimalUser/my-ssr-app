@@ -436,3 +436,10 @@
 .pill i {
   color: #ffffff !important;
 }
+
+.btn-selction-submitted
+{
+  background-color: #ffc107;
+  color: #000000 !important ;
+  font-size: 1em !important;
+}

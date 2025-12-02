@@ -13,7 +13,7 @@ import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-useralbumsubmitform',
-  imports: [RouterLink,CommonModule,FormsModule],
+  imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './useralbumsubmitform.html',
   styleUrl: './useralbumsubmitform.css'
 })
@@ -24,40 +24,39 @@ export class Useralbumsubmitform implements OnInit {
     private userservice: userserviceapi,
     private notify: Notificationservice,
     @Inject(PLATFORM_ID) private platformId: any
-    
-  ) {}
+
+  ) { }
 
 
 
   clientData: clientData = new clientData();
-  loading:boolean =false;
+  loading: boolean = false;
   acks = {
-  terms: false,
-  privacy: false,
-  final: false
-};
+    terms: false,
+    privacy: false,
+    final: false
+  };
 
 
- ngOnInit(): void {
+  ngOnInit(): void {
     this.clientDataService.triggerNextStep(5);
 
-  this.loading =true;
-    const data = this.clientDataService.getData();  
+    this.loading = true;
+    const data = this.clientDataService.getData();
     this.clientData = data;
-     this.loading =false;
+    this.loading = false;
     console.log('Initial Client Data in Useralbumsubmitform:', data);
- }
-
- submissionForm() {
-
-   if (!this.allAcknowledged) {
-    this.notify.warning('Please confirm all acknowledgments before submitting.');
-    return;
   }
-  this.pdfDownload();
 
-   this.loading =false;
-   const data: clientData = this.clientDataService.getData();
+  submissionForm() {
+
+    if (!this.allAcknowledged) {
+      this.notify.warning('Please confirm all acknowledgments before submitting.');
+      return;
+    }
+
+    this.loading = false;
+    const data: clientData = this.clientDataService.getData();
     const updated: clientData = {
       ...data,
       status: 'Completed',
@@ -66,14 +65,15 @@ export class Useralbumsubmitform implements OnInit {
 
     this.clientDataService.updateData(updated);
     this.apiCalltoSave(updated);
-    
+
+
   }
 
 
 
-get allAcknowledged(): boolean {
-  return Object.values(this.acks).every(v => v === true);
-}
+  get allAcknowledged(): boolean {
+    return Object.values(this.acks).every(v => v === true);
+  }
 
 
   apiCalltoSave(updateData: clientData) {
@@ -84,21 +84,22 @@ get allAcknowledged(): boolean {
         console.log('Save Response:', response);
         this.notify.success('Your data saved successfully!');
         this.displaySubmittedSection();
-        this.loading =false;
+        this.pdfDownload();
+        this.loading = false;
       },
       error: (error) => {
         console.log('Save Error:', error);
         this.notify.error('Failed to save your data!');
-        this.loading =false;
+        this.loading = false;
       },
     });
   }
 
-  displaySubmittedSection(){
+  displaySubmittedSection() {
 
     const submitFormSection = document.getElementById('submitFormSectionMain');
-    const submissionConfirmation = document.getElementById('submitFormSectionMain'); 
-    
+    const submissionConfirmation = document.getElementById('submissionConfirmation');
+
     if (submitFormSection && submissionConfirmation) {
       submitFormSection.style.display = 'none';
       submissionConfirmation.style.display = 'block'; // Show selection section
@@ -114,25 +115,25 @@ get allAcknowledged(): boolean {
   }
 
 
-async pdfDownload() {
-  if (!isPlatformBrowser(this.platformId)) {
-    return; // Skip PDF generation on server
+  async pdfDownload() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return; // Skip PDF generation on server
+    }
+
+    const element = document.getElementById('submitFormSection');
+    if (!element) return;
+
+    const html2pdf = (await import('html2pdf.js')).default;
+
+    const opt: any = {
+      margin: 10,
+      filename: 'album-submission-details.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
   }
-
-  const element = document.getElementById('submitFormSection');
-  if (!element) return;
-
-  const html2pdf = (await import('html2pdf.js')).default;
-
-  const opt: any = {
-    margin: 10,
-    filename: 'album-submission-details.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-
-  html2pdf().set(opt).from(element).save();
-}
 
 }
