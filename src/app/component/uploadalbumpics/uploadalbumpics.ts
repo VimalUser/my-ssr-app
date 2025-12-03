@@ -27,7 +27,7 @@ export class Uploadalbumpics implements OnInit {
   clientData: any;
   allowedTypes = environment.allowedImageTypes.join(',');
   allowedTypesMessage = `Only ${this.allowedTypes.toUpperCase()} formats are supported`;
-  readonly MAX_FILE_SIZE_MB = 2048; // 2 GB
+  readonly MAX_FILE_SIZE_MB = 2304; // 2 GB
   readonly MAX_FILE_SIZE_BYTES = this.MAX_FILE_SIZE_MB * 1024 * 1024;
   checkboxMessage: string = '';
   isPhotoUploadDone: boolean = false;
