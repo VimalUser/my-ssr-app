@@ -6,6 +6,7 @@ import { ClientDataService } from '../../shared/ClientDataService';
 import { clientData } from '../../model/clientData';
 import { Notificationservice } from '../../services/notificationservice';
 import { userserviceapi } from '../../services/userservice';
+import { HostListener } from '@angular/core';
 
 type ViewFilter = 'all' | 'album' | 'frame' | 'cover';
 
@@ -56,7 +57,7 @@ export class Imagegallery implements OnInit {
     private clientDataService: ClientDataService,
     private userService: userserviceapi,
     private notify: Notificationservice
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(2);
@@ -185,15 +186,15 @@ export class Imagegallery implements OnInit {
   // ---------- SIMPLE URL helpers (strict -3, -2, -1) ----------
   // expects url like .../<phototype>/<cameratype>/<filename>
 
- // expects url like .../<phototype>/<cameratype>/<filename>
-private getFileParts(url: string) {
-  const clean = (url || '').split('?')[0].split('#')[0];
-  const parts = clean.split('/').filter(p => p !== '');
-  const fileName = parts.length ? parts[parts.length - 1] : '';
-  const cameraFolder = parts.length >= 2 ? parts[parts.length - 2] : '';
-  const photoType = parts.length >= 3 ? parts[parts.length - 3] : '';
-  return { fileName, cameraFolder, photoType };
-}
+  // expects url like .../<phototype>/<cameratype>/<filename>
+  private getFileParts(url: string) {
+    const clean = (url || '').split('?')[0].split('#')[0];
+    const parts = clean.split('/').filter(p => p !== '');
+    const fileName = parts.length ? parts[parts.length - 1] : '';
+    const cameraFolder = parts.length >= 2 ? parts[parts.length - 2] : '';
+    const photoType = parts.length >= 3 ? parts[parts.length - 3] : '';
+    return { fileName, cameraFolder, photoType };
+  }
 
 
   fileNameFromUrl(url: string): string {
@@ -240,18 +241,18 @@ private getFileParts(url: string) {
   // ---------- Matching logic (strict: fileName + cameraFolder) ----------
 
   private matchesUrlToItem(imgUrl: string, item: AlbumSelectionItem): boolean {
-  if (!imgUrl || !item || !item.url) return false;
+    if (!imgUrl || !item || !item.url) return false;
 
-  const img = this.getFileParts(imgUrl);
-  const it = this.getFileParts(item.url);
+    const img = this.getFileParts(imgUrl);
+    const it = this.getFileParts(item.url);
 
-  // strict matching: phototype (parent) + cameraFolder + filename must all match
-  const samePhotoType = (img.photoType || '').toString().toLowerCase() === (it.photoType || '').toString().toLowerCase();
-  const sameCamera = (img.cameraFolder || '').toString().toLowerCase() === (it.cameraFolder || '').toString().toLowerCase();
-  const sameFile = (img.fileName || '') === (it.fileName || '');
+    // strict matching: phototype (parent) + cameraFolder + filename must all match
+    const samePhotoType = (img.photoType || '').toString().toLowerCase() === (it.photoType || '').toString().toLowerCase();
+    const sameCamera = (img.cameraFolder || '').toString().toLowerCase() === (it.cameraFolder || '').toString().toLowerCase();
+    const sameFile = (img.fileName || '') === (it.fileName || '');
 
-  return samePhotoType && sameCamera && sameFile;
-}
+    return samePhotoType && sameCamera && sameFile;
+  }
 
 
   private matchesItemToItem(a: AlbumSelectionItem, b: AlbumSelectionItem): boolean {
@@ -277,18 +278,18 @@ private getFileParts(url: string) {
   }
 
   private getFrameCountInCurrentFolder(): number {
-  const currentFolderType = this.getCurrentFolderType();
-  const allFrames = [
-    ...(this.portraitFrameItems || []),
-    ...(this.landscapeFrameItems || []),
-  ];
+    const currentFolderType = this.getCurrentFolderType();
+    const allFrames = [
+      ...(this.portraitFrameItems || []),
+      ...(this.landscapeFrameItems || []),
+    ];
 
-  return allFrames.filter(item => {
-    if (!item || !item.url) return false;
-    const p = this.getFileParts(item.url);
-    return (p.photoType || '').toString().toLowerCase() === currentFolderType;
-  }).length;
-}
+    return allFrames.filter(item => {
+      if (!item || !item.url) return false;
+      const p = this.getFileParts(item.url);
+      return (p.photoType || '').toString().toLowerCase() === currentFolderType;
+    }).length;
+  }
 
   private getCoverCountInCurrentFolder(): number {
     const currentFolderType = this.getCurrentFolderType();
@@ -490,33 +491,46 @@ private getFileParts(url: string) {
 
   // ---------- Build selection item (persist parent folder, include camera in url) ----------
 
- private buildSelectionItem(imgUrl: string, type: string): AlbumSelectionItem {
-  const parts = this.getFileParts(imgUrl);
-  const item: AlbumSelectionItem = {
-    fileName: parts.fileName,
-    comment: '',
-    type,
-    url: imgUrl,
-    isTraditional: parts.photoType === 'traditional',
-    // persist parent folder for counts/save
-    // @ts-ignore
-    sourceFolder: parts.photoType,
-    // store cameraFolder for in-memory clarity (optional)
-    // @ts-ignore
-    cameraFolder: parts.cameraFolder,
-  };
-  return item;
-}
+  private buildSelectionItem(imgUrl: string, type: string): AlbumSelectionItem {
+    const parts = this.getFileParts(imgUrl);
+    const item: AlbumSelectionItem = {
+      fileName: parts.fileName,
+      comment: '',
+      type,
+      url: imgUrl,
+      isTraditional: parts.photoType === 'traditional',
+      // persist parent folder for counts/save
+      // @ts-ignore
+      sourceFolder: parts.photoType,
+      // store cameraFolder for in-memory clarity (optional)
+      // @ts-ignore
+      cameraFolder: parts.cameraFolder,
+    };
+    return item;
+  }
 
 
   // ---------- Preview ----------
 
   openPreview(imgUrl: string) {
+
+    // Push modal state to browser history
+    history.pushState({ previewOpen: true }, '');
+
     this.previewImageUrl = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
     const existing = this.selectedItems.find((x) => this.matchesUrlToItem(imgUrl, x));
     this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  onBackButton(event: any) {
+
+    // If preview is open -> close it instead of routing back
+    if (this.previewImageUrl) {
+      this.closePreview();
+    }
   }
 
   onPreviewImageLoad() {
@@ -529,6 +543,11 @@ private getFileParts(url: string) {
     this.previewComment = '';
     this.previewLoading = false;
     this.frameChoiceForIdentity = null;
+
+    // Remove the dummy history state
+    if (history.state?.previewOpen) {
+      history.back();
+    }
   }
 
   private getCurrentImageIndex(): number {
