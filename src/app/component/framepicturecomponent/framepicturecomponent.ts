@@ -51,6 +51,7 @@ export class Framepicturecomponent {
     this.clientDataService.triggerNextStep(3);
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
+    console.log('Frame Picture Component - client data:', this.pagelatestData);
     this.loading = false;
 
     if (typeof window !== 'undefined') {
@@ -142,7 +143,7 @@ export class Framepicturecomponent {
       : this.pagelatestData.landscapeFrameSelection || [];
 
     const selectedFileNames = new Set(
-      selectedItems.map((x) => x.fileName?.trim() || '')
+       selectedItems.map((x) =>this.fileNameFromUrl(x.url)?.trim() || '')
     );
 
     const allUrls = this.apiImageResponse.map((item) => item.imageUrl);

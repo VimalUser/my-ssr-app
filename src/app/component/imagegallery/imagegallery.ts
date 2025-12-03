@@ -625,6 +625,8 @@ export class Imagegallery implements OnInit {
 
   async saveSelection() {
     const payload = this.updateModelWithLatestData();
+    console.log
+    ('Image Gallery - Saving selection with payload:', payload);  
     this.apiCalltoSave(payload);
   }
 

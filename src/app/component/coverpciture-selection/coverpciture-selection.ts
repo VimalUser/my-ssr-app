@@ -130,7 +130,7 @@ export class CoverpcitureSelection {
   private rebuildImagesFromCoverSelection(): void {
     const coverSelection = this.pagelatestData.coverSelection || [];
     const selectedFileNames = new Set(
-      coverSelection.map((x) => (x.fileName || '').trim())
+      coverSelection.map((x) => (this.fileNameFromUrl(x.url) || '').trim())
     );
 
     const allUrls = this.apiImageResponse.map((item) => item.imageUrl);
