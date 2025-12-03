@@ -7,6 +7,8 @@ import { userserviceapi } from '../../services/userservice';
 import { clientData } from '../../model/clientData';
 import { Router } from '@angular/router';
 
+
+
 @Component({
   selector: 'app-album-name',
   imports: [FormsModule, CommonModule],
@@ -19,11 +21,12 @@ export class AlbumName implements OnInit {
     private clientDataService: ClientDataService,
     private notify: Notificationservice,
     private userservice: userserviceapi,
-    private router :Router
+    private router: Router
   ) {}
 
   formData: clientData = new clientData();
-  isLoading:boolean =false;
+  isLoading: boolean = false;
+  formSubmitted: boolean = false; // tracks whether user attempted save/next (to show validation)
 
   get isLightTheme() {
     return this.clientDataService.getTheme();
@@ -32,67 +35,114 @@ export class AlbumName implements OnInit {
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(1);
     this.isLoading = true;
-    this.formData = this.clientDataService.getData();
+
+    // Defensive: ensure formData has the arrays we expect
+    const existing = this.clientDataService.getData();
+    if (existing) {
+      this.formData = existing;
+    } else {
+      this.formData = new clientData();
+    }
+
+    if (!Array.isArray(this.formData.events)) {
+      this.formData.events = [];
+    }
+    if (!Array.isArray((this.formData as any).designTypeList)) {
+      (this.formData as any).designTypeList = [];
+    }
+
     this.isLoading = false;
-
   }
-  openDatePicker(event: any) {
-  event.target.showPicker();
-}
 
+
+  openDatePicker(event: any) {
+    try {
+      // use showPicker if supported (Chromium)
+      event?.target?.showPicker?.();
+    } catch (e) {
+      // fallback: focus the input
+      try {
+        event?.target?.focus?.();
+      } catch (err) {
+        // ignore
+      }
+    }
+  }
 
   async goBack() {
-    // window.history.back();
-    const confirmCancelled =await this.notify.confirm(
+    const confirmCancelled = await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
       // User pressed Cancel, stop execution here
       return;
     }
-   this.clientDataService.triggerNextStep(0);
-    // this.activateMenuByName
-        this.router.navigate(['userhome/startpage']);
-
+    this.clientDataService.triggerNextStep(0);
+    this.router.navigate(['userhome/startpage']);
   }
+isValidForm(): boolean {
+  const hasAlbumName =
+    !!this.formData.albumName && this.formData.albumName.trim() !== '';
 
-  isValidForm(): boolean {
-    return (
-      this.formData.albumName.trim() !== '' &&
-      this.formData.albumEventDate.trim() !== ''
-    );
-  }
+  const hasAlbumEventDate =
+    !!this.formData.albumEventDate && this.formData.albumEventDate.trim() !== '';
+
+  const hasEvents =
+    Array.isArray(this.formData.events) && this.formData.events.length > 0;
+
+  const eventsValid = !hasEvents || this.formData.events.every(ev =>
+    !!ev &&
+    !!ev.eventDate &&
+    String(ev.eventDate).trim() !== ''
+  );
+
+  return hasAlbumName && hasAlbumEventDate && eventsValid;
+}
+
+
 
   nextStep() {
-    if (this.isValidForm() === false) {
-      this.notify.error('Please fill in all required fields!');
+    this.formSubmitted = true;
+
+    if (!this.isValidForm()) {
+      this.notify.error('Please fill in the album name and ALL event dates!');
       return;
     }
+
     this.updateModelWithLatestData();
     // Notify other components to move to next step
     this.clientDataService.triggerNextStep(2);
   }
 
-  updateModelWithLatestData() {
-    const existingData: clientData = this.clientDataService.getData();
+  updateModelWithLatestData(): clientData {
+    const existingData: clientData = this.clientDataService.getData() || new clientData();
 
+    // merge with care, preserve any existing arrays and values
     const updated: clientData = {
       ...existingData,
+      ...this.formData,
       albumName: this.formData.albumName,
       albumEventDate: this.formData.albumEventDate,
-      status : 'Inprogress'
-    };
+      status: 'Inprogress',
+      // ensure events & designTypeList preserved as arrays
+      events: Array.isArray(this.formData.events) ? this.formData.events.map(ev => ({ ...ev })) : [],
+      designTypeList: Array.isArray((this.formData as any).designTypeList) ? (this.formData as any).designTypeList : []
+    } as clientData;
 
     this.clientDataService.updateData(updated);
+    // keep local reference in sync
+    this.formData = updated;
     return updated;
   }
 
   onSave() {
-    if (this.isValidForm() === false) {
-      this.notify.error('Please fill in all required fields!');
+    this.formSubmitted = true;
+
+    if (!this.isValidForm()) {
+      this.notify.error('Please fill in the album name and ALL event dates!');
       return;
     }
-    
+
     this.apiCalltoSave(this.updateModelWithLatestData());
   }
 

@@ -10,7 +10,8 @@
 /* ========== Shared step card style (same feel as start page) ========== */
 
 .user-step-card {
-  background: rgba(15, 15, 20, 0.78);               /* dark glassy */
+  background: rgba(15, 15, 20, 0.78);
+  /* dark glassy */
   border-radius: 16px;
   padding: 1.75rem 1.8rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -123,8 +124,9 @@
 /* Full screen glass-style card */
 .form-full-card {
   width: 100%;
-  min-height: calc(100vh - 120px);  /* Makes it full height minus header */
-  background: rgba(15, 15, 20, 0.78); 
+  min-height: calc(100vh - 120px);
+  /* Makes it full height minus header */
+  background: rgba(15, 15, 20, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 2.5rem 3rem;
@@ -152,7 +154,9 @@
   font-weight: 500;
 }
 
-.bg-gray-light .step-label { color: #4b5563; }
+.bg-gray-light .step-label {
+  color: #4b5563;
+}
 
 .step-input {
   font-weight: 550;
@@ -183,7 +187,9 @@
   color: rgba(226, 232, 240, 0.8);
 }
 
-.bg-gray-light .step-subtitle { color: #444; }
+.bg-gray-light .step-subtitle {
+  color: #444;
+}
 
 /* Responsive padding */
 @media (max-width: 768px) {
@@ -192,11 +198,13 @@
     min-height: auto;
   }
 }
+
 /* Full screen glass-style card */
 .form-full-card {
   width: 100%;
-  min-height: calc(100vh - 120px);  /* Makes it full height minus header */
-  background: rgba(15, 15, 20, 0.78); 
+  min-height: calc(100vh - 120px);
+  /* Makes it full height minus header */
+  background: rgba(15, 15, 20, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 2.5rem 3rem;
@@ -224,7 +232,9 @@
   font-weight: 500;
 }
 
-.bg-gray-light .step-label { color: #4b5563; }
+.bg-gray-light .step-label {
+  color: #4b5563;
+}
 
 .step-input {
   font-weight: 550;
@@ -255,7 +265,9 @@
   color: rgba(226, 232, 240, 0.8);
 }
 
-.bg-gray-light .step-subtitle { color: #444; }
+.bg-gray-light .step-subtitle {
+  color: #444;
+}
 
 /* Responsive padding */
 @media (max-width: 768px) {
@@ -264,4 +276,3 @@
     min-height: auto;
   }
 }
-

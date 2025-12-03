@@ -48,6 +48,7 @@ export class Albumstratpage implements OnInit {
 
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
+
   }
 
   adImages: string[] = [];
@@ -101,6 +102,9 @@ export class Albumstratpage implements OnInit {
       frameSize: '',
       designTypeId: clientDatafromDb.designTypeId || 0,
       designType: clientDatafromDb.designType || '',
+      events : clientDatafromDb.events || [],
+      designTypeList :clientDatafromDb.designTypeList || [],
+      
       tranditionalAlbumSelection:
         clientDatafromDb.tranditionalAlbumSelection || [],
       candidAlbumSelection: clientDatafromDb.candidAlbumSelection || [],
@@ -124,6 +128,7 @@ export class Albumstratpage implements OnInit {
         next: (data) => {
           // This is where you process the successful response
           this.formLatestData = data;
+          console.log('Fetched client data:', data);
           this.updateClinetData(this.formLatestData);
           this.isLoading = false;
         },

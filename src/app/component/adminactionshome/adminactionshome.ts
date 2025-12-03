@@ -89,4 +89,7 @@ export class Adminactionshome implements OnInit {
       complete: () => { },
     });
   }
+  goBack() {
+    window.history.back();
+  }
 }
