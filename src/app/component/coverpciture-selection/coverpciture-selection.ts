@@ -16,7 +16,7 @@ export class CoverpcitureSelection {
     private clientDataService: ClientDataService,
     private userservice: userserviceapi,
     private notify: Notificationservice
-  ) {}
+  ) { }
 
   // UI state
   loading = true;
@@ -144,11 +144,22 @@ export class CoverpcitureSelection {
   // ---------- Preview ----------
 
   openPreview(imageUrl: string) {
+    // Push modal state to browser history
+    history.pushState({ previewOpen: true }, '');
+    
     this.previewImageUrl = imageUrl;
     this.previewFileName = this.fileNameFromUrl(imageUrl);
     this.previewLoading = true;
   }
 
+  @HostListener('window:popstate', ['$event'])
+  onBackButton(event: any) {
+
+    // If preview is open -> close it instead of routing back
+    if (this.previewImageUrl) {
+      this.closePreview();
+    }
+  }
   onPreviewImageLoad() {
     this.previewLoading = false;
   }
@@ -157,6 +168,11 @@ export class CoverpcitureSelection {
     this.previewImageUrl = null;
     this.previewFileName = '';
     this.previewLoading = false;
+
+    // Remove the dummy history state
+    if (history.state?.previewOpen) {
+      history.back();
+    }
   }
 
   private getCurrentImageIndex(): number {
@@ -196,9 +212,9 @@ export class CoverpcitureSelection {
 
   fetchData(clientId: string): void {
     this.loading = true;
-   
 
-    this.userservice.getSelectedImagesbyClientId(clientId,'cover').subscribe({
+
+    this.userservice.getSelectedImagesbyClientId(clientId, 'cover').subscribe({
       next: (data) => {
         // data expected: [{ imageUrl: '...' }, ...]
         this.apiImageResponse = data || [];
