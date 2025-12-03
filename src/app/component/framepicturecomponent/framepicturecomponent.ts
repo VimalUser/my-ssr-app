@@ -18,7 +18,7 @@ export class Framepicturecomponent {
     private clientDataService: ClientDataService,
     private userservice: userserviceapi,
     private notify: Notificationservice
-  ) {}
+  ) { }
 
   // Folder selection
   folderNames: string[] = ['Portrait Frame', 'Landscape Frame'];
@@ -156,9 +156,21 @@ export class Framepicturecomponent {
   // ---------- Preview ----------
 
   openPreview(imageUrl: string) {
+    // Push modal state to browser history
+    history.pushState({ previewOpen: true }, '');
+
     this.previewImageUrl = imageUrl;
     this.previewFileName = this.fileNameFromUrl(imageUrl);
     this.previewLoading = true;
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  onBackButton(event: any) {
+
+    // If preview is open -> close it instead of routing back
+    if (this.previewImageUrl) {
+      this.closePreview();
+    }
   }
 
   onPreviewImageLoad() {
@@ -169,6 +181,11 @@ export class Framepicturecomponent {
     this.previewImageUrl = null;
     this.previewFileName = '';
     this.previewLoading = false;
+
+    // Remove the dummy history state
+    if (history.state?.previewOpen) {
+      history.back();
+    }
   }
 
   private getCurrentImageIndex(): number {
@@ -209,7 +226,7 @@ export class Framepicturecomponent {
   fetchData(clientId: string): void {
     this.loading = true;
 
-    this.userservice.getSelectedImagesbyClientId(clientId,'frame').subscribe({
+    this.userservice.getSelectedImagesbyClientId(clientId, 'frame').subscribe({
       next: (data) => {
         // Expecting array like [{ imageUrl: '...' }, ...]
         this.apiImageResponse = data || [];
