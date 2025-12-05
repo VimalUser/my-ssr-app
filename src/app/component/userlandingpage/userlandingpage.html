@@ -1,55 +1,41 @@
 <!-- Top navbar -->
-<nav
-  class="navbar-custom px-4 py-2 d-flex align-items-center justify-content-between"
-  [ngClass]="{'navbar-dark': !isLightTheme, 'navbar-light': isLightTheme}"
->
+<nav class="navbar-custom px-4 py-2 d-flex align-items-center justify-content-between"
+  [ngClass]="{'navbar-dark': !isLightTheme, 'navbar-light': isLightTheme}">
 
   <div class="d-flex align-items-center gap-3">
     <div class="navbar-brand fw-bold fs-3" [ngClass]="{'text-orange': !isLightTheme, 'text-dark': isLightTheme}">
+
       <img src="assets/logo.png" alt="Candy Express Photography" class="logo" style="height:36px;" />
+
     </div>
   </div>
 
   <div class="d-flex align-items-center gap-3">
     <!-- Mobile hamburger -->
-    <button
-      class="navbar-toggler ms-3 d-lg-none border-0 rounded"
-      type="button"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#mainSidebar"
-      aria-controls="mainSidebar"
-      aria-label="Toggle sidebar"
-      style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(6px);"
-    >
+    <img src="assets/Client/year.png" alt="" class="logo" style="height:50px;" />
+    <button class="navbar-toggler ms-3 d-lg-none border-0 rounded" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#mainSidebar" aria-controls="mainSidebar" aria-label="Toggle sidebar"
+      style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(6px);">
       <span class="navbar-toggler-icon"></span>
     </button>
   </div>
 </nav>
 
-<div
-  [ngClass]="{'bg-dark text-white': !isLightTheme, 'bg-gray-light text-dark': isLightTheme}"
-  style="min-height:100vh;"
->
+<div [ngClass]="{'bg-dark text-white': !isLightTheme, 'bg-gray-light text-dark': isLightTheme}"
+  style="min-height:100vh;">
   <div class="container-fluid h-100">
     <div class="row flex-nowrap">
       <!-- Desktop Sidebar -->
-<aside
-  [ngClass]="{
+      <aside [ngClass]="{
     'bg-dark text-white sidebar-dark': !isLightTheme,
     'bg-gray-sidebar text-dark sidebar-light': isLightTheme,
     'sidebar-collapsed': isSidebarCollapsed
-  }"
-  class="col-auto col-xl-2 px-0 pt-4 sidebar d-none d-lg-block"
-  style="min-height: 100vh;"
->
-  <ng-container *ngTemplateOutlet="sidebarMenu"></ng-container>
-</aside>
+  }" class="col-auto col-xl-2 px-0 pt-4 sidebar d-none d-lg-block" style="min-height: 100vh;">
+        <ng-container *ngTemplateOutlet="sidebarMenu"></ng-container>
+      </aside>
 
       <!-- Main content -->
-      <main
-        class="col flex-grow-1 main-transparent"
-        [ngClass]="{'main-expanded': isSidebarCollapsed}"
-      >
+      <main class="col flex-grow-1 main-transparent" [ngClass]="{'main-expanded': isSidebarCollapsed}">
         <router-outlet></router-outlet>
       </main>
     </div>
@@ -57,22 +43,13 @@
 </div>
 
 <!-- Offcanvas Sidebar for Mobile -->
-<div
-  class="offcanvas offcanvas-start"
-  [ngClass]="{'bg-dark text-white': !isLightTheme, 'bg-gray-sidebar text-dark': isLightTheme}"
-  tabindex="-1"
-  id="mainSidebar"
-  aria-labelledby="mainSidebarLabel"
->
+<div class="offcanvas offcanvas-start"
+  [ngClass]="{'bg-dark text-white': !isLightTheme, 'bg-gray-sidebar text-dark': isLightTheme}" tabindex="-1"
+  id="mainSidebar" aria-labelledby="mainSidebarLabel">
   <div class="offcanvas-header">
     <h5 [ngClass]="{'text-orange': !isLightTheme, 'text-dark': isLightTheme}" id="mainSidebarLabel">Menu</h5>
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="offcanvas"
-      [ngClass]="{'btn-close-white': !isLightTheme}"
-      aria-label="Close"
-    ></button>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" [ngClass]="{'btn-close-white': !isLightTheme}"
+      aria-label="Close"></button>
   </div>
   <div class="offcanvas-body px-0 py-3">
     <ng-container *ngTemplateOutlet="sidebarMenu"></ng-container>
@@ -83,37 +60,29 @@
 <ng-template #sidebarMenu>
   <ul class="nav nav-pills flex-column gap-2 px-3 sidebar-menu">
     <li class="nav-item" *ngFor="let item of menuItems; let i = index">
-      <a
-        class="nav-link"
-        [routerLink]="!item.disabled ? item.route : null"
-        routerLinkActive="active"
-        [ngClass]="{
+      <a class="nav-link" [routerLink]="!item.disabled ? item.route : null" routerLinkActive="active" [ngClass]="{
           'text-white': !isLightTheme && !item.disabled,
           'text-dark': isLightTheme && !item.disabled,
           'disabled text-secondary': item.disabled
-        }"
-        (click)="onNavClick(item, $event)"
-        tabindex="{{ item.disabled ? -1 : 0 }}"
-      >
+        }" (click)="onNavClick(item, $event)" tabindex="{{ item.disabled ? -1 : 0 }}">
         <i class="me-2 nav-icon" [class]="'bi ' + item.icon"></i>
         <span class="link-label">{{ item.name }}</span>
       </a>
     </li>
     <!-- 🔽 NEW: Collapse / Expand button at bottom of sidebar -->
     <li class="nav-item mt-3">
-      <button
-        type="button"
-        class="btn w-100 sidebar-collapse-btn d-flex align-items-center justify-content-center"
-        (click)="toggleSidebar()"
-      >
-        <i
-          class="bi"
-          [ngClass]="isSidebarCollapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'"
-        ></i>
+      <button type="button" class="btn w-100 sidebar-collapse-btn d-flex align-items-center justify-content-center"
+        (click)="toggleSidebar()">
+        <i class="bi" [ngClass]="isSidebarCollapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'"></i>
         <span class="ms-2 link-label">
           {{ isSidebarCollapsed ? 'Expand menu' : 'Collapse menu' }}
         </span>
       </button>
     </li>
+    <li class="nav-item mt-3">
+
+    </li>
+    <!-- <img src="assets/Client/year.png" alt="" class="logo" style="height:150px;" /> -->
+
   </ul>
 </ng-template>

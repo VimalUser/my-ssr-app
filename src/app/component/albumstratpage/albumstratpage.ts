@@ -18,6 +18,15 @@ import { Router } from '@angular/router';
 export class Albumstratpage implements OnInit {
   user: LoggedInUser | null = null;
   isLoading: boolean = false;
+  adImages: string[] = [];
+  currentIndex = -1;
+  prevIndex = -1;
+  direction: 'left' | 'right' = 'right';
+  intervalId?: number;
+  slideDelay = 3000; // 3 seconds
+  isPaused = false;
+  firstImageLoaded = false;
+  imagesLoadedCount = 0;
 
   formLatestData: clientData = new clientData();
 
@@ -37,25 +46,93 @@ export class Albumstratpage implements OnInit {
 
     // Automatically generate ad image names
     this.adImages = Array.from(
-      { length: 1},
-      (_, i) => `assets/startpage-ad/ad_${i + 1}.png`
+      { length: 7 },
+      (_, i) => `assets/startpage-ad/ad_${i + 1}.jpg`
     );
-
-    // Slide every 3 seconds
-    this.intervalId = window.setInterval(() => {
-      this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
-    }, 3000);
 
     this.user = this.clientDataService.getCurrentUser();
     this.fetchData();
-
   }
 
-  adImages: string[] = [];
-  currentIndex = 0;
-  intervalId?: number;
+  startSlider() {
+    this.clearSliderInterval();
+    this.intervalId = window.setInterval(() => {
+      if (!this.isPaused && this.adImages.length > 1) {
+        this.goNextInternal();
+      }
+    }, this.slideDelay);
+  }
 
+  clearSliderInterval() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = undefined;
+    }
+  }
+
+  pauseSlider() {
+    this.isPaused = true;
+  }
+
+  resumeSlider() {
+    this.isPaused = false;
+  }
+
+  goNext() {
+    this.direction = 'right';
+    this.goNextInternal();
+    this.restartTimer();
+  }
+
+  goPrev() {
+    this.direction = 'left';
+    this.goPrevInternal();
+    this.restartTimer();
+  }
+
+  goTo(index: number) {
+    if (index === this.currentIndex) return;
+    this.direction = index > this.currentIndex ? 'right' : 'left';
+    this.prevIndex = this.currentIndex;
+    this.currentIndex = index;
+    this.restartTimer();
+  }
+
+  private goNextInternal() {
+    this.prevIndex = this.currentIndex;
+    this.currentIndex = (this.currentIndex + 1) % this.adImages.length;
+  }
+
+  private goPrevInternal() {
+    this.prevIndex = this.currentIndex;
+    this.currentIndex =
+      (this.currentIndex - 1 + this.adImages.length) % this.adImages.length;
+  }
+
+  private restartTimer() {
+    this.isPaused = false;
+    this.startSlider();
+  }
+
+  // called from template when each <img> finishes loading
+  onImageLoad(index: number) {
+    console.log('image loaded:', index);
+    this.imagesLoadedCount++;
+
+    // only reveal first slide after it's loaded
+    if (index === 0 && !this.firstImageLoaded) {
+      this.firstImageLoaded = true;
+      this.prevIndex = -1; // ensure no "previous" animation
+      this.currentIndex = 0; // show the first slide now
+      // give the browser one paint cycle before starting autoplay / animations
+      requestAnimationFrame(() => {
+        // start auto sliding only after the first paint
+        this.startSlider();
+      });
+    }
+  }
   ngOnDestroy(): void {
+    // preserve your existing destroy cleanup and add clear
     if (this.intervalId) clearInterval(this.intervalId);
   }
 
@@ -102,9 +179,10 @@ export class Albumstratpage implements OnInit {
       frameSize: '',
       designTypeId: clientDatafromDb.designTypeId || 0,
       designType: clientDatafromDb.designType || '',
-      events : clientDatafromDb.events || [],
-      designTypeList :clientDatafromDb.designTypeList || [],
-      
+      events: clientDatafromDb.events || [],
+      designTypeList: clientDatafromDb.designTypeList || [],
+      clientReviewComments: clientDatafromDb.clientReviewComments || '',
+
       tranditionalAlbumSelection:
         clientDatafromDb.tranditionalAlbumSelection || [],
       candidAlbumSelection: clientDatafromDb.candidAlbumSelection || [],

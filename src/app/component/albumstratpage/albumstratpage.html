@@ -4,16 +4,42 @@
   <div class="home-wrapper container-fluid px-3">
 
     <!-- TOP: HERO / SLIDER -->
+    <!-- TOP: HERO / SLIDER -->
     <section class="card slider-card premium-card shadow-sm border-0">
       <div class="slider-inner">
+
         <div class="slider-badge">Special offers for you</div>
 
-        <div class="slider-container">
-          <img *ngFor="let img of adImages; let i = index" [src]="img" [class.active]="i === currentIndex"
-            alt="Promotion" class="slide-img" />
+        <div class="slider-container" (mouseenter)="pauseSlider()" (mouseleave)="resumeSlider()"
+          (keydown.arrowleft)="goPrev()" (keydown.arrowright)="goNext()" tabindex="0" aria-roledescription="carousel"
+          aria-label="Promotional images">
+          <!-- slides: stacked absolute, only one visible but all in DOM for accessibility -->
+          <img *ngFor="let img of adImages; let i = index" [src]="img" [alt]="'Promotion ' + (i + 1)" class="slide-img"
+            [class.active]="i === currentIndex" [class.enter-right]="i === currentIndex && direction === 'right'"
+            [class.enter-left]="i === currentIndex && direction === 'left'"
+            [class.leave-right]="i === prevIndex && direction === 'right'"
+            [class.leave-left]="i === prevIndex && direction === 'left'" role="group"
+            [attr.aria-roledescription]="'slide'" [attr.aria-label]="'Slide ' + (i + 1) + ' of ' + adImages.length"
+            (load)="onImageLoad(i)" loading="{{ i === 0 ? 'eager' : 'lazy' }}" />
+
+          <!-- prev / next buttons -->
+          <button class="slider-btn slider-btn-left" (click)="goPrev()" aria-label="Previous slide">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+
+          <button class="slider-btn slider-btn-right" (click)="goNext()" aria-label="Next slide">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+
+          <!-- indicators -->
+          <div class="slider-dots" aria-hidden="false">
+            <button *ngFor="let _ of adImages; let idx = index" class="dot" [class.dot-active]="idx === currentIndex"
+              (click)="goTo(idx)" [attr.aria-label]="'Go to slide ' + (idx + 1)"></button>
+          </div>
         </div>
       </div>
     </section>
+
 
     <!-- BOTTOM: WELCOME + STEPS -->
     <section class="card content-card premium-card shadow-sm border-0">
@@ -58,8 +84,6 @@
           </div>
 
         </div>
-
-
 
         <!-- Process steps -->
         <div class="steps-wrapper">
@@ -125,12 +149,12 @@
           </button>
 
           <div *ngIf="hasSubmitted" class="submitted-state w-100 text-center">
-            
+
             <button class="btn btn-selction-submitted text-black btn-outline-secondary w-100">
               <!-- <div class="pill pill-success mb-2">
               <i class="bi bi-check-circle me-1"></i>
             </div>-->
-             Selection already submitted
+              Selection already submitted
             </button>
           </div>
         </div>

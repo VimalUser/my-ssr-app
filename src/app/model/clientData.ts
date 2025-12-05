@@ -19,6 +19,7 @@ export class clientData {
   eventType: string = '';
   albumSize: string = '';
   frameSize: string = '';
+  clientReviewComments: string = '';
 
   tranditionalAlbumSelection: AlbumSelectionItem[] = [];
   candidAlbumSelection: AlbumSelectionItem[] = [];
