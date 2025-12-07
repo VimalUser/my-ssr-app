@@ -21,6 +21,7 @@ import { send } from 'process';
 import { SendClientCredentials } from './component/send-client-credentials/send-client-credentials';
 import { VideoStatus } from './component/video-status/video-status';
 import { ClientDocuments } from './component/client-documents/client-documents';
+import { ClientHistory } from './component/client-history/client-history';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -46,7 +47,7 @@ export const routes: Routes = [
       { path: 'comments/:id',component:AdminReviewComments},
       { path: 'videoStatus/:id',component:VideoStatus},
       { path: 'clientDocuments/:id',component:ClientDocuments},
-      
+      { path: 'clientHistory/:id',component:ClientHistory},
     ],
   },
 

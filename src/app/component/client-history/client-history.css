@@ -1,0 +1,56 @@
+.tracking-container {
+  position: relative;
+  margin-left: 20px;
+}
+
+.tracking-step {
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 25px;
+}
+
+.step-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 22px;
+}
+
+.step-done i {
+  color: #28a745;   /* green */
+}
+
+.step-pending i {
+  color: #b8b8b8;   /* grey */
+}
+
+.step-label {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.step-line {
+  position: absolute;
+  left: 10px;
+  top: 24px;
+  width: 2px;
+  height: 28px; /* reduced height */
+  z-index: 1;
+}
+
+.step-done-line {
+  background-color: #28a745;
+}
+
+.step-pending-line {
+  background-color: #b8b8b8;
+}
+
+.step-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 20px; /* slightly smaller, more compact */
+  z-index: 2;
+}
+

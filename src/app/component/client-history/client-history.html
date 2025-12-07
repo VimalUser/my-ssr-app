@@ -1,0 +1,47 @@
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="form-title fw-bold text-dark">
+            <button class="back-button">
+                <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+                    style="width: 25px; height: 25px; cursor: pointer;" />
+            </button>
+            Client History
+        </h5>
+    </div>
+    <div class="card shadow-lg border-0 rounded-3 mt-4">
+        <div class="card-body p-4">
+
+            <div class="tracking-container mt-4">
+
+                <h5 class="heading-orange mb-4">
+                    Client Activity Tracking
+                </h5>
+
+                <div *ngFor="let step of trackingSteps; let i = index" class="tracking-step">
+
+                    <!-- LEFT ICON -->
+                    <div class="step-icon" [ngClass]="trackingData?.[step.key] ? 'step-done' : 'step-pending'">
+                        <i class="bi" [ngClass]="trackingData?.[step.key] ? 'bi-check-circle-fill' : 'bi-circle'">
+                        </i>
+                    </div>
+
+                    <!-- STEP LABEL -->
+                    <div class="step-label" [ngClass]="trackingData?.[step.key] ? 'text-success' : 'text-muted'">
+                        {{ step.label }}
+                    </div>
+
+                    <!-- VERTICAL LINE BELOW EACH STEP EXCEPT LAST -->
+                    <div *ngIf="i < trackingSteps.length - 1" class="step-line"
+                        [ngClass]="trackingData?.[step.key] ? 'step-done-line' : 'step-pending-line'">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+<div *ngIf="isLoading" class="loading-container">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
+</div>
