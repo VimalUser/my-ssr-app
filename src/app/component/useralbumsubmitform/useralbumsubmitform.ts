@@ -23,7 +23,7 @@ export class Useralbumsubmitform implements OnInit {
     private userservice: userserviceapi,
     private notify: Notificationservice,
     @Inject(PLATFORM_ID) private platformId: any
-  ) {}
+  ) { }
 
   clientData: clientData = new clientData();
   loading: boolean = false;
@@ -58,7 +58,7 @@ export class Useralbumsubmitform implements OnInit {
       status: 'Completed',
       clientReviewComments: this.clientData.clientReviewComments,
       isSubmitted: true,
-      
+
     };
 
     this.clientDataService.updateData(updated);
@@ -70,19 +70,51 @@ export class Useralbumsubmitform implements OnInit {
   }
 
   apiCalltoSave(updateData: clientData) {
-    this.userservice.saveUserAlbumDetails(updateData).subscribe({
-      next: (response) => {
-        this.notify.success('Your data saved successfully!');
-        this.displaySubmittedSection();
-        this.pdfDownload();
-        this.loading = false;
-      },
-      error: (error) => {
-        this.notify.error('Failed to save your data!');
-        this.loading = false;
-      },
-    });
+    this.loading = true;
+
+    // -----------------------------------
+    // CASE 1: COMPLETED → create PDF
+    // -----------------------------------
+    if (updateData.status?.toLowerCase() === 'completed') {
+
+      this.userservice.submitAlbumDetailsAndDownloadPdf(updateData)
+        .subscribe({
+          next: (response) => {
+            this.notify.success('Your data saved successfully!');
+            this.displaySubmittedSection();
+
+            const blob = new Blob([response.body!], { type: 'application/pdf' });
+            const fileName = this.getFileNameFromResponse(response) || 'album-submission-details.pdf';
+
+            this.downloadBlob(blob, fileName);
+            this.loading = false;
+          },
+          error: () => {
+            this.notify.error('Failed to save your data!');
+            this.loading = false;
+          }
+        });
+
+      return; // stop execution here
+    }
+
+    // -----------------------------------
+    // CASE 2: NOT COMPLETED → save only
+    // -----------------------------------
+    this.userservice.saveUserAlbumDetails(updateData)
+      .subscribe({
+        next: (message) => {
+          this.notify.success(message || 'Your data saved successfully!');
+          this.displaySubmittedSection();
+          this.loading = false;
+        },
+        error: () => {
+          this.notify.error('Failed to save your data!');
+          this.loading = false;
+        }
+      });
   }
+
 
   displaySubmittedSection() {
     const submitFormSection = document.getElementById('submitFormSectionMain');
@@ -123,5 +155,24 @@ export class Useralbumsubmitform implements OnInit {
     };
 
     html2pdf().set(opt).from(element).save();
+  }
+
+  private downloadBlob(blob: Blob, fileName: string) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private getFileNameFromResponse(response: any): string | null {
+    const contentDisposition = response.headers?.get('Content-Disposition');
+    if (!contentDisposition) return null;
+
+    const match = /filename="?([^"]+)"?/i.exec(contentDisposition);
+    return match && match[1] ? match[1] : null;
   }
 }

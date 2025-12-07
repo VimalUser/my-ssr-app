@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -27,6 +27,16 @@ export class userserviceapi {
     var finalUrl = this.clientAlbumUrl + 'createAlbum';
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
+
+  submitAlbumDetailsAndDownloadPdf(data: any): Observable<HttpResponse<Blob>> {
+  const finalUrl = this.clientAlbumUrl + 'createAlbum';
+
+  return this.http.post(finalUrl, data, {
+    responseType: 'blob',   // expecting PDF
+    observe: 'response'     // to read headers (like filename)
+  });
+}
+
 
   getImagesbyType(clientId: string, photoType: string): Observable<any> {
     var finalUrl = this.blobUrl + 'listSAS';
