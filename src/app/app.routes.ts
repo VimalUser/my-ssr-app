@@ -20,6 +20,7 @@ import { Clientlogout } from './component/clientlogout/clientlogout';
 import { send } from 'process';
 import { SendClientCredentials } from './component/send-client-credentials/send-client-credentials';
 import { VideoStatus } from './component/video-status/video-status';
+import { ClientDocuments } from './component/client-documents/client-documents';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -44,6 +45,7 @@ export const routes: Routes = [
       { path: 'download/:id',component:AdminDownloadSelection},
       { path: 'comments/:id',component:AdminReviewComments},
       { path: 'videoStatus/:id',component:VideoStatus},
+      { path: 'clientDocuments/:id',component:ClientDocuments},
       
     ],
   },

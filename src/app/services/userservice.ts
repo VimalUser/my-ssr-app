@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class userserviceapi {
   private clientAlbumUrl = environment.clientAlbumUrl;
   private blobUrl = environment.blobUrl;
-    
+
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
@@ -29,13 +29,23 @@ export class userserviceapi {
   }
 
   submitAlbumDetailsAndDownloadPdf(data: any): Observable<HttpResponse<Blob>> {
-  const finalUrl = this.clientAlbumUrl + 'createAlbum';
+    const finalUrl = this.clientAlbumUrl + 'createAlbum';
 
-  return this.http.post(finalUrl, data, {
-    responseType: 'blob',   // expecting PDF
-    observe: 'response'     // to read headers (like filename)
-  });
-}
+    return this.http.post(finalUrl, data, {
+      responseType: 'blob',   // expecting PDF
+      observe: 'response'     // to read headers (like filename)
+    });
+  }
+
+  getClientDocuments(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.clientAlbumUrl}clientDocuments?clientId=${clientId}`);
+  }
+
+  downloadDocument(fileId: number): Observable<Blob> {
+    return this.http.get(`${this.clientAlbumUrl}clientDocDownload?fileId=${fileId}`, {
+      responseType: 'blob'
+    });
+  }
 
 
   getImagesbyType(clientId: string, photoType: string): Observable<any> {
@@ -52,7 +62,7 @@ export class userserviceapi {
     );
   }
 
-   getClientAlbumSelectionDetails(id: string): Observable<any> {
+  getClientAlbumSelectionDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'getClientInfoWithImages';
     return this.http.get(`${finalUrl}?clientId=${id}`);
   }
@@ -65,9 +75,8 @@ export class userserviceapi {
       errorMsg = `Client Error: ${error.error.message}`;
     } else {
       // Server-side error
-      errorMsg = `Server Error (${error.status}): ${
-        error.error?.message || error.message
-      }`;
+      errorMsg = `Server Error (${error.status}): ${error.error?.message || error.message
+        }`;
     }
 
     return throwError(() => new Error(errorMsg));

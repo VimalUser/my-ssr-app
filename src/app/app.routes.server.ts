@@ -60,6 +60,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'admindashboard/comments/:id',
     renderMode: RenderMode.Client
   },
+  {
+    path: 'admindashboard/clientDocuments/:id',
+    renderMode: RenderMode.Client
+  },
 
   // 👤 User home base route - prerender (acts like layout)
   {
