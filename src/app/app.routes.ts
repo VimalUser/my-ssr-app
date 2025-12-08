@@ -22,6 +22,7 @@ import { SendClientCredentials } from './component/send-client-credentials/send-
 import { VideoStatus } from './component/video-status/video-status';
 import { ClientDocuments } from './component/client-documents/client-documents';
 import { ClientHistory } from './component/client-history/client-history';
+import { AccesslinkExpire } from './component/accesslink-expire/accesslink-expire';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -31,6 +32,7 @@ export const routes: Routes = [
   { path: 'adminlogin', component: Adminloginpage },
   { path: 'userlogin', component: Userloginpage },
   {path: 'clientlogout', component: Clientlogout},
+  {path: 'linkExpired', component: AccesslinkExpire},
 
   // A parent route for the admin layout
   {

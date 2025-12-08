@@ -24,6 +24,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'clientlogout',
     renderMode: RenderMode.Prerender
   },
+  {
+    path: 'linkExpired',
+    renderMode: RenderMode.Prerender
+  },
 
   // 🧭 Admin dashboard main page - prerender for fast first load
   {

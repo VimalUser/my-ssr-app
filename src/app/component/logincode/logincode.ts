@@ -87,6 +87,9 @@ export class Logincode {
           error: (err) => {
             if (err.status === 400 || err.status === 404) {
               this.notify.error(err.error.message);
+              if (err.error.message.toLowerCase().includes("expired")) {
+                this.router.navigate(['/linkExpired']);
+              }
             }
             this.loading = false;
           },
