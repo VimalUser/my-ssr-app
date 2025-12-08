@@ -1,6 +1,5 @@
 <div class="main-container" *ngIf="!loading">
-  <div
-    class="styled-card p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+  <div class="styled-card p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
     <!-- <div class="header-section"> -->
     <button class="back-button">
       <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
@@ -57,8 +56,9 @@
             (click)="traditionalFileInput.click()"><i class="fa fa-folder-open fav-icon"></i> Choose Images</button>
 
           <!-- Wide Upload Button -->
-          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('traditional', selectedCamera['traditional'])"><i
-              class="fa fa-upload fav-icon"></i> Upload</button>
+          <button class="btn-modern upload-btn wide-btn"
+            (click)="onUpload('traditional', selectedCamera['traditional'])"><i class="fa fa-upload fav-icon"></i>
+            Upload</button>
 
           <!-- Wide Delete All Button -->
           <button [disabled]="traditionalPhotosCount == 0" class="btn-modern delete-btn wide-btn"
@@ -94,8 +94,8 @@
 
           <!-- Dropdown -->
           <div class="col-12 col-sm-auto">
-            <select class="form-select" [(ngModel)]="selectedCamera['candid']"
-              (change)="onCameraChange('candid')" style="min-width: 150px;">
+            <select class="form-select" [(ngModel)]="selectedCamera['candid']" (change)="onCameraChange('candid')"
+              style="min-width: 150px;">
               <option value="">Select Camera</option>
               <option value="camera1">Camera 1</option>
               <option value="camera2">Camera 2</option>
@@ -162,6 +162,34 @@
   </div>
 
 </div>
+<div class="upload-progress-container" *ngIf="uploading">
+
+  <!-- Overall progress -->
+  <div class="overall-progress">
+    <label>Overall Progress</label>
+    <div class="progress-bar">
+      <div class="progress" [style.width.%]="overallProgress"></div>
+    </div>
+    <span>{{overallProgress | number: '1.0-0'}}%</span>
+  </div>
+
+  <!-- <hr> -->
+
+  <!-- Per-file progress -->
+  <!-- <div class="file-progress" *ngFor="let f of fileProgress">
+    <div class="file-row">
+      <span class="file-name">{{f.name}}</span>
+      <span class="status" [ngClass]="f.status">{{f.status}}</span>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress" [style.width.%]="f.progress"></div>
+    </div>
+    <span>{{f.progress | number: '1.0-0'}}%</span>
+  </div> -->
+
+</div>
+
 <div *ngIf="loading" class="loading-container">
   <img src="assets/loading-spinner.gif" alt="Uploading...">
   <!-- <p>Uploading, please wait...</p> -->

@@ -76,13 +76,13 @@ export class newclientapi {
 
   saveExpiryDate(id: string, expiryDate: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'saveExpiryDate';
-    var data : ClientExpiryDate= { ClientId : id, ExpiryDate: expiryDate };
+    var data: ClientExpiryDate = { ClientId: id, ExpiryDate: expiryDate };
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 
-   saveVideoStatus(id: string, videoStatus: string): Observable<any> {
+  saveVideoStatus(id: string, videoStatus: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'saveVideoStatus';
-    var data : ClientVideoStatus= { ClientId : id, VideoStatus: videoStatus };
+    var data: ClientVideoStatus = { ClientId: id, VideoStatus: videoStatus };
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 
@@ -124,7 +124,13 @@ export class newclientapi {
     return this.http.post(endpoint, formData);
   }
 
-    deleteImages(category: string, clientId: number): Observable<any> {
+  getUploadSas(clientId: number, category: string, camera: string) {
+    const url = `${this.blobUrl}get-upload-sas?clientId=${clientId}&photoType=${category}&camera=${camera}`;
+    return this.http.post(url, {});
+  }
+
+
+  deleteImages(category: string, clientId: number): Observable<any> {
     // Construct the endpoint URL with query parameters
     const endpoint = `${this.blobUrl}deleteOtherImages?clientId=${clientId}&folderPath=${category}`;
 
@@ -152,7 +158,7 @@ export class newclientapi {
     return this.http.put<boolean>(this.clientAlbumUrl + 'updateAdminStatus', data);
   }
 
-    getAdminStatus(clientId :number): Observable<AdminStatusOutput> {
+  getAdminStatus(clientId: number): Observable<AdminStatusOutput> {
     return this.http.get<AdminStatusOutput>(`${this.clientAlbumUrl}getAdminStatus?clientId=${clientId}`);
   }
 
