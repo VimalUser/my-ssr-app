@@ -1,56 +1,95 @@
-.tracking-container {
+/* Core layout (same as before) */
+.timeline-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
   position: relative;
-  margin-left: 20px;
 }
 
-.tracking-step {
+.timeline-left {
   position: relative;
-  padding-left: 40px;
-  margin-bottom: 25px;
+  width: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.step-icon {
-  position: absolute;
-  left: 0;
-  top: 0;
+.circle {
   font-size: 22px;
+  color: #28a745;
+  opacity: 0;
+  transform: scale(0.3);
+  animation: circleIn 0.4s ease-out forwards;
+  animation-delay: calc(var(--i) * 0.4s);
 }
 
-.step-done i {
-  color: #28a745;   /* green */
-}
-
-.step-pending i {
-  color: #b8b8b8;   /* grey */
-}
-
-.step-label {
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.step-line {
+.line {
   position: absolute;
+  top: 22px;
   left: 10px;
-  top: 24px;
-  width: 2px;
-  height: 28px; /* reduced height */
-  z-index: 1;
-}
-
-.step-done-line {
+  width: 3px;
+  bottom: -30px;
   background-color: #28a745;
+  transform: scaleY(0);
+  transform-origin: top;
+  opacity: 0.3;
+  animation: lineGrow 0.5s ease-out forwards;
+  animation-delay: calc(var(--i) * 0.4s + 0.25s);
 }
 
-.step-pending-line {
-  background-color: #b8b8b8;
+.timeline-content {
+  font-size: 15px;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(5px);
+  animation: textFade 0.4s ease-out forwards;
+  animation-delay: calc(var(--i) * 0.4s + 0.4s);
 }
 
-.step-icon {
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: 20px; /* slightly smaller, more compact */
-  z-index: 2;
+/* Make bold green text same color */
+.bold-green {
+  font-weight: bold;
+  color: #28a745;
 }
 
+/* ANIMATIONS */
+@keyframes circleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes lineGrow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes textFade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.circle.animate-circle {
+  animation: circleIn 0.4s ease-out forwards, pulse 0.6s ease-out calc(var(--i) * 0.4s + 0.3s);
+}

@@ -12,31 +12,28 @@
     <div class="card shadow-lg border-0 rounded-3 mt-4">
         <div class="card-body p-4">
 
-            <div class="tracking-container mt-4">
+            <div *ngFor="let ev of eventHistory; let i = index" class="timeline-item" [style.--i]="i">
 
-                <h5 class="heading-orange mb-4">
-                    Client Activity Tracking
-                </h5>
+                <div class="timeline-left">
 
-                <div *ngFor="let step of trackingSteps; let i = index" class="tracking-step">
-
-                    <!-- LEFT ICON -->
-                    <div class="step-icon" [ngClass]="trackingData?.[step.key] ? 'step-done' : 'step-pending'">
-                        <i class="bi" [ngClass]="trackingData?.[step.key] ? 'bi-check-circle-fill' : 'bi-circle'">
-                        </i>
+                    <div class="circle animate-circle">
+                        <i class="bi bi-check-circle-fill"></i>
                     </div>
 
-                    <!-- STEP LABEL -->
-                    <div class="step-label" [ngClass]="trackingData?.[step.key] ? 'text-success' : 'text-muted'">
-                        {{ step.label }}
-                    </div>
-
-                    <!-- VERTICAL LINE BELOW EACH STEP EXCEPT LAST -->
-                    <div *ngIf="i < trackingSteps.length - 1" class="step-line"
-                        [ngClass]="trackingData?.[step.key] ? 'step-done-line' : 'step-pending-line'">
-                    </div>
+                    <div *ngIf="i < eventHistory.length - 1" class="line animate-line"></div>
 
                 </div>
+
+                <div class="timeline-content text-success animate-text">
+                    {{ ev.comments }} by 
+                    <span class="bold-green"> {{ ev.actionBy }}</span> on
+                    <span class="bold-green"> {{ ev.formattedOn }}</span>
+                </div>
+
+            </div>
+
+            <div *ngIf="eventHistory.length === 0" class="no-events text-muted">
+                No activity history available.
             </div>
         </div>
     </div>

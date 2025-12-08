@@ -48,8 +48,12 @@ export class userserviceapi {
   }
 
   getTrackingStatus(clientId: number): Observable<any[]> {
-  return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistoryTracking?clientId=${clientId}`);
-}
+    return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistoryTracking?clientId=${clientId}`);
+  }
+
+  getClientTrackingStatus(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistory?clientId=${clientId}`);
+  }
 
   getImagesbyType(clientId: string, photoType: string): Observable<any> {
     var finalUrl = this.blobUrl + 'listSAS';

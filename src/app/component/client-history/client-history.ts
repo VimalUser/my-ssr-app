@@ -12,22 +12,8 @@ import { CommonModule } from '@angular/common';
 })
 export class ClientHistory {
 
-  trackingData: { [key: string]: boolean } | null = null;
-  // trackingData = {
-  //   loginSent: true,
-  //   selectionStarted: true,
-  //   selectionCompleted: false,
-  //   adminDownloaded: false,
-  //   adminReviewed: false
-  // };
+ eventHistory: any[] = [];
 
-  trackingSteps = [
-    { key: 'loginSent', label: 'Login credentials sent to client' },
-    { key: 'selectionStarted', label: 'Client started photo selection process' },
-    { key: 'selectionCompleted', label: 'Client completed photo selection process' },
-    { key: 'adminDownloaded', label: 'Admin downloaded the client submitted photos' },
-    { key: 'adminReviewed', label: 'Admin reviewed client comments' }
-  ];
 
 
   isLoading = false;
@@ -56,19 +42,40 @@ export class ClientHistory {
     window.history.back();
   }
 
+
   loadTrackingData() {
-    this.isLoading = true;
-    this.userService.getTrackingStatus(this.clientId).subscribe({
-      next: (data : any) => {
-        this.trackingData = data;  
-        this.isLoading = false;
-      },
-      error: () => {
-        this.notify.error("Unable to load tracking information.");
-        this.isLoading = false;
-      }
-    });
-  }
+  this.isLoading = true;
+
+  this.userService.getClientTrackingStatus(this.clientId).subscribe({
+    next: (history: any[]) => {
+
+      this.eventHistory = history.map(item => ({
+        ...item,
+        formattedOn: this.formatDate(item.actionedOn),
+      }));
+
+      this.isLoading = false;
+    },
+    error: () => {
+      this.notify.error("Unable to load tracking information.");
+      this.isLoading = false;
+    }
+  });
+}
+
+formatDate(dateInput: any): string {
+  if (!dateInput) return "";
+  const date = new Date(dateInput);
+
+  return date.toLocaleString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  }).replace(",", "");
+}
 
 
 }
