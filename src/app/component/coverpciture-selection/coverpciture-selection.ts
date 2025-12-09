@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientDataService } from '../../shared/ClientDataService';
-import { clientData } from '../../model/clientData';
+import { clientData, ClientMenuItems } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
 @Component({
@@ -42,7 +42,7 @@ export class CoverpcitureSelection {
 
   ngOnInit(): void {
     // This page is step 4 in your flow (Album=2, Frame=3, Cover=4, Submit=5)
-    this.clientDataService.triggerNextStep(4);
+    this.clientDataService.triggerNextStep(ClientMenuItems.coverPage);
 
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
@@ -65,7 +65,7 @@ export class CoverpcitureSelection {
 
   prevStep() {
     // Go back to Frame selection step
-    this.clientDataService.triggerNextStep(3);
+    this.clientDataService.triggerNextStep(ClientMenuItems.framePage);
   }
 
   nextStep() {
@@ -80,7 +80,7 @@ export class CoverpcitureSelection {
     }
 
     // Move to final submit step
-    this.clientDataService.triggerNextStep(5);
+    this.clientDataService.triggerNextStep(ClientMenuItems.submitForm);
   }
 
   // ---------- Folder-like open (view only) ----------

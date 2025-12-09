@@ -2,7 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientDataService } from '../../shared/ClientDataService';
-import { clientData } from '../../model/clientData';
+import { clientData, ClientMenuItems } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
 
@@ -48,7 +48,7 @@ export class Framepicturecomponent {
   isMobileView = false;
 
   ngOnInit(): void {
-    this.clientDataService.triggerNextStep(3);
+    this.clientDataService.triggerNextStep(ClientMenuItems.framePage);
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
     console.log('Frame Picture Component - client data:', this.pagelatestData);
@@ -72,7 +72,7 @@ export class Framepicturecomponent {
   // ---------- Navigation between steps ----------
 
   prevStep() {
-    this.clientDataService.triggerNextStep(2);
+    this.clientDataService.triggerNextStep(ClientMenuItems.imageSelection);
   }
 
   nextStep() {
@@ -86,7 +86,7 @@ export class Framepicturecomponent {
       );
       return;
     }
-    this.clientDataService.triggerNextStep(4);
+    this.clientDataService.triggerNextStep(ClientMenuItems.coverPage);
   }
 
   // ---------- Folder selection (view only) ----------

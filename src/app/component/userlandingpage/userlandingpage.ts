@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { filter } from 'rxjs/operators';
+import { ClientMenuItems } from '../../model/clientData';
 declare var bootstrap: any;
 @Component({
   selector: 'app-userlandingpage',
@@ -54,42 +55,49 @@ export class Userlandingpage implements OnInit {
 
   menuItems = [
     {
-      id: 0,
+      id: ClientMenuItems.startPage,
       name: 'Home',
       route: '/userhome/startpage',
       icon: 'bi-speedometer2',
       disabled: false,
     },   
     {
-      id: 1,
+      id: ClientMenuItems.designPage,
+      name: 'Album design',
+      route: '/userhome/albumdesign',
+      icon: 'bi-pencil-square',
+      disabled: true,
+    },
+    {
+      id:  ClientMenuItems.albumName,
       name: 'Album Name',
       route: '/userhome/albumname',
       icon: 'bi-pencil-square',
       disabled: true,
     },
     {
-      id: 2,
+      id:  ClientMenuItems.imageSelection,
       name: 'Album Selection',
       route: '/userhome/gallery',
       icon: 'bi-calendar2-week',
       disabled: true,
     },
     {
-      id: 3,
+      id:  ClientMenuItems.framePage,
       name: 'Frame Picture',
       route: '/userhome/framepicture',
       icon: 'bi-film',
       disabled: true,
     },
     {
-      id: 4,
+      id:  ClientMenuItems.coverPage,
       name: 'Cover Picture',
       route: '/userhome/coverpicture',
       icon: 'bi-bell',
       disabled: true,
     },
     {
-      id: 5,
+      id:  ClientMenuItems.submitForm,
       name: 'Submit Form',
       route: '/userhome/submitform',
       icon: 'bi-trophy',

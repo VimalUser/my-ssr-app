@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AlbumSelectionItem } from '../../model/album-selection-item.model';
 import { ClientDataService } from '../../shared/ClientDataService';
-import { clientData } from '../../model/clientData';
+import { clientData, ClientMenuItems } from '../../model/clientData';
 import { Notificationservice } from '../../services/notificationservice';
 import { userserviceapi } from '../../services/userservice';
 import { HostListener } from '@angular/core';
@@ -60,7 +60,7 @@ export class Imagegallery implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.clientDataService.triggerNextStep(2);
+    this.clientDataService.triggerNextStep(ClientMenuItems.imageSelection);
     this.loading = false;
 
     // load saved data snapshot
@@ -76,7 +76,7 @@ export class Imagegallery implements OnInit {
   // ---------- Navigation ----------
 
   prevStep() {
-    this.clientDataService.triggerNextStep(1);
+    this.clientDataService.triggerNextStep(ClientMenuItems.albumName);
   }
 
   nextStep() {
@@ -89,7 +89,7 @@ export class Imagegallery implements OnInit {
       this.notify.error(alertMessage);
       return;
     }
-    this.clientDataService.triggerNextStep(3);
+    this.clientDataService.triggerNextStep(ClientMenuItems.framePage);
   }
 
   // ---------- Folder selection ----------

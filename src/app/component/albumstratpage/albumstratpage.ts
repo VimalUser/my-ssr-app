@@ -4,7 +4,7 @@ import {
   LoggedInUser,
 } from '../../shared/ClientDataService';
 import { CommonModule } from '@angular/common';
-import { clientData } from '../../model/clientData';
+import { clientData, ClientMenuItems } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import { Router } from '@angular/router';
@@ -42,7 +42,7 @@ export class Albumstratpage implements OnInit {
     // this.clientDataService.triggerResetMenu();
     // this.clientDataService.restoreUserFromStorage();
     // this.clientDataService.resetClientDataOnly();
-    this.clientDataService.triggerNextStep(0);
+    this.clientDataService.triggerNextStep(ClientMenuItems.startPage);
 
     // Automatically generate ad image names
     this.adImages = Array.from(
@@ -137,8 +137,7 @@ export class Albumstratpage implements OnInit {
   }
 
   nextStep() {
-    this.clientDataService.triggerNextStep(1);
-    // this.router.navigate(['userhome/albumname']);
+    this.clientDataService.triggerNextStep(ClientMenuItems.designPage);
   }
 
   get hasSubmitted(): boolean {

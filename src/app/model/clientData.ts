@@ -1,4 +1,4 @@
-import { AlbumSelectionItem } from "./album-selection-item.model";
+import { AlbumSelectionItem } from './album-selection-item.model';
 
 export class clientData {
   clientId: number = 0;
@@ -33,8 +33,6 @@ export class clientData {
   accessLink: string = '';
   isSubmitted: boolean = false;
 
- 
-
   // 1. DESIGN TYPE LIST
   designTypeList: {
     designTypeName: string;
@@ -47,4 +45,14 @@ export class clientData {
     name: string;
     eventDate: string | null;
   }[] = [];
+}
+
+export class ClientMenuItems {
+  static startPage: number = 0;
+  static designPage: number = 1;
+  static albumName: number = 2;
+  static imageSelection: number = 3;
+  static framePage: number = 4;
+  static coverPage: number = 5;
+  static submitForm: number = 6;
 }

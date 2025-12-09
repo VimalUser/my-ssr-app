@@ -72,6 +72,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'userhome/startpage',
     renderMode: RenderMode.Client
   },
+   {
+    path: 'userhome/albumdesign',
+    renderMode: RenderMode.Client
+  },
   {
     path: 'userhome/albumname',
     renderMode: RenderMode.Client

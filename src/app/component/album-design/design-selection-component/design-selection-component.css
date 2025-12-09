@@ -1,0 +1,73 @@
+/* Existing color utilities */
+.text-orange {
+  color: #fc9500 !important;
+}
+
+.heading-orange {
+  color: #ef9333;
+}
+
+
+
+
+/* Reuse same look as album-name: tweak where needed */
+.user-step-card {
+  background: rgba(15, 15, 20, 0.78);
+  border-radius: 16px;
+  padding: 1.75rem 1.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+}
+
+.design-row {
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.design-row.selected {
+  border-color: rgba(252,149,0,0.55);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  background: linear-gradient(180deg, rgba(252,149,0,0.03), rgba(255,255,255,0.01));
+}
+
+.step-label {
+  color: #e5e7eb;
+  font-weight: 600;
+}
+
+/* Subtitle / copy under heading */
+.step-subtitle {
+  font-size: 0.9rem;
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.btn-outline-light {
+  border-color: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+.btn-outline-light:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+
+/* Buttons – keep same style but slightly enhanced */
+.btn-warning {
+  background: linear-gradient(135deg, #ffb347, #fc5900);
+  border: none;
+}
+
+.btn-warning:hover {
+  filter: brightness(1.05);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #34d399, #059669);
+  border: none;
+}
+
+.btn-success:hover {
+  filter: brightness(1.05);
+}

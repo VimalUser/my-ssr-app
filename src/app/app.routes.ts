@@ -20,6 +20,7 @@ import { Clientlogout } from './component/clientlogout/clientlogout';
 import { send } from 'process';
 import { SendClientCredentials } from './component/send-client-credentials/send-client-credentials';
 import { VideoStatus } from './component/video-status/video-status';
+import { DesignSelectionComponent } from './component/album-design/design-selection-component/design-selection-component';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -55,6 +56,7 @@ export const routes: Routes = [
     children: [
       // { path: '', component: Albumstratpage }, // This is the main dashboard content
       { path: 'startpage', component: Albumstratpage },
+      { path: 'albumdesign', component: DesignSelectionComponent},
       { path: 'albumname', component: AlbumName },
       { path: 'gallery', component: Imagegallery },
       { path: 'framepicture', component: Framepicturecomponent },

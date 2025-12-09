@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ClientDataService } from '../../shared/ClientDataService';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { clientData } from '../../model/clientData';
+import { clientData, ClientMenuItems } from '../../model/clientData';
 import { Router } from '@angular/router';
 import { userserviceapi } from '../../services/userservice';
 import { Notificationservice } from '../../services/notificationservice';
@@ -36,7 +36,7 @@ export class Useralbumsubmitform implements OnInit {
   userComments = '';
 
   ngOnInit(): void {
-    this.clientDataService.triggerNextStep(5);
+    this.clientDataService.triggerNextStep(ClientMenuItems.submitForm);
     this.loading = true;
     const data = this.clientDataService.getData();
     this.clientData = data;
@@ -97,11 +97,7 @@ export class Useralbumsubmitform implements OnInit {
   }
 
   prevStep() {
-    this.clientDataService.triggerNextStep(4);
-  }
-
-  nextStep() {
-    this.clientDataService.triggerNextStep(4);
+    this.clientDataService.triggerNextStep(ClientMenuItems.coverPage);
   }
 
   async pdfDownload() {

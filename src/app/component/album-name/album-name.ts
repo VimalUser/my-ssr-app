@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Notificationservice } from '../../services/notificationservice';
 import { userserviceapi } from '../../services/userservice';
-import { clientData } from '../../model/clientData';
+import { clientData, ClientMenuItems } from '../../model/clientData';
 import { Router } from '@angular/router';
 
 
@@ -33,7 +33,7 @@ export class AlbumName implements OnInit {
   }
 
   ngOnInit(): void {
-    this.clientDataService.triggerNextStep(1);
+    this.clientDataService.triggerNextStep(ClientMenuItems.albumName);
     this.isLoading = true;
 
     // Defensive: ensure formData has the arrays we expect
@@ -77,8 +77,8 @@ export class AlbumName implements OnInit {
       // User pressed Cancel, stop execution here
       return;
     }
-    this.clientDataService.triggerNextStep(0);
-    this.router.navigate(['userhome/startpage']);
+    this.clientDataService.triggerNextStep(ClientMenuItems.designPage);
+    // this.router.navigate(['userhome/startpage']);
   }
 isValidForm(): boolean {
   const hasAlbumName =
@@ -111,7 +111,7 @@ isValidForm(): boolean {
 
     this.updateModelWithLatestData();
     // Notify other components to move to next step
-    this.clientDataService.triggerNextStep(2);
+    this.clientDataService.triggerNextStep(ClientMenuItems.imageSelection);
   }
 
   updateModelWithLatestData(): clientData {

@@ -1,0 +1,90 @@
+<div class="container py-4">
+  <!-- Header -->
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <button class="btn btn-link fs-4 heading-orange p-0" aria-label="Back" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+
+      <div>
+        <button class="btn btn-warning rounded-pill fw-bold px-4 me-2" (click)="onSave()">
+          Save
+        </button>
+        <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
+          Next <i class="bi bi-arrow-right-circle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="row">
+    <div class="col-12">
+      <div class="user-step-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="fw-bold mb-0 heading-orange">Album design</h4>
+        </div>
+
+        <p class="mb-4 step-subtitle">
+          Choose one of the album designs below. Click "View sample" to open the PDF.
+        </p>
+
+        <form novalidate>
+          <div class="design-options">
+            <div
+              class="design-row mb-3 p-3 rounded"
+              *ngFor="let d of designList | slice:0:3; let i = index"
+              [class.selected]="formData.designTypeId === d.designTypeId"
+            >
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <input
+                    type="radio"
+                    class="form-check-input me-3"
+                    [id]="'design_' + i"
+                    name="designOption"
+                    [(ngModel)]="formData.designTypeId"
+                    [value]="d.designTypeId"
+                    [attr.aria-label]="'Select ' + d.name"
+                  />
+                  <label [for]="'design_' + i" class="mb-0 fw-semibold step-label">
+                    {{ d.designTypeName }}
+                  </label>
+                </div>
+
+                <div class="text-end">
+                  <button type="button" class="btn btn-sm btn-outline-light" (click)="openSamplePdf(i)">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+                    View sample
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-2 small">
+                {{ d.description || 'Sample design preview available.' }}
+              </div>
+            </div>
+
+            <!-- If there are less than 3 designs -->
+            <div *ngIf="formData.designTypeId === 0" class="small">
+              No designs available. Please contact the studio.
+            </div>
+
+            <!-- <div *ngIf="formData.designTypeId == 0"  class="text-danger small mt-2">
+              Please select a design to continue.
+            </div> -->
+          </div>
+        </form>
+
+        <div class="small mt-3 step-subtitle">
+          You can change the design later before final confirmation.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div *ngIf="isLoading" class="loading-container">
+  <img src="assets/loading-spinner.gif" alt="Loading..." />
+</div>
