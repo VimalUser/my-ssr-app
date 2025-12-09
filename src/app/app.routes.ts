@@ -20,6 +20,9 @@ import { Clientlogout } from './component/clientlogout/clientlogout';
 import { send } from 'process';
 import { SendClientCredentials } from './component/send-client-credentials/send-client-credentials';
 import { VideoStatus } from './component/video-status/video-status';
+import { ClientDocuments } from './component/client-documents/client-documents';
+import { ClientHistory } from './component/client-history/client-history';
+import { AccesslinkExpire } from './component/accesslink-expire/accesslink-expire';
 import { DesignSelectionComponent } from './component/album-design/design-selection-component/design-selection-component';
 
 export const routes: Routes = [
@@ -30,6 +33,7 @@ export const routes: Routes = [
   { path: 'adminlogin', component: Adminloginpage },
   { path: 'userlogin', component: Userloginpage },
   {path: 'clientlogout', component: Clientlogout},
+  {path: 'linkExpired', component: AccesslinkExpire},
 
   // A parent route for the admin layout
   {
@@ -45,7 +49,8 @@ export const routes: Routes = [
       { path: 'download/:id',component:AdminDownloadSelection},
       { path: 'comments/:id',component:AdminReviewComments},
       { path: 'videoStatus/:id',component:VideoStatus},
-      
+      { path: 'clientDocuments/:id',component:ClientDocuments},
+      { path: 'clientHistory/:id',component:ClientHistory},
     ],
   },
 

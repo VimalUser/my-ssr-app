@@ -48,17 +48,6 @@
 
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/comments', clientId]" style="animation-delay: 0.3s;">
-                <i class="bi bi-chat-dots-fill icon-large text-comment mb-3"></i>
-                <div class="card-body p-0">
-                    <h5 class="card-title">Review Comments</h5>
-                    <p class="card-text text-muted">See the user comments on selected photos.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card h-100 classic-card animated-card text-center p-4"
                 [routerLink]="['/admindashboard/download', clientId]" style="animation-delay: 0.2s;">
                 <i class="bi bi-archive-fill icon-large text-download mb-3"></i>
                 <div class="card-body p-0">
@@ -70,11 +59,44 @@
 
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/comments', clientId]" style="animation-delay: 0.3s;">
+                <i class="bi bi-chat-dots-fill icon-large text-comment mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">Review Comments</h5>
+                    <p class="card-text text-muted">See the user comments on selected photos.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 classic-card animated-card text-center p-4"
                 [routerLink]="['/admindashboard/videoStatus', clientId]" style="animation-delay: 0.3s;">
                 <i class="bi bi-camera-video-fill icon-large text-primary mb-3"></i>
                 <div class="card-body p-0">
                     <h5 class="card-title">Video Status</h5>
                     <p class="card-text text-muted">See the Video status.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/clientDocuments', clientId]" style="animation-delay: 0.3s;">
+                <i class="bi bi-file-earmark-text-fill icon-large text-primary mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">Client Documents</h5>
+                    <p class="card-text text-muted">See the Client documents.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/clientHistory', clientId]" style="animation-delay: 0.3s;">
+                <i class="bi bi-list-check icon-large text-primary mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">Client Activity Tracking</h5>
+                    <p class="card-text text-muted">See the Client activity details.</p>
                 </div>
             </div>
         </div>

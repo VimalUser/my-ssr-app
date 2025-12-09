@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class userserviceapi {
   private clientAlbumUrl = environment.clientAlbumUrl;
   private blobUrl = environment.blobUrl;
-    
+
   // Inject HttpClient using the `inject` function (modern approach)
   private http = inject(HttpClient);
 
@@ -28,6 +28,33 @@ export class userserviceapi {
     return this.http.post(`${finalUrl}`, data, { responseType: 'text' });
   }
 
+  submitAlbumDetailsAndDownloadPdf(data: any): Observable<HttpResponse<Blob>> {
+    const finalUrl = this.clientAlbumUrl + 'createAlbum';
+
+    return this.http.post(finalUrl, data, {
+      responseType: 'blob',   // expecting PDF
+      observe: 'response'     // to read headers (like filename)
+    });
+  }
+
+  getClientDocuments(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.clientAlbumUrl}clientDocuments?clientId=${clientId}`);
+  }
+
+  downloadDocument(fileId: number): Observable<Blob> {
+    return this.http.get(`${this.clientAlbumUrl}clientDocDownload?fileId=${fileId}`, {
+      responseType: 'blob'
+    });
+  }
+
+  getTrackingStatus(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistoryTracking?clientId=${clientId}`);
+  }
+
+  getClientTrackingStatus(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistory?clientId=${clientId}`);
+  }
+
   getImagesbyType(clientId: string, photoType: string): Observable<any> {
     var finalUrl = this.blobUrl + 'listSAS';
     return this.http.get(
@@ -42,7 +69,7 @@ export class userserviceapi {
     );
   }
 
-   getClientAlbumSelectionDetails(id: string): Observable<any> {
+  getClientAlbumSelectionDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'getClientInfoWithImages';
     return this.http.get(`${finalUrl}?clientId=${id}`);
   }
@@ -55,9 +82,8 @@ export class userserviceapi {
       errorMsg = `Client Error: ${error.error.message}`;
     } else {
       // Server-side error
-      errorMsg = `Server Error (${error.status}): ${
-        error.error?.message || error.message
-      }`;
+      errorMsg = `Server Error (${error.status}): ${error.error?.message || error.message
+        }`;
     }
 
     return throwError(() => new Error(errorMsg));

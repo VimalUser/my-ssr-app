@@ -10,6 +10,7 @@ import { finalize, firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { MarkAsDoneDirective } from '../../shared/mark-as-done';
+import { BlockBlobClient } from "@azure/storage-blob";
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -31,6 +32,9 @@ export class Uploadalbumpics implements OnInit {
   readonly MAX_FILE_SIZE_BYTES = this.MAX_FILE_SIZE_MB * 1024 * 1024;
   checkboxMessage: string = '';
   isPhotoUploadDone: boolean = false;
+  uploading = false;
+  fileProgress: any[] = [];
+  overallProgress = 0;
 
 
   constructor(
@@ -107,138 +111,270 @@ export class Uploadalbumpics implements OnInit {
 
 
   // Handles file selection from the input
+  // onFileSelected(event: any, category: string): void {
+  //   const files = event.target.files;
+
+  //   if (files && files.length > 0) {
+  //     const allowedExtensions = this.allowedTypes;
+  //     const fileArray: File[] = Array.from(files);
+
+  //     const validFiles: File[] = [];
+  //     const invalidTypeFiles: string[] = [];
+  //     const tooLargeFiles: string[] = [];
+
+  //     for (const file of fileArray) {
+  //       const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+
+  //       // 1️⃣ Check file type
+  //       const isTypeValid = allowedExtensions.includes(ext);
+
+  //       // 2️⃣ Check file size
+  //       const isSizeValid = file.size <= this.MAX_FILE_SIZE_BYTES;
+
+  //       if (!isTypeValid) {
+  //         invalidTypeFiles.push(file.name);
+  //       } else if (!isSizeValid) {
+  //         tooLargeFiles.push(`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+  //       } else {
+  //         validFiles.push(file);
+  //       }
+  //     }
+
+  //     // 🔴 Show combined error messages
+  //     if (invalidTypeFiles.length > 0) {
+  //       this.notify.error(
+  //         `Only ${allowedExtensions} formats are supported.\nInvalid: ${invalidTypeFiles.join(', ')}`
+  //       );
+  //     }
+
+  //     if (tooLargeFiles.length > 0) {
+  //       this.notify.error(
+  //         `These files exceed the ${this.MAX_FILE_SIZE_MB} MB limit:\n${tooLargeFiles.join('\n')}`
+  //       );
+  //     }
+
+  //     // ✅ Add only valid files
+  //     if (validFiles.length > 0) {
+  //       switch (category) {
+  //         case 'traditional':
+  //           this.selectedTraditionalFiles = [
+  //             ...this.selectedTraditionalFiles,
+  //             ...validFiles,
+  //           ];
+  //           break;
+  //         case 'candid':
+  //           this.selectedCandidFiles = [
+  //             ...this.selectedCandidFiles,
+  //             ...validFiles,
+  //           ];
+  //           break;
+  //         case 'loginCover':
+  //           this.selectedLoginCoverFiles = [
+  //             ...this.selectedLoginCoverFiles,
+  //             ...validFiles,
+  //           ];
+  //           break;
+  //       }
+  //     }
+
+  //     // Reset input so user can reselect the same file again
+  //     event.target.value = '';
+  //   }
+  // }
+
+  // // Triggers the API call to upload the selected images
+  // onUpload(category: string, camera: string): void {
+  //   let filesToUpload: File[] = [];
+  //   switch (category) {
+  //     case 'traditional':
+  //       filesToUpload = this.selectedTraditionalFiles;
+  //       break;
+  //     case 'candid':
+  //       filesToUpload = this.selectedCandidFiles;
+  //       break;
+  //     case 'loginCover':
+  //       filesToUpload = this.selectedLoginCoverFiles;
+  //       break;
+  //   }
+
+  //   if (filesToUpload.length > 0) {
+
+  //     // Combine all files into one array
+  //     const allFiles = [
+  //       ...this.selectedTraditionalFiles,
+  //       ...this.selectedCandidFiles,
+  //       ...this.selectedLoginCoverFiles
+  //     ];
+
+  //     // Compute total size in bytes
+  //     const totalSize = allFiles.reduce((sum, file) => sum + file.size, 0);
+
+  //     if (totalSize > this.MAX_FILE_SIZE_BYTES) {
+  //       const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+  //       this.notify.error(
+  //         `Total file size is ${totalSizeMB} MB. Maximum allowed size is ${this.MAX_FILE_SIZE_MB} MB.`
+  //       );
+  //       return;
+  //     }
+
+  //     this.loading = true;
+  //     const formData = new FormData();
+  //     for (const file of filesToUpload) {
+  //       formData.append('files', file, file.name);
+  //     }
+
+  //     this.apiService.uploadImages(formData, category, camera, +(this.clientId)).subscribe({
+  //       next: (response: any) => {
+  //         this.loading = false;
+  //         this.notify.success(`Upload successful for ${category}`);
+  //         // Clear the selection ONLY after a successful upload
+  //         this.clearSelection(category);
+  //         // Optional: Re-fetch counts from the API to update the UI
+  //         this.loadClientData();
+  //       },
+  //       error: (error: any) => {
+  //         this.loading = false;
+  //         this.notify.error(`Upload failed for ${category}`);
+  //         // Do not clear the selection if the upload fails
+  //       }
+  //     });
+  //   } else {
+  //     this.loading = false;
+  //     this.notify.warning('No files selected to upload.');
+  //   }
+  // }
+
+
   onFileSelected(event: any, category: string): void {
-    const files = event.target.files;
+    const files = Array.from(event.target.files) as File[];
 
-    if (files && files.length > 0) {
-      const allowedExtensions = this.allowedTypes;
-      const fileArray: File[] = Array.from(files);
+    const allowedExt = this.allowedTypes;
 
-      const validFiles: File[] = [];
-      const invalidTypeFiles: string[] = [];
-      const tooLargeFiles: string[] = [];
+    const valid: File[] = [];
+    const invalid: string[] = [];
 
-      for (const file of fileArray) {
-        const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-
-        // 1️⃣ Check file type
-        const isTypeValid = allowedExtensions.includes(ext);
-
-        // 2️⃣ Check file size
-        const isSizeValid = file.size <= this.MAX_FILE_SIZE_BYTES;
-
-        if (!isTypeValid) {
-          invalidTypeFiles.push(file.name);
-        } else if (!isSizeValid) {
-          tooLargeFiles.push(`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-        } else {
-          validFiles.push(file);
-        }
-      }
-
-      // 🔴 Show combined error messages
-      if (invalidTypeFiles.length > 0) {
-        this.notify.error(
-          `Only ${allowedExtensions} formats are supported.\nInvalid: ${invalidTypeFiles.join(', ')}`
-        );
-      }
-
-      if (tooLargeFiles.length > 0) {
-        this.notify.error(
-          `These files exceed the ${this.MAX_FILE_SIZE_MB} MB limit:\n${tooLargeFiles.join('\n')}`
-        );
-      }
-
-      // ✅ Add only valid files
-      if (validFiles.length > 0) {
-        switch (category) {
-          case 'traditional':
-            this.selectedTraditionalFiles = [
-              ...this.selectedTraditionalFiles,
-              ...validFiles,
-            ];
-            break;
-          case 'candid':
-            this.selectedCandidFiles = [
-              ...this.selectedCandidFiles,
-              ...validFiles,
-            ];
-            break;
-          case 'loginCover':
-            this.selectedLoginCoverFiles = [
-              ...this.selectedLoginCoverFiles,
-              ...validFiles,
-            ];
-            break;
-        }
-      }
-
-      // Reset input so user can reselect the same file again
-      event.target.value = '';
+    for (const file of files) {
+      const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+      if (!allowedExt.includes(ext)) invalid.push(file.name);
+      else valid.push(file);
     }
+
+    if (invalid.length)
+      this.notify.error(`Invalid formats: ${invalid.join(', ')}`);
+
+    if (valid.length) {
+      if (category === 'traditional') this.selectedTraditionalFiles.push(...valid);
+      else if (category === 'candid') this.selectedCandidFiles.push(...valid);
+      else if (category === 'loginCover') this.selectedLoginCoverFiles.push(...valid);
+    }
+
+    event.target.value = "";
   }
 
-  // Triggers the API call to upload the selected images
-  onUpload(category: string, camera: string): void {
-    let filesToUpload: File[] = [];
-    switch (category) {
-      case 'traditional':
-        filesToUpload = this.selectedTraditionalFiles;
-        break;
-      case 'candid':
-        filesToUpload = this.selectedCandidFiles;
-        break;
-      case 'loginCover':
-        filesToUpload = this.selectedLoginCoverFiles;
-        break;
+  async onUpload(category: string, camera: string) {
+    let files: File[] = [];
+
+    if (category === 'traditional') files = this.selectedTraditionalFiles;
+    else if (category === 'candid') files = this.selectedCandidFiles;
+    else if (category === 'loginCover') files = this.selectedLoginCoverFiles;
+
+    if (!files.length) {
+      this.notify.warning("No files selected.");
+      return;
     }
 
-    if (filesToUpload.length > 0) {
+    this.loading = true;
 
-      // Combine all files into one array
-      const allFiles = [
-        ...this.selectedTraditionalFiles,
-        ...this.selectedCandidFiles,
-        ...this.selectedLoginCoverFiles
-      ];
-
-      // Compute total size in bytes
-      const totalSize = allFiles.reduce((sum, file) => sum + file.size, 0);
-
-      if (totalSize > this.MAX_FILE_SIZE_BYTES) {
-        const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
-        this.notify.error(
-          `Total file size is ${totalSizeMB} MB. Maximum allowed size is ${this.MAX_FILE_SIZE_MB} MB.`
-        );
-        return;
-      }
-
-      this.loading = true;
-      const formData = new FormData();
-      for (const file of filesToUpload) {
-        formData.append('files', file, file.name);
-      }
-
-      this.apiService.uploadImages(formData, category, camera, +(this.clientId)).subscribe({
-        next: (response: any) => {
-          this.loading = false;
-          this.notify.success(`Upload successful for ${category}`);
-          // Clear the selection ONLY after a successful upload
-          this.clearSelection(category);
-          // Optional: Re-fetch counts from the API to update the UI
-          this.loadClientData();
+    this.apiService.getUploadSas(+this.clientId, category, camera)
+      .subscribe({
+        next: async (res: any) => {
+          try {
+            await this.uploadFilesDirect(res.containerSasUrl, res.prefix, files);
+            this.notify.success(`Upload successful for ${category}`);
+            this.clearSelection(category);
+            this.loadClientData();
+          }
+          catch (err) {
+            console.error(err);
+            this.notify.error(`Upload failed for ${category}`);
+          }
+          finally {
+            this.loading = false;
+          }
         },
-        error: (error: any) => {
+        error: err => {
+          this.notify.error("Failed to create upload session");
           this.loading = false;
-          this.notify.error(`Upload failed for ${category}`);
-          // Do not clear the selection if the upload fails
         }
       });
-    } else {
-      this.loading = false;
-      this.notify.warning('No files selected to upload.');
-    }
   }
+
+  async uploadFilesDirect(containerSasUrl: string, prefix: string, files: File[]) {
+
+    this.uploading = true;
+    this.fileProgress = files.map(f => ({
+      name: f.name,
+      progress: 0,
+      loaded: 0,
+      total: f.size,
+      status: "uploading"
+    }));
+
+    const totalSize = files.reduce((s, f) => s + f.size, 0);
+    let uploadedTotal = 0;
+
+    const updateOverall = () => {
+      this.overallProgress = (uploadedTotal / totalSize) * 100;
+    };
+
+    const concurrency = 5;
+    const queue = [...files];
+    const tasks = [];
+
+    const worker = async () => {
+      while (queue.length) {
+        const file = queue.shift();
+        if (!file) return;
+
+        const [baseUrl, sasToken] = containerSasUrl.split("?");
+
+        const blobUrl = `${baseUrl}/${encodeURIComponent(prefix + file.name)}?${sasToken}`;
+        const blobClient = new BlockBlobClient(blobUrl);
+        const pf = this.fileProgress.find(x => x.name === file.name);
+
+        try {
+          await blobClient.uploadBrowserData(file, {
+            blockSize: 4 * 1024 * 1024,
+            concurrency: 4,
+
+            onProgress: (ev) => {
+              pf.loaded = ev.loadedBytes;
+              pf.progress = (ev.loadedBytes / file.size) * 100;
+
+              uploadedTotal = this.fileProgress.reduce((sum, fp) => sum + fp.loaded, 0);
+              updateOverall();
+            }
+          });
+
+          pf.progress = 100;
+          pf.status = "completed";
+        }
+        catch (err) {
+          console.error(err);
+          pf.status = "failed";
+          throw err;
+        }
+      }
+    };
+
+    for (let i = 0; i < concurrency; i++)
+      tasks.push(worker());
+
+    await Promise.all(tasks);
+
+    this.uploading = false;
+  }
+
 
   // Helper method to clear selected files
   private clearSelection(category: string): void {

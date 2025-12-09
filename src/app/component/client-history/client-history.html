@@ -1,0 +1,44 @@
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="form-title fw-bold text-dark">
+            <button class="back-button">
+                <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+                    style="width: 25px; height: 25px; cursor: pointer;" />
+            </button>
+            Client History
+        </h5>
+    </div>
+    <div class="card shadow-lg border-0 rounded-3 mt-4">
+        <div class="card-body p-4">
+
+            <div *ngFor="let ev of eventHistory; let i = index" class="timeline-item" [style.--i]="i">
+
+                <div class="timeline-left">
+
+                    <div class="circle animate-circle">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <div *ngIf="i < eventHistory.length - 1" class="line animate-line"></div>
+
+                </div>
+
+                <div class="timeline-content text-success animate-text">
+                    {{ ev.comments }} by 
+                    <span class="bold-green"> {{ ev.actionBy }}</span> on
+                    <span class="bold-green"> {{ ev.formattedOn }}</span>
+                </div>
+
+            </div>
+
+            <div *ngIf="eventHistory.length === 0" class="no-events text-muted">
+                No activity history available.
+            </div>
+        </div>
+    </div>
+    <br />
+</div>
+<div *ngIf="isLoading" class="loading-container">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
+</div>
