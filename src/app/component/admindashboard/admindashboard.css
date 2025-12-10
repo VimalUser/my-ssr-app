@@ -90,7 +90,7 @@
   white-space: nowrap; /* prevents text from breaking into multiple lines */
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-.completed { background-color: #28a745; color: white; }
+.completed { background-color: #198754; color: white; }
 .inprogress { background-color: #ffc107; color: #212529; }
 .yettostart { background-color: #6c757d; color: white; }
 
@@ -146,6 +146,11 @@
 .status-pending {
   background-color: #adb5bd; /* Grey */
   color: black;
+}
+
+.status-approved {
+  background-color: #198754;  /* Green */
+  color: white;
 }
 
 /* 🎨 Video Status Colors */

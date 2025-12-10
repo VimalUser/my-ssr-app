@@ -191,7 +191,8 @@ export class Admindashboard implements OnInit {
 
       case 'Photos Downloaded':
         return 'status-downloaded';
-
+      case 'Photo Selection Approved':
+        return 'status-approved';
       default:
         return 'status-pending'; // Yet to Start
     }
