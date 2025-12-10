@@ -103,6 +103,10 @@ export class newclientapi {
     }
     return this.http.post(`${finalUrl}`, data);
   }
+  approveOrRejectClientAlbum(data: any): Observable<any> {
+    var finalUrl = this.clientAlbumUrl + 'ApproveOrRejectClientAlbum';
+    return this.http.post(`${finalUrl}`, data);
+  }
 
   generateUserlogin(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'GetUserLogin';

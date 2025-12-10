@@ -24,6 +24,7 @@ import { ClientDocuments } from './component/client-documents/client-documents';
 import { ClientHistory } from './component/client-history/client-history';
 import { AccesslinkExpire } from './component/accesslink-expire/accesslink-expire';
 import { DesignSelectionComponent } from './component/album-design/design-selection-component/design-selection-component';
+import { Approveorrejectalbum } from './component/approveorrejectalbum/approveorrejectalbum';
 
 export const routes: Routes = [
   // Routes for pages without the admin sidebar
@@ -51,6 +52,7 @@ export const routes: Routes = [
       { path: 'videoStatus/:id',component:VideoStatus},
       { path: 'clientDocuments/:id',component:ClientDocuments},
       { path: 'clientHistory/:id',component:ClientHistory},
+      { path: 'approveOrRejectAlbum/:id',component:Approveorrejectalbum},
     ],
   },
 

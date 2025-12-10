@@ -1,0 +1,68 @@
+.styled-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    border: 1px solid #FFD590 !important;
+    /* Very light orange border */
+    /* Subtle shadow with an orange tint */
+    box-shadow: 0 4px 10px rgba(255, 152, 0, 0.15) !important;
+    transition: all 0.3s ease;
+}
+
+.styled-card:hover {
+    box-shadow: 0 6px 15px rgba(255, 152, 0, 0.3) !important;
+    /* Stronger shadow on hover */
+}
+
+.valuecard {
+    box-shadow: 0 4px 10px rgba(255, 152, 0, 0.15) !important;
+    background: #e9e1c3;
+}
+
+/* Album details rows */
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+
+.detail-row .value {
+    color: #555;
+}
+
+
+/* Clean table-like list rows */
+.clean-list .clean-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+}
+
+/* Prevent extreme left-right spacing */
+.clean-item .label {
+    flex: 1;
+}
+
+.clean-item .value {
+    color: #555;
+    min-width: 100px;
+    text-align: right;
+}
+
+
+/* Button bar stays fixed and visible */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    z-index: 999999;
+    border-top: 1px solid #eee;
+}
+
+/* Reject box sits ABOVE the footer – not inside drawer */
+.reject-box {
+    background: #ffffff;
+    padding-bottom: 70px;
+    /* extra spacing for footer */
+}

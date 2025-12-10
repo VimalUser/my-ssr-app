@@ -1,0 +1,139 @@
+<div *ngIf="apiResponse">
+    <div class="container py-3">
+
+        <!-- Header -->
+        <div class="card styled-card shadow-sm border-0 mb-3 p-3 header-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="d-flex align-items-center">
+                    <button class="back-button">
+                        <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+                            style="width: 25px; height: 25px; cursor: pointer;" />
+                    </button>
+                    <h4 class="mb-0 fw-bold">Client Overall Information : {{ apiResponse.clientName }}</h4>
+                </div>
+
+                <span class="badge bg-warning text-dark px-3 py-2 fs-6 mt-2 mt-md-0">
+                    {{ apiResponse.displayStatus }}
+                </span>
+            </div>
+        </div>
+
+
+        <!-- ALBUM DETAILS -->
+        <div class="card valuecard shadow-sm border-0 mb-3 p-3">
+            <h5 class="fw-bold mb-3">Album Details</h5>
+
+            <ul class="list-group clean-list">
+                <li class="list-group-item clean-item">
+                    <span class="label">Couple Name for Album</span>
+                    <span class="value">{{ apiResponse.coupleName }}</span>
+                </li>
+                <li class="list-group-item clean-item">
+                    <span class="label">Event Date</span>
+                    <span class="value">{{ apiResponse.albumEventDate | date }}</span>
+                </li>
+                <li class="list-group-item clean-item">
+                    <span class="label">Design Type</span>
+                    <span class="value">{{ apiResponse.albumDesignType }}</span>
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- EVENTS -->
+        <div class="card valuecard shadow-sm border-0 mb-3 p-3">
+            <h5 class="fw-bold mb-3">Event Details</h5>
+
+            <div *ngIf="events.length === 0" class="text-muted">No events available</div>
+
+            <ul *ngIf="events.length > 0" class="list-group clean-list">
+                <li class="list-group-item clean-item" *ngFor="let ev of events">
+                    <span class="label">{{ ev.name }}</span>
+                    <span class="value">{{ ev.date | date }}</span>
+                </li>
+            </ul>
+        </div>
+
+
+        <!-- PHOTO SUMMARY -->
+        <div class="card valuecard shadow-sm border-0 mb-3 p-3">
+            <h5 class="fw-bold mb-3">Photo Summary by Type</h5>
+
+            <ul class="list-group clean-list">
+                <li class="list-group-item clean-item">
+                    <span class="label">Traditional Photos</span>
+                    <span class="value">{{ apiResponse.tranditionalAlbumSelection.length }}</span>
+                </li>
+                <li class="list-group-item clean-item">
+                    <span class="label">Candid Photos</span>
+                    <span class="value">{{ apiResponse.candidAlbumSelection.length }}</span>
+                </li>
+                <li class="list-group-item clean-item">
+                    <span class="label">Cover Photos</span>
+                    <span class="value">{{ apiResponse.coverSelection.length }}</span>
+                </li>
+                <li class="list-group-item clean-item">
+                    <span class="label">Portrait Frames</span>
+                    <span class="value">{{ apiResponse.portraitFrameSelection.length }}</span>
+                </li>
+                <li class="list-group-item clean-item">
+                    <span class="label">Landscape Frames</span>
+                    <span class="value">{{ apiResponse.landscapeFrameSelection.length }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- COMMENTS -->
+        <div class="card valuecard shadow-sm border-0 mb-5 p-3">
+            <h5 class="fw-bold mb-3">Client Comments</h5>
+            <p class="text-muted">{{ apiResponse.clientReviewComments || 'No comments provided' }}</p>
+        </div>
+
+        <!-- COMMENTS -->
+        <div *ngIf="apiResponse.isResubmitSent" class="card valuecard shadow-sm border-0 mb-5 p-3">
+            <h5 class="fw-bold mb-3">Admin Rejection Comments</h5>
+            <p class="text-muted">{{ apiResponse.adminRejectionComments || 'No comments provided' }}</p>
+        </div>
+        <div *ngIf="clientStatus == 'Completed' && adminApproved != true" class=" mb-5">
+            <div class="d-flex justify-content-center gap-3">
+
+                <button class="btn btn-success px-4" [disabled]="buttonsDisabled" (click)="approve()">
+                    Approve
+                </button>
+                <button class="btn btn-outline-danger px-4" [disabled]="buttonsDisabled"
+                    (click)="rejectMode = !rejectMode">
+                    Send for Resubmission
+                </button>
+            </div>
+
+            <!-- REJECTION BOX ABOVE FOOTER -->
+            <div *ngIf="rejectMode" class="reject-box mt-3">
+                <textarea class="form-control" rows="4" maxlength="3000" placeholder="Enter resubmission reason..."
+                    [(ngModel)]="rejectComments"></textarea>
+
+                <small class="text-muted">{{ rejectComments.length || 0 }}/3000 characters</small>
+
+                <button class="btn btn-danger mt-2 w-100" [disabled]="!rejectComments" (click)="reject()">
+                    Submit Resubmission Request
+                </button>
+            </div>
+        </div>
+        <div *ngIf="clientStatus != 'Completed'">
+            <div class="text-center text-muted mt-3">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Only after client completes the photo selection it can be approved or sent for resubmission.
+            </div>
+        </div>
+        <div *ngIf="clientStatus == 'Completed' && adminApproved == true">
+            <div class="text-center text-success mt-3">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Admin approved the photo selection process.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-container">
+        <img src="assets/loading-spinner.gif" alt="Uploading...">
+</div>

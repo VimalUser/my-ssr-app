@@ -72,6 +72,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'admindashboard/clientHistory/:id',
     renderMode: RenderMode.Client
   },
+  {
+    path: 'admindashboard/approveOrRejectAlbum/:id',
+    renderMode: RenderMode.Client
+  },
 
   // 👤 User home base route - prerender (acts like layout)
   {
