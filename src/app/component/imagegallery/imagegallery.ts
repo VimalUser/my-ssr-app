@@ -27,7 +27,7 @@ export class Imagegallery implements OnInit {
   images: string[] = [];
 
   // "Load more" batching
-  batchSize = 60;
+  batchSize = 100;
   displayedImages: string[] = [];
   isLoadingMore = false;
 
