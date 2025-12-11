@@ -1,11 +1,12 @@
 <div class="container">
 
     <h4 class="mb-4 text-dark fw-bold border-bottom pb-2">
-          <button class="back-button">
-                <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
-                    style="width: 25px; height: 25px; cursor: pointer;" />
-            </button>
-        Client Management Tools</h4>
+        <button class="back-button">
+            <img src="assets/back.png" alt="Back" class="back-arrow" (click)="goBack()"
+                style="width: 25px; height: 25px; cursor: pointer;" />
+        </button>
+        Client Management Tools
+    </h4>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
 
@@ -20,7 +21,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
                 [routerLink]="['/admindashboard/uploadpictures', clientId]" style="animation-delay: 0.1s;">
@@ -48,6 +49,17 @@
 
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
+                [routerLink]="['/admindashboard/approveOrRejectAlbum', clientId]" style="animation-delay: 0.3s;">
+                <i class="bi bi-clipboard-check icon-large text-primary mb-3"></i>
+                <div class="card-body p-0">
+                    <h5 class="card-title">Review & Approve</h5>
+                    <p class="card-text text-muted">Verify client information and approve or reject client photos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100 classic-card animated-card text-center p-4"
                 [routerLink]="['/admindashboard/download', clientId]" style="animation-delay: 0.2s;">
                 <i class="bi bi-archive-fill icon-large text-download mb-3"></i>
                 <div class="card-body p-0">
@@ -57,7 +69,7 @@
             </div>
         </div>
 
-        <div class="col">
+        <!-- <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
                 [routerLink]="['/admindashboard/comments', clientId]" style="animation-delay: 0.3s;">
                 <i class="bi bi-chat-dots-fill icon-large text-comment mb-3"></i>
@@ -66,7 +78,7 @@
                     <p class="card-text text-muted">See the user comments on selected photos.</p>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="col">
             <div class="card h-100 classic-card animated-card text-center p-4"
@@ -86,17 +98,6 @@
                 <div class="card-body p-0">
                     <h5 class="card-title">Client Documents</h5>
                     <p class="card-text text-muted">See the Client documents.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card h-100 classic-card animated-card text-center p-4"
-                [routerLink]="['/admindashboard/approveOrRejectAlbum', clientId]" style="animation-delay: 0.3s;">
-                <i class="bi bi-file-earmark-text-fill icon-large text-primary mb-3"></i>
-                <div class="card-body p-0">
-                    <h5 class="card-title">Approve or Reject Client Photos</h5>
-                    <p class="card-text text-muted">Verify client information and approve or reject client photos</p>
                 </div>
             </div>
         </div>

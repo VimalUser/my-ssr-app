@@ -26,15 +26,15 @@
             <ul class="list-group clean-list">
                 <li class="list-group-item clean-item">
                     <span class="label">Couple Name for Album</span>
-                    <span class="value">{{ apiResponse.coupleName }}</span>
+                    <span class="value">{{ apiResponse.coupleName || '-NA-' }}</span>
                 </li>
                 <li class="list-group-item clean-item">
                     <span class="label">Event Date</span>
-                    <span class="value">{{ apiResponse.albumEventDate | date }}</span>
+                    <span class="value">{{ apiResponse.albumEventDate ? (apiResponse.albumEventDate | date) : '-NA-' }}</span>
                 </li>
                 <li class="list-group-item clean-item">
                     <span class="label">Design Type</span>
-                    <span class="value">{{ apiResponse.albumDesignType }}</span>
+                    <span class="value">{{ apiResponse.albumDesignType || '-NA-' }}</span>
                 </li>
             </ul>
         </div>
@@ -49,7 +49,7 @@
             <ul *ngIf="events.length > 0" class="list-group clean-list">
                 <li class="list-group-item clean-item" *ngFor="let ev of events">
                     <span class="label">{{ ev.name }}</span>
-                    <span class="value">{{ ev.date | date }}</span>
+                    <span class="value">{{ ev.date ? (ev.date | date) : '-NA-' }}</span>
                 </li>
             </ul>
         </div>
