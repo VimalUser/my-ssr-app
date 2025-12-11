@@ -221,6 +221,7 @@ export class Newclientalbumform implements OnInit {
       },
       error: (err) => {
         this.errorMessage = err.message;
+        this.notify.error('Failed to load dropdown data.');
       }
     });
   }

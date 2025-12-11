@@ -138,7 +138,7 @@ export class Approveorrejectalbum {
         this.fetchData();
       },
       error: (error) => {
-        this.notify.error('Failed to resubmmit photo selection process.');
+        this.notify.error('Failed to resubmit photo selection process.');
         this.errorMessage = 'Failed to resubmit photo selection process.';
         this.setClientStatus("In Progress");
         this.setAdminApprovalStatus(false);

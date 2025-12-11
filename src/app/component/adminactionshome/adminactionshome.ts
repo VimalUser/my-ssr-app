@@ -6,6 +6,7 @@ import { AdminDataService } from '../../shared/admin-data-service';
 import { AdminData } from '../../model/AdminData';
 import { userserviceapi } from '../../services/userservice';
 import { CommonModule } from '@angular/common';
+import { Notificationservice } from '../../services/notificationservice';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class Adminactionshome implements OnInit {
   clientPhone: string = "";
 
   constructor(private loggingService: LoggingService, private route: ActivatedRoute,
-    private adminDataService: AdminDataService, private userService: userserviceapi
+    private adminDataService: AdminDataService, private userService: userserviceapi,
+    private notify: Notificationservice
   ) {
     // You can initialize any required services or data here
 
@@ -84,6 +86,7 @@ export class Adminactionshome implements OnInit {
         this.loading = false;
       },
       error: (error) => {
+        this.notify.error('Failed to load client album selection details.');
         this.loading = false;
       },
       complete: () => { },

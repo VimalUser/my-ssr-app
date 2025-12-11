@@ -81,7 +81,7 @@ export class VideoStatus implements OnInit  {
       error: (error) => {
         // This is executed if the request fails (e.g., 404, 500)
         this.errorMessage =
-          'Failed to save Link Expiry date. Check the server or network connection.';
+          'Failed to save Video status. Check the server or network connection.';
         this.notify.error(this.errorMessage);
         this.isLoading = false;
       },

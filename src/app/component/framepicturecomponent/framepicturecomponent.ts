@@ -238,6 +238,9 @@ export class Framepicturecomponent {
       },
       error: (error) => {
         this.loading = false;
+        this.notify.error(
+          'Failed to load frame images from server. Please try again later.'
+        );
         this.images = [];
       },
       complete: () => {

@@ -89,9 +89,10 @@ export class AdminDownloadSelection {
           this.loading = false;
           this.notify.success("Download completed");
         },
-        error: (error) => {
+        error: async (err) => {
+          const errJson = await this.parseBlobError(err.error);
+          this.notify.error(errJson.message);
           this.loading = false;
-          this.notify.error(error.error?.message || 'An error occurred while fetching data.');
         },
         complete: () => {
           this.loading = false;
@@ -99,10 +100,25 @@ export class AdminDownloadSelection {
       });
   }
 
-   onLoadingChange(loading: boolean) {
+  parseBlobError(blob: Blob): Promise<any> {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          resolve(JSON.parse(reader.result as string));
+        } catch {
+          resolve({ message: "Error parsing server response." });
+        }
+      };
+      reader.readAsText(blob);
+    });
+  }
+
+
+  onLoadingChange(loading: boolean) {
     this.loading = loading;
   }
   onMessageChange(msg: string) {
-  this.checkboxMessage = msg;
-}
+    this.checkboxMessage = msg;
+  }
 }

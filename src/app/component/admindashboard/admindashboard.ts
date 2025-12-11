@@ -170,7 +170,7 @@ export class Admindashboard implements OnInit {
     if (err.status === 404) return 'Dashboard data not found.';
     if (err.status === 401) return 'Unauthorized: Please log in again.';
     if (err.status === 403) return 'Forbidden: You do not have permission.';
-    return '';
+    else return 'Failed to load dashboard data. Please try again later.';
   }
 
 

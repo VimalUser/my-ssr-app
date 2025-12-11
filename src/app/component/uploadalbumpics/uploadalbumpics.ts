@@ -102,9 +102,11 @@ export class Uploadalbumpics implements OnInit {
           this.traditionalPhotosCount = res.folderCounts?.traditional || 0;
           this.candidPhotosCount = res.folderCounts?.candid || 0;
           this.loginCoverPhotosCount = res.folderCounts?.logincover || 0; // updated key
+          this.loading = false;
         },
         error: err => {
           this.notify.error('Error fetching folder counts');
+          this.loading = false;
         }
       });
   }
@@ -406,7 +408,7 @@ export class Uploadalbumpics implements OnInit {
         this.loadClientData();
       },
       error: (error: any) => {
-        this.notify.error(`Failed to delete ${category} images.`);
+        this.notify.error(`Failed to delete ${category} images. ${error.error.message}`);
         this.loading = false;
       }
     });

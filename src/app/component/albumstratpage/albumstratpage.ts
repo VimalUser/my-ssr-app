@@ -8,6 +8,7 @@ import { clientData, ClientMenuItems } from '../../model/clientData';
 import { userserviceapi } from '../../services/userservice';
 import { ClientAlbum } from '../../model/ClientAlbum';
 import { Router } from '@angular/router';
+import { Notificationservice } from '../../services/notificationservice';
 @Component({
   selector: 'app-albumstratpage',
   imports: [CommonModule],
@@ -33,7 +34,8 @@ export class Albumstratpage implements OnInit {
   constructor(
     private clientDataService: ClientDataService,
     private userService: userserviceapi,
-    private router: Router
+    private router: Router,
+    private notify: Notificationservice
   ) {}
 
   ngOnInit(): void {
@@ -211,6 +213,9 @@ export class Albumstratpage implements OnInit {
         },
         error: (error) => {
           // This is executed if the request fails (e.g., 404, 500)
+          this.notify.error(
+            'Failed to details. Please try again later.'
+          );
           this.isLoading = false;
         },
         complete: () => {},

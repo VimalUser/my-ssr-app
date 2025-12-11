@@ -157,7 +157,7 @@ export class MarkAsDoneDirective {
         this.notify.error('Failed to mark as done');
       }
     } catch (error: any) {
-      this.notify.error(error.error?.message || 'An error occurred.');
+      this.notify.error('Error is saving mark as done, Please try after some time');
     } finally {
       this.loadingChange.emit(false);
     }
