@@ -136,12 +136,16 @@ export class DesignSelectionComponent implements OnInit {
 
   apiCalltoSave(updateData: clientData) {
     this.isLoading = true;
+
+    if (!updateData.albumEventDate) {
+      updateData.albumEventDate = null;
+    }
     this.userservice.saveUserAlbumDetails(updateData).subscribe({
       next: () => {
         this.isLoading = false;
         this.notify.success('Album design saved successfully!');
       },
-      error: () => {
+      error: (ex) => {
         this.isLoading = false;
         this.notify.error('Failed to save album design.');
       },
