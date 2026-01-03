@@ -622,3 +622,94 @@ box-shadow: 0 0 0 2px #cbeed9;
 .preview-img-wrapper {
   touch-action: pan-y; /* allow only vertical panning; reduces double-tap zoom in many browsers */
 }
+
+/* Match UI meaning */
+.album-icon {
+  color: #4caf50;
+}
+
+.frame-icon {
+  color: #2196f3;
+}
+
+.cover-icon {
+  color: #ffc107;
+}
+
+/* ===== PILL SELECTION GLOW (one-shot attention animation) ===== */
+
+.pill-glow-once {
+  position: relative;
+  isolation: isolate;
+}
+
+/* rotating ring burst */
+.pill-glow-once::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    #7cc8ff,
+    #3ddcff,
+    #29ffa8,
+    #ffd54f,
+    #7cc8ff
+  );
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+
+  animation: pillGlowOnceRotate 1.2s ease-out forwards;
+  opacity: .95;
+  z-index: -1;
+}
+
+/* soft interior sweep */
+.pill-glow-once::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: radial-gradient(
+    120% 60% at -10% 50%,
+    rgba(255,255,255,.45),
+    transparent 60%
+  );
+  animation: pillGlowOnceSweep 1.05s ease-out forwards;
+  mix-blend-mode: screen;
+  opacity: .55;
+}
+
+/* rotate + fade */
+@keyframes pillGlowOnceRotate {
+  0%   { transform: scale(.9) rotate(0deg); opacity: .2; }
+  20%  { transform: scale(1.15); opacity: .95; }
+  70%  { opacity: .85; }
+  100% { transform: scale(1) rotate(360deg); opacity: 0; }
+}
+
+/* moving light sweep */
+@keyframes pillGlowOnceSweep {
+  0%   { transform: translateX(-25%); opacity:.15; }
+  35%  { opacity:.7; }
+  100% { transform: translateX(22%); opacity:0; }
+}
+
+
+/* ===== Mobile-friendly lighter animation ===== */
+
+@media (max-width: 576px) {
+
+  .pill-glow-once::before {
+    animation: pillGlowOnceRotate 0.9s ease-out forwards;
+    opacity: .8;
+  }
+
+  .pill-glow-once::after {
+    animation: pillGlowOnceSweep 0.8s ease-out forwards;
+    opacity: .45;
+  }
+}

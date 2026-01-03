@@ -57,7 +57,7 @@ export class Imagegallery implements OnInit {
     private clientDataService: ClientDataService,
     private userService: userserviceapi,
     private notify: Notificationservice
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(ClientMenuItems.imageSelection);
@@ -68,9 +68,51 @@ export class Imagegallery implements OnInit {
     this.clientDataload = JSON.parse(JSON.stringify(data ?? {})) as clientData;
 
     // deep-clone and ensure sourceFolder on each saved item
-    this.portraitFrameItems = (JSON.parse(JSON.stringify(data?.portraitFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
-    this.landscapeFrameItems = (JSON.parse(JSON.stringify(data?.landscapeFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
-    this.coverItems = (JSON.parse(JSON.stringify(data?.coverSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+    this.portraitFrameItems = (
+      JSON.parse(
+        JSON.stringify(data?.portraitFrameSelection ?? [])
+      ) as AlbumSelectionItem[]
+    ).map((i) => this.ensureSourceFolderOnItem(i));
+    this.landscapeFrameItems = (
+      JSON.parse(
+        JSON.stringify(data?.landscapeFrameSelection ?? [])
+      ) as AlbumSelectionItem[]
+    ).map((i) => this.ensureSourceFolderOnItem(i));
+    this.coverItems = (
+      JSON.parse(
+        JSON.stringify(data?.coverSelection ?? [])
+      ) as AlbumSelectionItem[]
+    ).map((i) => this.ensureSourceFolderOnItem(i));
+  }
+
+  albumGlow = false;
+  frameGlow = false;
+  coverGlow = false;
+
+  private triggerGlow(type: 'album' | 'frame' | 'cover') {
+    switch (type) {
+      case 'album':
+        this.albumGlow = false;
+        setTimeout(() => (this.albumGlow = true));
+        break;
+
+      case 'frame':
+        this.frameGlow = false;
+        setTimeout(() => (this.frameGlow = true));
+        break;
+
+      case 'cover':
+        this.coverGlow = false;
+        setTimeout(() => (this.coverGlow = true));
+        break;
+    }
+
+    // remove class after animation finishes
+    setTimeout(() => {
+      if (type === 'album') this.albumGlow = false;
+      if (type === 'frame') this.frameGlow = false;
+      if (type === 'cover') this.coverGlow = false;
+    }, 1400);
   }
 
   // ---------- Navigation ----------
@@ -95,12 +137,12 @@ export class Imagegallery implements OnInit {
   // ---------- Folder selection ----------
 
   async gobackFolderSelection() {
-    if(!this.clientDataload.isSubmitted){
-    const confirmed = await this.notify.confirm(
-      'Are you sure you want to go back?<br/>Any unsaved changes in this folder will be lost.'
-    );
-    if (!confirmed) return;
-  }
+    if (!this.clientDataload.isSubmitted) {
+      const confirmed = await this.notify.confirm(
+        'Are you sure you want to go back?<br/>Any unsaved changes in this folder will be lost.'
+      );
+      if (!confirmed) return;
+    }
     this.galleryOpen = false;
     this.selectedFolderName = '';
   }
@@ -120,15 +162,35 @@ export class Imagegallery implements OnInit {
 
     if (folderName === this.folderNames[0]) {
       this.isTraditional = true;
-      this.selectedItems = (JSON.parse(JSON.stringify(data?.tranditionalAlbumSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+      this.selectedItems = (
+        JSON.parse(
+          JSON.stringify(data?.tranditionalAlbumSelection ?? [])
+        ) as AlbumSelectionItem[]
+      ).map((i) => this.ensureSourceFolderOnItem(i));
     } else {
       this.isTraditional = false;
-      this.selectedItems = (JSON.parse(JSON.stringify(data?.candidAlbumSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+      this.selectedItems = (
+        JSON.parse(
+          JSON.stringify(data?.candidAlbumSelection ?? [])
+        ) as AlbumSelectionItem[]
+      ).map((i) => this.ensureSourceFolderOnItem(i));
     }
 
-    this.portraitFrameItems = (JSON.parse(JSON.stringify(data?.portraitFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
-    this.landscapeFrameItems = (JSON.parse(JSON.stringify(data?.landscapeFrameSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
-    this.coverItems = (JSON.parse(JSON.stringify(data?.coverSelection ?? [])) as AlbumSelectionItem[]).map(i => this.ensureSourceFolderOnItem(i));
+    this.portraitFrameItems = (
+      JSON.parse(
+        JSON.stringify(data?.portraitFrameSelection ?? [])
+      ) as AlbumSelectionItem[]
+    ).map((i) => this.ensureSourceFolderOnItem(i));
+    this.landscapeFrameItems = (
+      JSON.parse(
+        JSON.stringify(data?.landscapeFrameSelection ?? [])
+      ) as AlbumSelectionItem[]
+    ).map((i) => this.ensureSourceFolderOnItem(i));
+    this.coverItems = (
+      JSON.parse(
+        JSON.stringify(data?.coverSelection ?? [])
+      ) as AlbumSelectionItem[]
+    ).map((i) => this.ensureSourceFolderOnItem(i));
 
     this.galleryOpen = true;
     this.getImagesbyPath();
@@ -190,13 +252,12 @@ export class Imagegallery implements OnInit {
   // expects url like .../<phototype>/<cameratype>/<filename>
   private getFileParts(url: string) {
     const clean = (url || '').split('?')[0].split('#')[0];
-    const parts = clean.split('/').filter(p => p !== '');
+    const parts = clean.split('/').filter((p) => p !== '');
     const fileName = parts.length ? parts[parts.length - 1] : '';
     const cameraFolder = parts.length >= 2 ? parts[parts.length - 2] : '';
     const photoType = parts.length >= 3 ? parts[parts.length - 3] : '';
     return { fileName, cameraFolder, photoType };
   }
-
 
   fileNameFromUrl(url: string): string {
     return this.getFileParts(url).fileName;
@@ -222,7 +283,9 @@ export class Imagegallery implements OnInit {
   // ---------- Ensure every loaded/saved item has sourceFolder set ----------
   // (sourceFolder = phototype = segment -3). This prevents mismatch between badges and counts.
 
-  private ensureSourceFolderOnItem(item: AlbumSelectionItem): AlbumSelectionItem {
+  private ensureSourceFolderOnItem(
+    item: AlbumSelectionItem
+  ): AlbumSelectionItem {
     if (!item) return item;
     if ((item as any)?.sourceFolder) return item;
 
@@ -230,11 +293,14 @@ export class Imagegallery implements OnInit {
       const parts = this.getFileParts(item.url);
       // persist parent phototype as sourceFolder
       // @ts-ignore
-      (item as any).sourceFolder = parts.photoType || (item.isTraditional ? 'traditional' : 'candid');
+      (item as any).sourceFolder =
+        parts.photoType || (item.isTraditional ? 'traditional' : 'candid');
     } else {
       // fallback to isTraditional boolean
       // @ts-ignore
-      (item as any).sourceFolder = item.isTraditional ? 'traditional' : 'candid';
+      (item as any).sourceFolder = item.isTraditional
+        ? 'traditional'
+        : 'candid';
     }
     return item;
   }
@@ -248,15 +314,21 @@ export class Imagegallery implements OnInit {
     const it = this.getFileParts(item.url);
 
     // strict matching: phototype (parent) + cameraFolder + filename must all match
-    const samePhotoType = (img.photoType || '').toString().toLowerCase() === (it.photoType || '').toString().toLowerCase();
-    const sameCamera = (img.cameraFolder || '').toString().toLowerCase() === (it.cameraFolder || '').toString().toLowerCase();
+    const samePhotoType =
+      (img.photoType || '').toString().toLowerCase() ===
+      (it.photoType || '').toString().toLowerCase();
+    const sameCamera =
+      (img.cameraFolder || '').toString().toLowerCase() ===
+      (it.cameraFolder || '').toString().toLowerCase();
     const sameFile = (img.fileName || '') === (it.fileName || '');
 
     return samePhotoType && sameCamera && sameFile;
   }
 
-
-  private matchesItemToItem(a: AlbumSelectionItem, b: AlbumSelectionItem): boolean {
+  private matchesItemToItem(
+    a: AlbumSelectionItem,
+    b: AlbumSelectionItem
+  ): boolean {
     if (!a || !b || !a.url || !b.url) return false;
     const pa = this.getFileParts(a.url);
     const pb = this.getFileParts(b.url);
@@ -265,9 +337,16 @@ export class Imagegallery implements OnInit {
 
   // ---------- Folder membership helper (uses persisted sourceFolder) ----------
 
-  private isItemInFolder(item: AlbumSelectionItem, folderType: string): boolean {
+  private isItemInFolder(
+    item: AlbumSelectionItem,
+    folderType: string
+  ): boolean {
     if (!item) return false;
-    const itemSource = ((item as any)?.sourceFolder) ? (item as any).sourceFolder.toString().toLowerCase() : this.getParentFolderFromUrl(item.url || '').toString().toLowerCase();
+    const itemSource = (item as any)?.sourceFolder
+      ? (item as any).sourceFolder.toString().toLowerCase()
+      : this.getParentFolderFromUrl(item.url || '')
+          .toString()
+          .toLowerCase();
     return (itemSource || '').toString().toLowerCase() === folderType;
   }
 
@@ -285,7 +364,7 @@ export class Imagegallery implements OnInit {
       ...(this.landscapeFrameItems || []),
     ];
 
-    return allFrames.filter(item => {
+    return allFrames.filter((item) => {
       if (!item || !item.url) return false;
       const p = this.getFileParts(item.url);
       return (p.photoType || '').toString().toLowerCase() === currentFolderType;
@@ -294,25 +373,39 @@ export class Imagegallery implements OnInit {
 
   private getCoverCountInCurrentFolder(): number {
     const currentFolderType = this.getCurrentFolderType();
-    return (this.coverItems || []).filter((x) => this.isItemInFolder(x, currentFolderType)).length;
+    return (this.coverItems || []).filter((x) =>
+      this.isItemInFolder(x, currentFolderType)
+    ).length;
   }
 
   // public getters for template
-  get albumCountInCurrentFolder(): number { return this.getAlbumCountInCurrentFolder(); }
-  get frameCountInCurrentFolder(): number { return this.getFrameCountInCurrentFolder(); }
-  get coverCountInCurrentFolder(): number { return this.getCoverCountInCurrentFolder(); }
+  get albumCountInCurrentFolder(): number {
+    return this.getAlbumCountInCurrentFolder();
+  }
+  get frameCountInCurrentFolder(): number {
+    return this.getFrameCountInCurrentFolder();
+  }
+  get coverCountInCurrentFolder(): number {
+    return this.getCoverCountInCurrentFolder();
+  }
 
   // limits from server
-  get albumLimit(): number { return Number(this.clientDataload.noOfPics) || 0; }
-  get frameLimit(): number { return Number(this.clientDataload.noOfFrames) || 0; }
-  get coverLimit(): number { return Number(this.clientDataload.noOfAlbumCover) || 0; }
+  get albumLimit(): number {
+    return Number(this.clientDataload.noOfPics) || 0;
+  }
+  get frameLimit(): number {
+    return Number(this.clientDataload.noOfFrames) || 0;
+  }
+  get coverLimit(): number {
+    return Number(this.clientDataload.noOfAlbumCover) || 0;
+  }
 
   // overall counts (Traditional + Candid + current unsaved for this folder)
   get totalAlbumCount(): number {
     const current = this.selectedItems.length;
     const otherFolderSaved = this.isTraditional
-      ? (this.clientDataload.candidAlbumSelection?.length || 0)
-      : (this.clientDataload.tranditionalAlbumSelection?.length || 0);
+      ? this.clientDataload.candidAlbumSelection?.length || 0
+      : this.clientDataload.tranditionalAlbumSelection?.length || 0;
     return current + otherFolderSaved;
   }
 
@@ -364,19 +457,28 @@ export class Imagegallery implements OnInit {
   // ---------- Selection helpers ----------
 
   isAlbumSelected(imgUrl: string): boolean {
-    return this.selectedItems.some((item) => this.matchesUrlToItem(imgUrl, item));
+    return this.selectedItems.some((item) =>
+      this.matchesUrlToItem(imgUrl, item)
+    );
   }
 
   isAnyFrameSelected(imgUrl: string): boolean {
-    return this.isPortraitFrameSelected(imgUrl) || this.isLandscapeFrameSelected(imgUrl);
+    return (
+      this.isPortraitFrameSelected(imgUrl) ||
+      this.isLandscapeFrameSelected(imgUrl)
+    );
   }
 
   isPortraitFrameSelected(imgUrl: string): boolean {
-    return this.portraitFrameItems.some((item) => this.matchesUrlToItem(imgUrl, item));
+    return this.portraitFrameItems.some((item) =>
+      this.matchesUrlToItem(imgUrl, item)
+    );
   }
 
   isLandscapeFrameSelected(imgUrl: string): boolean {
-    return this.landscapeFrameItems.some((item) => this.matchesUrlToItem(imgUrl, item));
+    return this.landscapeFrameItems.some((item) =>
+      this.matchesUrlToItem(imgUrl, item)
+    );
   }
 
   isCoverSelected(imgUrl: string): boolean {
@@ -392,8 +494,8 @@ export class Imagegallery implements OnInit {
   isMaximumAlbumSelected(): boolean {
     const current = this.selectedItems.length;
     const otherFolderSaved = this.isTraditional
-      ? (this.clientDataload.candidAlbumSelection?.length || 0)
-      : (this.clientDataload.tranditionalAlbumSelection?.length || 0);
+      ? this.clientDataload.candidAlbumSelection?.length || 0
+      : this.clientDataload.tranditionalAlbumSelection?.length || 0;
     const total = current + otherFolderSaved;
     return total >= (this.clientDataload.noOfPics || 0);
   }
@@ -401,31 +503,43 @@ export class Imagegallery implements OnInit {
   toggleAlbumSelection(imgUrl: string, event?: Event) {
     if (event) event.stopPropagation();
 
-    const idx = this.selectedItems.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
+    const idx = this.selectedItems.findIndex((x) =>
+      this.matchesUrlToItem(imgUrl, x)
+    );
+
+    this.notify.info('Album selection toggled.');
 
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
     } else {
       if (this.isMaximumAlbumSelected()) {
-        this.notify.error('You have already selected the maximum number of album pictures.');
+        this.notify.error(
+          'You have already selected the maximum number of album pictures.'
+        );
         return;
       }
       this.selectedItems.push(this.buildSelectionItem(imgUrl, 'album'));
     }
 
     if (this.viewFilter !== 'all') this.resetInfiniteScroll();
+
+    this.triggerGlow('album');
   }
 
   // ---------- Frame selection ----------
 
   private get totalFrameSelected(): number {
-    return (this.portraitFrameItems?.length || 0) + (this.landscapeFrameItems?.length || 0);
+    return (
+      (this.portraitFrameItems?.length || 0) +
+      (this.landscapeFrameItems?.length || 0)
+    );
   }
 
   toggleFramePopup(imgUrl: string, event: Event) {
     event.stopPropagation();
     const id = this.getImageIdentity(imgUrl);
-    this.frameChoiceForIdentity = this.frameChoiceForIdentity === id ? null : id;
+    this.frameChoiceForIdentity =
+      this.frameChoiceForIdentity === id ? null : id;
   }
 
   onFrameOrientationClick(
@@ -438,11 +552,20 @@ export class Imagegallery implements OnInit {
   }
 
   setFrameSelection(imgUrl: string, orientation: 'portrait' | 'landscape') {
-    const target = orientation === 'portrait' ? this.portraitFrameItems : this.landscapeFrameItems;
-    const other = orientation === 'portrait' ? this.landscapeFrameItems : this.portraitFrameItems;
+    const target =
+      orientation === 'portrait'
+        ? this.portraitFrameItems
+        : this.landscapeFrameItems;
+    const other =
+      orientation === 'portrait'
+        ? this.landscapeFrameItems
+        : this.portraitFrameItems;
 
-    const targetIndex = target.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
+    const targetIndex = target.findIndex((x) =>
+      this.matchesUrlToItem(imgUrl, x)
+    );
     const otherIndex = other.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
+    this.notify.info('Frame selection toggled.');
 
     if (targetIndex >= 0) {
       target.splice(targetIndex, 1);
@@ -454,7 +577,9 @@ export class Imagegallery implements OnInit {
         target.push(moved);
       } else {
         if (this.totalFrameSelected >= (this.clientDataload.noOfFrames || 0)) {
-          this.notify.error('You have already selected the maximum number of frame pictures.');
+          this.notify.error(
+            'You have already selected the maximum number of frame pictures.'
+          );
           this.frameChoiceForIdentity = null;
           return;
         }
@@ -463,6 +588,7 @@ export class Imagegallery implements OnInit {
         item.type = orientation;
         target.push(item);
       }
+      this.triggerGlow('frame');
     }
 
     this.frameChoiceForIdentity = null;
@@ -475,19 +601,27 @@ export class Imagegallery implements OnInit {
   toggleCoverSelection(imgUrl: string, event?: Event) {
     if (event) event.stopPropagation();
 
-    const idx = this.coverItems.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
-
+    const idx = this.coverItems.findIndex((x) =>
+      this.matchesUrlToItem(imgUrl, x)
+    );
+    this.notify.info('Cover selection toggled.');
     if (idx >= 0) {
       this.coverItems.splice(idx, 1);
     } else {
-      if ((this.coverItems?.length || 0) >= (this.clientDataload.noOfAlbumCover || 0)) {
-        this.notify.error('You have already selected the maximum number of cover pictures.');
+      if (
+        (this.coverItems?.length || 0) >=
+        (this.clientDataload.noOfAlbumCover || 0)
+      ) {
+        this.notify.error(
+          'You have already selected the maximum number of cover pictures.'
+        );
         return;
       }
       this.coverItems.push(this.buildSelectionItem(imgUrl, 'cover'));
     }
 
     if (this.viewFilter === 'cover') this.resetInfiniteScroll();
+    this.triggerGlow('cover');
   }
 
   // ---------- Build selection item (persist parent folder, include camera in url) ----------
@@ -510,24 +644,23 @@ export class Imagegallery implements OnInit {
     return item;
   }
 
-
   // ---------- Preview ----------
 
   openPreview(imgUrl: string) {
-
     // Push modal state to browser history
     history.pushState({ previewOpen: true }, '');
 
     this.previewImageUrl = imgUrl;
     this.previewFileName = this.fileNameFromUrl(imgUrl);
-    const existing = this.selectedItems.find((x) => this.matchesUrlToItem(imgUrl, x));
+    const existing = this.selectedItems.find((x) =>
+      this.matchesUrlToItem(imgUrl, x)
+    );
     this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
   }
 
   @HostListener('window:popstate', ['$event'])
   onBackButton(event: any) {
-
     // If preview is open -> close it instead of routing back
     if (this.previewImageUrl) {
       this.closePreview();
@@ -648,7 +781,8 @@ export class Imagegallery implements OnInit {
   // ---------- Helpers for folder selection screen counts (always read fresh from service) ----------
 
   get traditionalSavedCount(): number {
-    return (this.clientDataService.getData().tranditionalAlbumSelection ?? []).length;
+    return (this.clientDataService.getData().tranditionalAlbumSelection ?? [])
+      .length;
   }
 
   get candidSavedCount(): number {
