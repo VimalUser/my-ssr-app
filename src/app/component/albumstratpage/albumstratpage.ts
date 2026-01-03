@@ -118,7 +118,6 @@ export class Albumstratpage implements OnInit {
 
   // called from template when each <img> finishes loading
   onImageLoad(index: number) {
-    console.log('image loaded:', index);
     this.imagesLoadedCount++;
 
     // only reveal first slide after it's loaded
@@ -207,7 +206,6 @@ export class Albumstratpage implements OnInit {
         next: (data) => {
           // This is where you process the successful response
           this.formLatestData = data;
-          console.log('Fetched client data:', data);
           this.updateClinetData(this.formLatestData);
           this.isLoading = false;
         },

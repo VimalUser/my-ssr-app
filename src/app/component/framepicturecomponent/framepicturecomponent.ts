@@ -51,7 +51,6 @@ export class Framepicturecomponent {
     this.clientDataService.triggerNextStep(ClientMenuItems.framePage);
     const data = this.clientDataService.getData();
     this.pagelatestData = data;
-    console.log('Frame Picture Component - client data:', this.pagelatestData);
     this.loading = false;
 
     if (typeof window !== 'undefined') {
@@ -92,10 +91,10 @@ export class Framepicturecomponent {
   // ---------- Folder selection (view only) ----------
 
   async gobackFolderSelection() {
-    const confirmed = await this.notify.confirm(
-      'Go back to frame type selection screen?'
-    );
-    if (!confirmed) return;
+    // const confirmed = await this.notify.confirm(
+    //   'Go back to frame type selection screen?'
+    // );
+    // if (!confirmed) return;
 
     this.galleryOpen = false;
     this.selectedFolderName = '';

@@ -58,7 +58,6 @@ export class Approveorrejectalbum {
       next: (data) => {
         // This is where you process the successful response
         this.apiResponse = data; // Assign the raw response // **Important Note on responseType: 'text'** // Since your service specifies responseType: 'text', // `data` will be a raw string. If the API returns JSON, // you might need to parse it here: this.apiResponse = JSON.parse(data);
-        console.log(this.apiResponse);
         this.setClientStatus(this.apiResponse.clientStatus || "In Progress");
         this.setAdminApprovalStatus(this.apiResponse.adminApproved || false);
         if (data.eventList && data.eventList.length > 0) {

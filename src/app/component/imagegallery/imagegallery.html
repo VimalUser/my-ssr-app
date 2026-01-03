@@ -297,7 +297,8 @@
           <div class="preview-actions d-flex gap-2">
             <!-- album -->
             <button class="icon-btn" [class.active]="isAlbumSelected(previewImageUrl!)"
-              (click)="toggleAlbumSelection(previewImageUrl!, $event)" title="Select for album">
+              (click)="toggleAlbumSelection(previewImageUrl!, $event)"
+               *ngIf="!this.clientDataload.isSubmitted"  title="Select for album">
               <i class="bi" [ngClass]="
                   isAlbumSelected(previewImageUrl!)
                     ? 'bi-check2-circle'
@@ -308,7 +309,8 @@
             <!-- frame button + popup in preview -->
             <div class="position-relative">
               <button class="icon-btn" [class.active]="isAnyFrameSelected(previewImageUrl!)"
-                (click)="toggleFramePopup(previewImageUrl!, $event)" title="Select as frame">
+                (click)="toggleFramePopup(previewImageUrl!, $event)"
+                 *ngIf="!this.clientDataload.isSubmitted"  title="Select as frame">
                 <i class="bi bi-bounding-box"></i>
               </button>
 
@@ -316,12 +318,12 @@
     frameChoiceForIdentity ===
     getImageIdentity(previewImageUrl!)
   " (click)="$event.stopPropagation()">
-                <button class="frame-choice-btn"
+                <button class="frame-choice-btn" *ngIf="!this.clientDataload.isSubmitted" 
                   (click)="onFrameOrientationClick($event, previewImageUrl!, 'portrait')">
                   <i class="bi bi-check2 me-1" *ngIf="isPortraitFrameSelected(previewImageUrl!)"></i>
                   Portrait frame
                 </button>
-                <button class="frame-choice-btn"
+                <button class="frame-choice-btn" *ngIf="!this.clientDataload.isSubmitted" 
                   (click)="onFrameOrientationClick($event, previewImageUrl!, 'landscape')">
                   <i class="bi bi-check2 me-1" *ngIf="isLandscapeFrameSelected(previewImageUrl!)"></i>
                   Landscape frame
@@ -331,7 +333,8 @@
 
             <!-- cover -->
             <button class="icon-btn" [class.active]="isCoverSelected(previewImageUrl!)"
-              (click)="toggleCoverSelection(previewImageUrl!, $event)" title="Select as cover">
+              (click)="toggleCoverSelection(previewImageUrl!, $event)"
+               *ngIf="!this.clientDataload.isSubmitted"  title="Select as cover">
               <i class="bi" [ngClass]="
                   isCoverSelected(previewImageUrl!)
                     ? 'bi-star-fill'

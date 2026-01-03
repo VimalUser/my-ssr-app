@@ -86,10 +86,10 @@ export class CoverpcitureSelection {
   // ---------- Folder-like open (view only) ----------
 
   async gobackFolderSelection() {
-    const confirmed = await this.notify.confirm(
-      'Go back to cover selection options screen?'
-    );
-    if (!confirmed) return;
+    // const confirmed = await this.notify.confirm(
+    //   'Go back to cover selection options screen?'
+    // );
+    // if (!confirmed) return;
 
     this.galleryOpen = false;
     this.selectedFolderName = '';
