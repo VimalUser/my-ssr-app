@@ -8,7 +8,7 @@
       </button>
 
       <div>
-        <button class="btn btn-warning rounded-pill fw-bold px-4 me-2" (click)="onSave()">
+        <button class="btn btn-warning rounded-pill fw-bold px-4 me-2" *ngIf="!this.formData.isSubmitted" (click)="onSave()">
           Save
         </button>
         <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
@@ -39,6 +39,7 @@
               Couple Name for Album
             </label>
             <input type="text" id="coupleName" class="form-control step-input" placeholder="E.g. Arun & Priya"
+            [disabled]="this.formData.isSubmitted"
               maxlength="30" [(ngModel)]="formData.albumName" name="albumName" />
             <div *ngIf="formSubmitted && (!formData.albumName || formData.albumName.trim() === '')"
               class="text-danger small mt-1">
@@ -50,6 +51,7 @@
             <div class="mb-3">
               <label for="albumDate" class="form-label step-label">Event Date</label>
               <input type="date" id="albumDate" class="form-control step-input" [(ngModel)]="formData.albumEventDate"
+              [disabled]="this.formData.isSubmitted"
                 name="albumDate" (click)="openDatePicker($event)" />
               <div *ngIf="formSubmitted && (!formData.albumEventDate || formData.albumEventDate.trim() === '')"
                 class="text-danger small mt-1">
@@ -67,6 +69,7 @@
               </label>
 
               <input type="date" class="form-control step-input"
+              [disabled]="this.formData.isSubmitted"
                 [ngModel]="formData.events[i].eventDate?.substring(0,10)"
                 (ngModelChange)="formData.events[i].eventDate = $event" [name]="'eventDate_' + i"
                 (click)="openDatePicker($event)" />

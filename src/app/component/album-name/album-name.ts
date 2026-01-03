@@ -70,6 +70,7 @@ export class AlbumName implements OnInit {
   }
 
   async goBack() {
+    if(!this.formData.isSubmitted){
     const confirmCancelled = await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
@@ -77,6 +78,7 @@ export class AlbumName implements OnInit {
       // User pressed Cancel, stop execution here
       return;
     }
+  }
     this.clientDataService.triggerNextStep(ClientMenuItems.designPage);
     // this.router.navigate(['userhome/startpage']);
   }

@@ -127,7 +127,7 @@
         </div>
 
         <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
-          <button class="btn btn-primary btn-sm rounded-pill px-3" (click)="saveSelection()">
+          <button class="btn btn-primary btn-sm rounded-pill px-3" *ngIf="!this.clientDataload.isSubmitted" (click)="saveSelection()">
             <i class="bi bi-cloud-arrow-up me-1"></i> Save Selection
           </button>
         </div>
@@ -181,7 +181,7 @@
           <!-- Bottom action icons -->
           <div class="card-footer-overlay d-flex justify-content-center align-items-center gap-1">
             <!-- Album select -->
-            <button class="icon-btn" [class.active]="isAlbumSelected(img)" (click)="toggleAlbumSelection(img, $event)"
+            <button class="icon-btn" [class.active]="isAlbumSelected(img)"  *ngIf="!this.clientDataload.isSubmitted" (click)="toggleAlbumSelection(img, $event)"
               title="Select for album">
               <i class="bi" [ngClass]="
                   isAlbumSelected(img) ? 'bi-check2-circle' : 'bi-circle'
@@ -190,7 +190,7 @@
 
             <!-- Frame select + popup -->
             <div class="position-relative">
-              <button class="icon-btn" [class.active]="isAnyFrameSelected(img)" (click)="toggleFramePopup(img, $event)"
+              <button class="icon-btn" [class.active]="isAnyFrameSelected(img)" *ngIf="!this.clientDataload.isSubmitted" (click)="toggleFramePopup(img, $event)"
                 title="Select as frame">
                 <i class="bi bi-bounding-box"></i>
               </button>
@@ -198,11 +198,11 @@
               <!-- Portrait / Landscape popup -->
               <div class="frame-popup" *ngIf="frameChoiceForIdentity === getImageIdentity(img)"
                 (click)="$event.stopPropagation()">
-                <button class="frame-choice-btn" (click)="onFrameOrientationClick($event, img, 'portrait')">
+                <button class="frame-choice-btn" *ngIf="!this.clientDataload.isSubmitted" (click)="onFrameOrientationClick($event, img, 'portrait')">
                   <i class="bi bi-check2 me-1" *ngIf="isPortraitFrameSelected(img)"></i>
                   Portrait frame
                 </button>
-                <button class="frame-choice-btn" (click)="onFrameOrientationClick($event, img, 'landscape')">
+                <button class="frame-choice-btn" *ngIf="!this.clientDataload.isSubmitted" (click)="onFrameOrientationClick($event, img, 'landscape')">
                   <i class="bi bi-check2 me-1" *ngIf="isLandscapeFrameSelected(img)"></i>
                   Landscape frame
                 </button>
@@ -210,7 +210,7 @@
             </div>
 
             <!-- Cover select -->
-            <button class="icon-btn" [class.active]="isCoverSelected(img)" (click)="toggleCoverSelection(img, $event)"
+            <button class="icon-btn" [class.active]="isCoverSelected(img)" *ngIf="!this.clientDataload.isSubmitted" (click)="toggleCoverSelection(img, $event)"
               title="Select as cover">
               <i class="bi" [ngClass]="
                   isCoverSelected(img) ? 'bi-star-fill' : 'bi-star'

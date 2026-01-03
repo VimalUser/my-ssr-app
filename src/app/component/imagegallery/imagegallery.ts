@@ -95,11 +95,12 @@ export class Imagegallery implements OnInit {
   // ---------- Folder selection ----------
 
   async gobackFolderSelection() {
+    if(!this.clientDataload.isSubmitted){
     const confirmed = await this.notify.confirm(
       'Are you sure you want to go back?<br/>Any unsaved changes in this folder will be lost.'
     );
     if (!confirmed) return;
-
+  }
     this.galleryOpen = false;
     this.selectedFolderName = '';
   }

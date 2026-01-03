@@ -7,7 +7,7 @@
       </button>
 
       <div>
-        <button class="btn btn-warning rounded-pill fw-bold px-4 me-2" (click)="onSave()">
+        <button class="btn btn-warning rounded-pill fw-bold px-4 me-2" *ngIf="!this.formData.isSubmitted" (click)="onSave()">
           Save
         </button>
         <button class="btn btn-success rounded-pill fw-bold px-4 me-2" (click)="nextStep()">
@@ -46,6 +46,7 @@
                     [(ngModel)]="formData.designTypeId"
                     [value]="d.designTypeId"
                     [attr.aria-label]="'Select ' + d.name"
+                    [disabled]="this.formData.isSubmitted"
                   />
                   <label [for]="'design_' + i" class="mb-0 fw-semibold step-label">
                     {{ d.designTypeName }}

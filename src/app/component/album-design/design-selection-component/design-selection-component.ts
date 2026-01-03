@@ -105,12 +105,14 @@ export class DesignSelectionComponent implements OnInit {
   }
 
   async goBack() {
+    if(!this.formData.isSubmitted){
     const confirmCancelled = await this.notify.confirm(
       'Are you sure to go back? Unsaved changes will be lost.'
     );
     if (!confirmCancelled) {
       return;
     }
+  }
     this.clientDataService.triggerNextStep(ClientMenuItems.startPage);
     this.router.navigate(['userhome/startpage']);
   }
