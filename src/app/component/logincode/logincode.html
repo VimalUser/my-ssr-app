@@ -1,4 +1,4 @@
-<div class="page-bg" [style.background-image]="'url(' + bgImage + ')'">
+<div class="page-bg" [ngStyle]="getBackgroundStyle()">
   <form [formGroup]="loginForm" (ngSubmit)="validateClientLogin()">
     <div class="card">
       <h2 class="fw-bold">Welcome {{ this.userInfo?.clientName }}</h2>

@@ -18,7 +18,7 @@ export class Framepicturecomponent {
     private clientDataService: ClientDataService,
     private userservice: userserviceapi,
     private notify: Notificationservice
-  ) { }
+  ) {}
 
   // Folder selection
   folderNames: string[] = ['Portrait Frame', 'Landscape Frame'];
@@ -106,6 +106,8 @@ export class Framepicturecomponent {
     this.loading = true;
     this.isPortrait = isPortrait;
     this.selectedFolderName = isPortrait ? 'Portrait Frame' : 'Landscape Frame';
+    this.selectedFolderName = 'Selected Frames';
+
     this.galleryOpen = true;
 
     // if API images already present, build immediately
@@ -137,19 +139,24 @@ export class Framepicturecomponent {
   private rebuildImagesForCurrentFolder(): void {
     if (!this.galleryOpen) return;
 
-    const selectedItems = this.isPortrait
-      ? this.pagelatestData.portraitFrameSelection || []
-      : this.pagelatestData.landscapeFrameSelection || [];
+    // Combine both selections (ignore null / undefined safely)
+    const portrait = this.pagelatestData?.portraitFrameSelection ?? [];
+    const landscape = this.pagelatestData?.landscapeFrameSelection ?? [];
 
+    const selectedItems = [...portrait, ...landscape];
+
+    // Build filename lookup set
     const selectedFileNames = new Set(
-       selectedItems.map((x) =>this.fileNameFromUrl(x.url)?.trim() || '')
+      selectedItems
+        .map((x) => this.fileNameFromUrl(x.url)?.trim().toLowerCase() || '')
+        .filter((x) => x !== '')
     );
 
     const allUrls = this.apiImageResponse.map((item) => item.imageUrl);
 
-    // Only show URLs whose filename is in the selected file list
+    // Show URLs whose filename exists in the combined list
     this.images = allUrls.filter((url) =>
-      selectedFileNames.has(this.fileNameFromUrl(url))
+      selectedFileNames.has(this.fileNameFromUrl(url)?.toLowerCase() || '')
     );
   }
 
@@ -166,7 +173,6 @@ export class Framepicturecomponent {
 
   @HostListener('window:popstate', ['$event'])
   onBackButton(event: any) {
-
     // If preview is open -> close it instead of routing back
     if (this.previewImageUrl) {
       this.closePreview();

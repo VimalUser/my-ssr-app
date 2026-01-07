@@ -98,6 +98,25 @@ export class Logincode {
     }, 100);
 
   }
+getBackgroundStyle() {
+  return {
+ 'background-image': `
+  url(${this.bgImage}),
+  linear-gradient(
+    323deg,
+    rgba(255, 240, 230, .80),
+    rgba(210, 233, 255, .82),
+    rgba(255, 244, 185, .85)
+  )
+`,
+    'background-size': 'cover, cover',
+    'background-repeat': 'no-repeat, no-repeat',
+    'background-position': 'center, center'
+  };
+}
+
+
+
 
   validateClientLogin() {
     this.loading = true;

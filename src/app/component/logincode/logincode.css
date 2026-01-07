@@ -33,11 +33,11 @@ body {
 
 /* You can keep same rules for desktop & mobile; no change in background-size */
 @media (max-width: 767.98px) {
-  .page-bg {
-    padding-top: 24px;
-    padding-bottom: 24px;
-  }
-}
+.page-bg {
+    background-size: contain, contain !important;
+    background-position: top center;
+    background-color: #000; /* fallback around image */
+  } }
 
 /* ========== CARD ========== */
 

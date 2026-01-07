@@ -501,13 +501,13 @@ export class Imagegallery implements OnInit {
   }
 
   toggleAlbumSelection(imgUrl: string, event?: Event) {
+        this.triggerGlow('album');
+
     if (event) event.stopPropagation();
 
     const idx = this.selectedItems.findIndex((x) =>
       this.matchesUrlToItem(imgUrl, x)
     );
-
-    this.notify.info('Album selection toggled.');
 
     if (idx >= 0) {
       this.selectedItems.splice(idx, 1);
@@ -523,7 +523,6 @@ export class Imagegallery implements OnInit {
 
     if (this.viewFilter !== 'all') this.resetInfiniteScroll();
 
-    this.triggerGlow('album');
   }
 
   // ---------- Frame selection ----------
@@ -552,6 +551,8 @@ export class Imagegallery implements OnInit {
   }
 
   setFrameSelection(imgUrl: string, orientation: 'portrait' | 'landscape') {
+          this.triggerGlow('frame');
+
     const target =
       orientation === 'portrait'
         ? this.portraitFrameItems
@@ -565,7 +566,6 @@ export class Imagegallery implements OnInit {
       this.matchesUrlToItem(imgUrl, x)
     );
     const otherIndex = other.findIndex((x) => this.matchesUrlToItem(imgUrl, x));
-    this.notify.info('Frame selection toggled.');
 
     if (targetIndex >= 0) {
       target.splice(targetIndex, 1);
@@ -588,7 +588,6 @@ export class Imagegallery implements OnInit {
         item.type = orientation;
         target.push(item);
       }
-      this.triggerGlow('frame');
     }
 
     this.frameChoiceForIdentity = null;
@@ -599,12 +598,13 @@ export class Imagegallery implements OnInit {
   // ---------- Cover selection ----------
 
   toggleCoverSelection(imgUrl: string, event?: Event) {
+        this.triggerGlow('cover');
+
     if (event) event.stopPropagation();
 
     const idx = this.coverItems.findIndex((x) =>
       this.matchesUrlToItem(imgUrl, x)
     );
-    this.notify.info('Cover selection toggled.');
     if (idx >= 0) {
       this.coverItems.splice(idx, 1);
     } else {
@@ -621,7 +621,6 @@ export class Imagegallery implements OnInit {
     }
 
     if (this.viewFilter === 'cover') this.resetInfiniteScroll();
-    this.triggerGlow('cover');
   }
 
   // ---------- Build selection item (persist parent folder, include camera in url) ----------
