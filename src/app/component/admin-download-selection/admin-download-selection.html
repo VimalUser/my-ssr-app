@@ -11,10 +11,12 @@
                     - {{noOfPics}}</span></h2>
         </div>
 
-        <button class="btn btn-orange-primary d-flex align-items-center justify-content-center" (click)="download()">
+        <button class="btn btn-orange-primary d-flex align-items-center justify-content-center" (click)="downloadnew()">
             <i class="bi bi-cloud-arrow-down-fill me-2 fs-5"></i>
-            Download Album
+            Download Photos
         </button>
+        <div *ngIf="progress > 0">Progress: {{progress}}%</div>
+        <!-- <progress [value]="progress" max="100"></progress> -->
     </div>
 
     <div class="styled-card mb-4 p-4">

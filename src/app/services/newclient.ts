@@ -25,6 +25,12 @@ export interface ClientVideoStatus {
   VideoStatus: string;
 }
 
+export interface DownloadFile {
+  fileName: string;
+  zipPath: string;
+  sasUrl: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -149,10 +155,15 @@ export class newclientapi {
 
   downloadpictures1(clientId: number): Observable<Blob> {
     return this.http.get(`${this.blobUrl}downloadFromBlob?clientId=${clientId}`, {
-      responseType: 'blob' // <-- Must be 'blob' for binary file
+      responseType: 'blob', // <-- Must be 'blob' for binary file
     });
   }
 
+  getClientFiles(clientId: number) {
+    return this.http.get<DownloadFile[]>(
+      `${this.blobUrl}client-images?clientId=${clientId}`
+    );
+  }
 
   getClientManagementData(pageNumber: number, pageSize: number): Observable<ClientManagement> {
     return this.http.get<ClientManagement>(this.clientAlbumUrl

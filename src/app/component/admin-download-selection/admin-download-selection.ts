@@ -8,6 +8,8 @@ import { Notificationservice } from '../../services/notificationservice';
 import { CommonModule } from '@angular/common';
 import { AdminStatusInput } from '../../model/ClientManagement';
 import { MarkAsDoneDirective } from '../../shared/mark-as-done';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-admin-download-selection',
@@ -26,6 +28,7 @@ export class AdminDownloadSelection {
   loading: boolean = false;
   checkboxMessage: string = '';
   isPhotoDownloadDone: boolean = false;
+  progress: number = 0;
 
   constructor(
     private apiAdminService: newclientapi,
@@ -114,6 +117,116 @@ export class AdminDownloadSelection {
     });
   }
 
+
+  async downloadnew() {
+    this.loading = true;
+    this.progress = 0;
+
+    try {
+      const files = await this.apiAdminService
+        .getClientFiles(this.adminData.clientId)
+        .toPromise();
+
+      if (!files || files.length === 0) {
+        this.notify.error('No files available for download');
+        return;
+      }
+
+      const zip = new JSZip();
+      const failedFiles: string[] = [];
+
+      const MAX_PARALLEL = 5;
+      let completed = 0;
+
+      for (let i = 0; i < files.length; i += MAX_PARALLEL) {
+        const batch = files.slice(i, i + MAX_PARALLEL);
+
+        await Promise.all(
+          batch.map(async (file) => {
+            try {
+              const response = await fetch(file.sasUrl);
+
+              if (!response.ok) {
+                console.error('Failed:', file.sasUrl, response.status);
+                throw new Error(`HTTP ${response.status}`);
+              }
+
+              const blob = await response.blob();
+              zip.file(file.zipPath, blob, { compression: 'STORE' });
+            }
+            catch (err) {
+              failedFiles.push(file.zipPath);
+            }
+
+            finally {
+              completed++;
+              this.progress = Math.round((completed / files.length) * 100);
+            }
+          })
+        );
+      }
+
+      // 🔹 Add failure report inside ZIP
+      if (failedFiles.length > 0) {
+        zip.file(
+          '_failed_files.txt',
+          failedFiles.join('\n')
+        );
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+      saveAs(zipBlob, this.buildZipFileName());
+
+      // 🔹 User notification
+      if (failedFiles.length > 0) {
+        this.notify.warning(
+          `Download completed with ${failedFiles.length} missing files`
+        );
+      } else {
+        this.notify.success('Download completed successfully');
+      }
+    }
+    catch (err) {
+      this.handleApiError(err);
+    }
+    finally {
+      this.loading = false;
+    }
+  }
+
+  private buildZipFileName(): string {
+    const now = new Date();
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const timestamp =
+      `${now.getFullYear()}` +
+      `${pad(now.getMonth() + 1)}` +
+      `${pad(now.getDate())}_` +
+      `${pad(now.getHours())}` +
+      `${pad(now.getMinutes())}` +
+      `${pad(now.getSeconds())}`;
+
+    // Optional: sanitize client name
+    const clientName = (this.adminData.clientName || 'client')
+      .replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    return `client_${clientName}_photos_${timestamp}.zip`;
+  }
+
+  private handleApiError(err: any) {
+
+    if (err.status === 404) {
+      this.notify.error(err.error?.message ?? 'Client not found');
+    }
+    else if (err.status === 400) {
+      this.notify.error(err.error?.message ?? 'Client has not submitted images');
+    }
+    else {
+      this.notify.error('Something went wrong. Please try again.');
+    }
+  }
 
   onLoadingChange(loading: boolean) {
     this.loading = loading;
