@@ -34,16 +34,8 @@ export class DesignSelectionComponent implements OnInit {
     private clientDataService: ClientDataService,
     private notify: Notificationservice,
     private userservice: userserviceapi,
-    private router: Router
+    private router: Router,
   ) {}
-
-  pdfFileList: { [key: string]: string } = {
-    Regular: 'design_regular_sample.pdf',
-    Elite: 'design_elite_sample.pdf',
-    Premium: 'design_premium_sample.pdf',
-  };
-
-  sampleFilesList: string[] = ['Elite.pdf', 'Premium.pdf', 'Regular.pdf'];
 
   get designList(): Array<any> {
     // defensive: ensure it's always an array
@@ -74,12 +66,8 @@ export class DesignSelectionComponent implements OnInit {
     this.isLoading = false;
   }
 
-  // helper: open sample pdf (assets/design/<file>)
-  openSamplePdf(rowIndex: Number) {
-    // default fallback name if design items don't contain a filename
-    let filename = this.sampleFilesList[rowIndex as number];
-    filename = filename ? filename : 'sample.pdf';
-    const path = `assets/design/${filename}`;
+  openSamplePdf(fileName: string) {
+    const path = this.formData.sampleAlbums.find(f => f.docName === fileName)?.docUrl;
     // open in new tab
     window.open(path, '_blank');
   }
@@ -105,14 +93,14 @@ export class DesignSelectionComponent implements OnInit {
   }
 
   async goBack() {
-    if(!this.formData.isSubmitted){
-    const confirmCancelled = await this.notify.confirm(
-      'Are you sure to go back? Unsaved changes will be lost.'
-    );
-    if (!confirmCancelled) {
-      return;
+    if (!this.formData.isSubmitted){
+      const confirmCancelled = await this.notify.confirm(
+        'Are you sure to go back? Unsaved changes will be lost.',
+      );
+      if (!confirmCancelled) {
+        return;
+      }
     }
-  }
     this.clientDataService.triggerNextStep(ClientMenuItems.startPage);
     this.router.navigate(['userhome/startpage']);
   }

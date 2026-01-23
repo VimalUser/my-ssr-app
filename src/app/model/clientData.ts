@@ -20,6 +20,7 @@ export class clientData {
   albumSize: string = '';
   frameSize: string = '';
   clientReviewComments: string = '';
+  noOfAlbums: number = 0;
 
   tranditionalAlbumSelection: AlbumSelectionItem[] = [];
   candidAlbumSelection: AlbumSelectionItem[] = [];
@@ -32,6 +33,13 @@ export class clientData {
   updatedBy: string = '';
   accessLink: string = '';
   isSubmitted: boolean = false;
+  sampleAlbums:{
+    docNameWithExtension:string;
+    docName:string;
+    docUrl:string;
+  }[] = [];
+
+  
 
   // 1. DESIGN TYPE LIST
   designTypeList: {

@@ -146,6 +146,10 @@ export class Albumstratpage implements OnInit {
   }
 
   get albumCount(): number {
+    return this.formLatestData?.noOfAlbums || 0;
+  }
+
+  get imagesCount():number {
     return this.formLatestData?.noOfPics || 0;
   }
 
@@ -182,6 +186,8 @@ export class Albumstratpage implements OnInit {
       events: clientDatafromDb.events || [],
       designTypeList: clientDatafromDb.designTypeList || [],
       clientReviewComments: clientDatafromDb.clientReviewComments || '',
+      noOfAlbums: clientDatafromDb.noOfAlbums || 0,
+      sampleAlbums: clientDatafromDb.sampleAlbums || [],
 
       tranditionalAlbumSelection:
         clientDatafromDb.tranditionalAlbumSelection || [],
@@ -197,6 +203,7 @@ export class Albumstratpage implements OnInit {
     };
 
     this.clientDataService.updateData(updated);
+    console.log(updated);
   }
 
   fetchData(): void {
