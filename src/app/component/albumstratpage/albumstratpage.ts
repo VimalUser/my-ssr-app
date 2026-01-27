@@ -203,7 +203,6 @@ export class Albumstratpage implements OnInit {
     };
 
     this.clientDataService.updateData(updated);
-    console.log(updated);
   }
 
   fetchData(): void {
