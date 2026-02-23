@@ -202,7 +202,7 @@ export class Albumstratpage implements OnInit {
       isSubmitted: this.hasSubmitted,
     };
 
-    this.clientDataService.updateData(updated); 
+    this.clientDataService.updateData(updated);
   }
 
   fetchData(): void {
