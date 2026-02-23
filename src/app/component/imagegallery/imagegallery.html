@@ -3,6 +3,15 @@
   <img src="assets/loading-spinner.gif" alt="Uploading..." />
 </div>
 
+<div *ngIf="loading" class="loading-container">
+  <div class="loader-wrapper">
+    <img src="assets/loading-spinner.gif" alt="Uploading..." />
+    <div class="progress-text" *ngIf="progress > 0">
+      {{ progress }}%
+    </div>
+  </div>
+</div>
+
 <!-- Folder selection screen -->
 <section id="selctionSection" *ngIf="!galleryOpen" class="mb-3">
   <div class="container py-4">
@@ -24,6 +33,14 @@
         <h4 class="fw-bold mb-2 heading-orange">
           Image selection
         </h4>
+        <div class="row">
+          <div class="col-12 text-white">
+            <p class="mb-1">
+
+            </p>
+          </div>
+        </div>
+
         <p class="mb-1">
           Select your favorite images for your album, frames and cover.
         </p>
@@ -70,6 +87,15 @@
         }}
         / {{ clientDataload.noOfPics }} album images.
       </div>
+    </div>
+    <div class="row mt-4">
+      <p class="mb-1">
+        You can download all your photos here <button class="btn btn-warning rounded-pill fw-bold px-3"
+          (click)="downloadAll()">
+          Download All
+          <i class="bi bi-download ms-1"></i>
+        </button>
+      </p>
     </div>
   </div>
 </section>

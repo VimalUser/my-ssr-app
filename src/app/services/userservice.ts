@@ -1,7 +1,17 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+
+export interface DownloadFile {
+  fileName: string;
+  zipPath: string;
+  sasUrl: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -32,46 +42,64 @@ export class userserviceapi {
     const finalUrl = this.clientAlbumUrl + 'createAlbum';
 
     return this.http.post(finalUrl, data, {
-      responseType: 'blob',   // expecting PDF
-      observe: 'response'     // to read headers (like filename)
+      responseType: 'blob', // expecting PDF
+      observe: 'response', // to read headers (like filename)
     });
   }
 
   getClientDocuments(clientId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.clientAlbumUrl}clientDocuments?clientId=${clientId}`);
+    return this.http.get<any[]>(
+      `${this.clientAlbumUrl}clientDocuments?clientId=${clientId}`,
+    );
   }
 
   downloadDocument(fileId: number): Observable<Blob> {
-    return this.http.get(`${this.clientAlbumUrl}clientDocDownload?fileId=${fileId}`, {
-      responseType: 'blob'
-    });
+    return this.http.get(
+      `${this.clientAlbumUrl}clientDocDownload?fileId=${fileId}`,
+      {
+        responseType: 'blob',
+      },
+    );
   }
 
   getTrackingStatus(clientId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistoryTracking?clientId=${clientId}`);
+    return this.http.get<any[]>(
+      `${this.clientAlbumUrl}getClientHistoryTracking?clientId=${clientId}`,
+    );
   }
 
   getClientTrackingStatus(clientId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.clientAlbumUrl}getClientHistory?clientId=${clientId}`);
+    return this.http.get<any[]>(
+      `${this.clientAlbumUrl}getClientHistory?clientId=${clientId}`,
+    );
   }
 
   getImagesbyType(clientId: string, photoType: string): Observable<any> {
     var finalUrl = this.blobUrl + 'listSAS';
     return this.http.get(
-      `${finalUrl}?clientId=${clientId}&folderPath=${photoType}`
+      `${finalUrl}?clientId=${clientId}&folderPath=${photoType}`,
     );
   }
 
-  getSelectedImagesbyClientId(clientId: string, fetchfor: string = ''): Observable<any> {
+  getSelectedImagesbyClientId(
+    clientId: string,
+    fetchfor: string = '',
+  ): Observable<any> {
     var finalUrl = this.blobUrl + 'get-files-from-db-with-sas';
     return this.http.get(
-      `${finalUrl}?clientId=${clientId}&fetchFor=${fetchfor}`
+      `${finalUrl}?clientId=${clientId}&fetchFor=${fetchfor}`,
     );
   }
 
   getClientAlbumSelectionDetails(id: string): Observable<any> {
     var finalUrl = this.clientAlbumUrl + 'getClientInfoWithImages';
     return this.http.get(`${finalUrl}?clientId=${id}`);
+  }
+
+  downloadpictures(clientId: number) {
+    return this.http.get<DownloadFile[]>(
+      `${this.blobUrl}getAllImagesForClientDownload?clientId=${clientId}`,
+    );
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -82,8 +110,9 @@ export class userserviceapi {
       errorMsg = `Client Error: ${error.error.message}`;
     } else {
       // Server-side error
-      errorMsg = `Server Error (${error.status}): ${error.error?.message || error.message
-        }`;
+      errorMsg = `Server Error (${error.status}): ${
+        error.error?.message || error.message
+      }`;
     }
 
     return throwError(() => new Error(errorMsg));

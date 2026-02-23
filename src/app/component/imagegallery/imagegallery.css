@@ -713,3 +713,23 @@ box-shadow: 0 0 0 2px #cbeed9;
     opacity: .45;
   }
 }
+
+.loader-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-wrapper img {
+  width: 90px;   /* adjust if needed */
+  height: 90px;
+}
+
+.progress-text {
+  position: absolute;
+  font-size: 1.0rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+}
