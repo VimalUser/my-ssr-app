@@ -8,9 +8,9 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface DownloadFile {
-  fileName: string;
-  zipPath: string;
-  sasUrl: string;
+  fileName?: string;
+  zipPath?: string;
+  sasUrl?: string;
 }
 
 @Injectable({
@@ -99,6 +99,12 @@ export class userserviceapi {
   downloadpictures(clientId: number) {
     return this.http.get<DownloadFile[]>(
       `${this.blobUrl}getAllImagesForClientDownload?clientId=${clientId}`,
+    );
+  }
+
+    downloadZip(clientId: number) {
+    return this.http.get<DownloadFile>(
+      `${this.blobUrl}getClientImagesZip?clientId=${clientId}`,
     );
   }
 

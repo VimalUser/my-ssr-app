@@ -47,7 +47,7 @@ export class Imagegallery implements OnInit {
   previewImageUrl: string | null = null;
   previewFileName = '';
   previewComment = '';
-   progress: number = 0;
+  progress: number = 0;
 
   // filter bar
   viewFilter: ViewFilter = 'all';
@@ -61,7 +61,7 @@ export class Imagegallery implements OnInit {
     private clientDataService: ClientDataService,
     private userService: userserviceapi,
     private notify: Notificationservice
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.clientDataService.triggerNextStep(ClientMenuItems.imageSelection);
@@ -350,8 +350,8 @@ export class Imagegallery implements OnInit {
     const itemSource = (item as any)?.sourceFolder
       ? (item as any).sourceFolder.toString().toLowerCase()
       : this.getParentFolderFromUrl(item.url || '')
-          .toString()
-          .toLowerCase();
+        .toString()
+        .toLowerCase();
     return (itemSource || '').toString().toLowerCase() === folderType;
   }
 
@@ -506,7 +506,7 @@ export class Imagegallery implements OnInit {
   }
 
   toggleAlbumSelection(imgUrl: string, event?: Event) {
-        this.triggerGlow('album');
+    this.triggerGlow('album');
 
     if (event) event.stopPropagation();
 
@@ -556,7 +556,7 @@ export class Imagegallery implements OnInit {
   }
 
   setFrameSelection(imgUrl: string, orientation: 'portrait' | 'landscape') {
-          this.triggerGlow('frame');
+    this.triggerGlow('frame');
 
     const target =
       orientation === 'portrait'
@@ -603,7 +603,7 @@ export class Imagegallery implements OnInit {
   // ---------- Cover selection ----------
 
   toggleCoverSelection(imgUrl: string, event?: Event) {
-        this.triggerGlow('cover');
+    this.triggerGlow('cover');
 
     if (event) event.stopPropagation();
 
@@ -792,103 +792,103 @@ export class Imagegallery implements OnInit {
   get candidSavedCount(): number {
     return (this.clientDataService.getData().candidAlbumSelection ?? []).length;
   }
-async downloadAll() {
-    this.loading = true;
-    this.progress = 0;
+  // async downloadAll() {
+  //   this.loading = true;
+  //   this.progress = 0;
 
-    try {
-      const files = await this.userService
-        .downloadpictures(this.clientDataload.clientId)
-        .toPromise();
+  //   try {
+  //     const files = await this.userService
+  //       .downloadpictures(this.clientDataload.clientId)
+  //       .toPromise();
 
-      if (!files || files.length === 0) {
-        this.notify.error('No files available for download');
-        return;
-      }
+  //     if (!files || files.length === 0) {
+  //       this.notify.error('No files available for download');
+  //       return;
+  //     }
 
-      const zip = new JSZip();
-      const failedFiles: string[] = [];
+  //     const zip = new JSZip();
+  //     const failedFiles: string[] = [];
 
-      const MAX_PARALLEL = 5;
-      let completed = 0;
+  //     const MAX_PARALLEL = 5;
+  //     let completed = 0;
 
-      for (let i = 0; i < files.length; i += MAX_PARALLEL) {
-        const batch = files.slice(i, i + MAX_PARALLEL);
+  //     for (let i = 0; i < files.length; i += MAX_PARALLEL) {
+  //       const batch = files.slice(i, i + MAX_PARALLEL);
 
-        await Promise.all(
-          batch.map(async (file) => {
-            try {
-              const response = await fetch(file.sasUrl);
+  //       await Promise.all(
+  //         batch.map(async (file) => {
+  //           try {
+  //             const response = await fetch(file.sasUrl);
 
-              if (!response.ok) {
-                console.error('Failed:', file.sasUrl, response.status);
-                throw new Error(`HTTP ${response.status}`);
-              }
+  //             if (!response.ok) {
+  //               console.error('Failed:', file.sasUrl, response.status);
+  //               throw new Error(`HTTP ${response.status}`);
+  //             }
 
-              const blob = await response.blob();
-              zip.file(file.zipPath, blob, { compression: 'STORE' });
-            }
-            catch (err) {
-              failedFiles.push(file.zipPath);
-            }
+  //             const blob = await response.blob();
+  //             zip.file(file.zipPath, blob, { compression: 'STORE' });
+  //           }
+  //           catch (err) {
+  //             failedFiles.push(file.zipPath);
+  //           }
 
-            finally {
-              completed++;
-              this.progress = Math.round((completed / files.length) * 100);
-            }
-          })
-        );
-      }
+  //           finally {
+  //             completed++;
+  //             this.progress = Math.round((completed / files.length) * 100);
+  //           }
+  //         })
+  //       );
+  //     }
 
-      // 🔹 Add failure report inside ZIP
-      if (failedFiles.length > 0) {
-        zip.file(
-          '_failed_files.txt',
-          failedFiles.join('\n')
-        );
-      }
+  //     // 🔹 Add failure report inside ZIP
+  //     if (failedFiles.length > 0) {
+  //       zip.file(
+  //         '_failed_files.txt',
+  //         failedFiles.join('\n')
+  //       );
+  //     }
 
-      const zipBlob = await zip.generateAsync({ type: 'blob' });
+  //     const zipBlob = await zip.generateAsync({ type: 'blob' });
 
-      saveAs(zipBlob, this.buildZipFileName());
+  //     saveAs(zipBlob, this.buildZipFileName());
 
-      // 🔹 User notification
-      if (failedFiles.length > 0) {
-        this.notify.warning(
-          `Download completed with ${failedFiles.length} missing files`
-        );
-      } else {
-        this.notify.success('Download completed successfully');
-      }
-    }
-    catch (err) {
-      this.handleApiError(err);
-    }
-    finally {
-      this.loading = false;
-    }
-  }
+  //     // 🔹 User notification
+  //     if (failedFiles.length > 0) {
+  //       this.notify.warning(
+  //         `Download completed with ${failedFiles.length} missing files`
+  //       );
+  //     } else {
+  //       this.notify.success('Download completed successfully');
+  //     }
+  //   }
+  //   catch (err) {
+  //     this.handleApiError(err);
+  //   }
+  //   finally {
+  //     this.loading = false;
+  //   }
+  // }
 
-  
-  private buildZipFileName(): string {
-    const now = new Date();
 
-    const pad = (n: number) => n.toString().padStart(2, '0');
+  // private buildZipFileName(): string {
+  //   const now = new Date();
 
-    const timestamp =
-      `${now.getFullYear()}` +
-      `${pad(now.getMonth() + 1)}` +
-      `${pad(now.getDate())}_` +
-      `${pad(now.getHours())}` +
-      `${pad(now.getMinutes())}` +
-      `${pad(now.getSeconds())}`;
+  //   const pad = (n: number) => n.toString().padStart(2, '0');
 
-    // Optional: sanitize client name
-    const clientName = (this.clientDataload.clientName || 'client')
-      .replace(/[^a-zA-Z0-9_-]/g, '_');
+  //   const timestamp =
+  //     `${now.getFullYear()}` +
+  //     `${pad(now.getMonth() + 1)}` +
+  //     `${pad(now.getDate())}_` +
+  //     `${pad(now.getHours())}` +
+  //     `${pad(now.getMinutes())}` +
+  //     `${pad(now.getSeconds())}`;
 
-    return `client_${clientName}_photos_${timestamp}.zip`;
-  }
+  //   // Optional: sanitize client name
+  //   const clientName = (this.clientDataload.clientName || 'client')
+  //     .replace(/[^a-zA-Z0-9_-]/g, '_');
+
+  //   return `client_${clientName}_photos_${timestamp}.zip`;
+  // }
   private handleApiError(err: any) {
 
     if (err.status === 404) {
@@ -898,10 +898,33 @@ async downloadAll() {
       this.notify.error(err.error?.message ?? 'Client has not submitted images');
     }
     else {
+      console.error('API error:', err);
       this.notify.error('Something went wrong. Please try again.');
     }
   }
 
+
+  async downloadZip() {
+    this.loading = true;
+
+    try {
+      const response = await this.userService
+        .downloadZip(this.clientDataload.clientId)
+        .toPromise();
+      if (!response?.sasUrl) {
+        this.notify.error('Something went wrong. Please try again.');
+        return;
+      }
+
+      window.location.href = response.sasUrl;
+    }
+    catch (err) {
+      this.handleApiError(err);
+    }
+    finally {
+      this.loading = false;
+    }
+  }
 
 
 }
