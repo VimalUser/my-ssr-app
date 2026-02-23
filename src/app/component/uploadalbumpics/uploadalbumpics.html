@@ -151,6 +151,33 @@
       </div>
     </div>
 
+        <!-- All photos zip upload -->
+    <div class="category-block">
+      <div class="header-group">
+        <h5>All photos Zip file</h5>
+        <span class="uploaded-count">{{ zipFilesCount }} file uploaded</span>
+      </div>
+
+      <div class="upload-group">
+        <input type="file" (change)="onFileSelected($event, 'zip')" class="file-input" #zipFileInput />
+
+        <div class="button-row">
+          <button class="btn-modern add-btn" (click)="zipFileInput.click()"><i
+              class="fa fa-folder-open fav-icon"></i> Choose zip file</button>
+          <button class="btn-modern upload-btn wide-btn" (click)="onUpload('zip','camera1')"><i
+              class="fa fa-upload fav-icon"></i> Upload</button>
+          <button [disabled]="zipFilesCount == 0" class="btn-modern delete-btn wide-btn"
+            (click)="onDeleteAll('zip')"><i class="fa fa-trash fav-icon"></i> Delete All</button>
+          <!-- <span class="files-supported">{{allowedTypesMessage}}</span><br /> -->
+        </div>
+        <!-- <span class="files-supported">Max allowed 2 GB per upload</span> -->
+
+        <div class="info-row">
+          <span class="file-count">{{ selectedZipFiles.length }} zip file selected to upload</span>
+        </div>
+      </div>
+    </div>
+
   </div>
   <div class="styled-card mb-4 p-4" [ngClass]="{ 'highlight-border': !isPhotoUploadDone }">
     <!-- <input type="checkbox" class="big-checkbox" id="markDone" [(ngModel)]="isMarkedDone" (change)="markAsDone($event)" /> -->
