@@ -3,6 +3,6 @@ export const environment = {
   authUrl: 'https://localhost:7112/Api/Auth/',
   clientAlbumUrl: 'https://localhost:7112/Api/ClientAlbum/',
   blobUrl: 'https://localhost:7112/Api/Blob/',
-  allowedImageTypes: ['.jpg', '.jpeg', '.png', '.gif']
+  allowedImageTypes: ['.jpg', '.jpeg', '.png', '.gif', '.zip'],
 };
 

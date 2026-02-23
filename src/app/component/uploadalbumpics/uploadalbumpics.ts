@@ -10,7 +10,7 @@ import { finalize, firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { MarkAsDoneDirective } from '../../shared/mark-as-done';
-import { BlockBlobClient } from "@azure/storage-blob";
+import { BlockBlobClient } from '@azure/storage-blob';
 
 @Component({
   selector: 'app-uploadalbumpics',
@@ -19,7 +19,7 @@ import { BlockBlobClient } from "@azure/storage-blob";
     CommonModule, // Required for ngIf, ngFor etc.
     FormsModule, // Needed for template-driven forms
     ReactiveFormsModule, // Needed for reactive forms
-    MarkAsDoneDirective
+    MarkAsDoneDirective,
   ],
   templateUrl: './uploadalbumpics.html',
   styleUrl: './uploadalbumpics.css',
@@ -36,18 +36,14 @@ export class Uploadalbumpics implements OnInit {
   fileProgress: any[] = [];
   overallProgress = 0;
 
-
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
     private notify: Notificationservice,
-    private cdr: ChangeDetectorRef
-  ) {
-
-  }
-
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   private apiService = inject(newclientapi);
 
@@ -55,11 +51,12 @@ export class Uploadalbumpics implements OnInit {
   public traditionalPhotosCount = 0;
   public candidPhotosCount = 0;
   public loginCoverPhotosCount = 0;
-
+  public zipFilesCount = 0;
   // Store the selected files for each category
   public selectedTraditionalFiles: File[] = [];
   public selectedCandidFiles: File[] = [];
   public selectedLoginCoverFiles: File[] = [];
+  public selectedZipFiles: File[] = [];
 
   clientId: string = '';
   clientIdNumber: number = 0;
@@ -68,12 +65,10 @@ export class Uploadalbumpics implements OnInit {
   selectedCamera: any = {
     traditional: '',
     candid: '',
-    loginCover: ''
+    loginCover: '',
   };
 
-
   ngOnInit(): void {
-
     this.route.paramMap.subscribe((params) => {
       this.clientId = params.get('id') ?? '';
       this.clientIdNumber = +this.clientId;
@@ -94,159 +89,24 @@ export class Uploadalbumpics implements OnInit {
   loadClientData() {
     this.loading = true; // start loading
     this.cdr.detectChanges();
-    this.apiService.getClientFolderCounts(+(this.clientId))
-      .pipe(finalize(() => this.loading = false)) // always hide spinner after completion
+    this.apiService
+      .getClientFolderCounts(+this.clientId)
+      .pipe(finalize(() => (this.loading = false))) // always hide spinner after completion
       .subscribe({
-        next: res => {
+        next: (res) => {
           this.clientData = res.client;
           this.traditionalPhotosCount = res.folderCounts?.traditional || 0;
           this.candidPhotosCount = res.folderCounts?.candid || 0;
           this.loginCoverPhotosCount = res.folderCounts?.logincover || 0; // updated key
+          this.zipFilesCount = res.folderCounts?.zip || 0; // new key for zip files
           this.loading = false;
         },
-        error: err => {
+        error: (err) => {
           this.notify.error('Error fetching folder counts');
           this.loading = false;
-        }
+        },
       });
   }
-
-
-  // Handles file selection from the input
-  // onFileSelected(event: any, category: string): void {
-  //   const files = event.target.files;
-
-  //   if (files && files.length > 0) {
-  //     const allowedExtensions = this.allowedTypes;
-  //     const fileArray: File[] = Array.from(files);
-
-  //     const validFiles: File[] = [];
-  //     const invalidTypeFiles: string[] = [];
-  //     const tooLargeFiles: string[] = [];
-
-  //     for (const file of fileArray) {
-  //       const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-
-  //       // 1️⃣ Check file type
-  //       const isTypeValid = allowedExtensions.includes(ext);
-
-  //       // 2️⃣ Check file size
-  //       const isSizeValid = file.size <= this.MAX_FILE_SIZE_BYTES;
-
-  //       if (!isTypeValid) {
-  //         invalidTypeFiles.push(file.name);
-  //       } else if (!isSizeValid) {
-  //         tooLargeFiles.push(`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
-  //       } else {
-  //         validFiles.push(file);
-  //       }
-  //     }
-
-  //     // 🔴 Show combined error messages
-  //     if (invalidTypeFiles.length > 0) {
-  //       this.notify.error(
-  //         `Only ${allowedExtensions} formats are supported.\nInvalid: ${invalidTypeFiles.join(', ')}`
-  //       );
-  //     }
-
-  //     if (tooLargeFiles.length > 0) {
-  //       this.notify.error(
-  //         `These files exceed the ${this.MAX_FILE_SIZE_MB} MB limit:\n${tooLargeFiles.join('\n')}`
-  //       );
-  //     }
-
-  //     // ✅ Add only valid files
-  //     if (validFiles.length > 0) {
-  //       switch (category) {
-  //         case 'traditional':
-  //           this.selectedTraditionalFiles = [
-  //             ...this.selectedTraditionalFiles,
-  //             ...validFiles,
-  //           ];
-  //           break;
-  //         case 'candid':
-  //           this.selectedCandidFiles = [
-  //             ...this.selectedCandidFiles,
-  //             ...validFiles,
-  //           ];
-  //           break;
-  //         case 'loginCover':
-  //           this.selectedLoginCoverFiles = [
-  //             ...this.selectedLoginCoverFiles,
-  //             ...validFiles,
-  //           ];
-  //           break;
-  //       }
-  //     }
-
-  //     // Reset input so user can reselect the same file again
-  //     event.target.value = '';
-  //   }
-  // }
-
-  // // Triggers the API call to upload the selected images
-  // onUpload(category: string, camera: string): void {
-  //   let filesToUpload: File[] = [];
-  //   switch (category) {
-  //     case 'traditional':
-  //       filesToUpload = this.selectedTraditionalFiles;
-  //       break;
-  //     case 'candid':
-  //       filesToUpload = this.selectedCandidFiles;
-  //       break;
-  //     case 'loginCover':
-  //       filesToUpload = this.selectedLoginCoverFiles;
-  //       break;
-  //   }
-
-  //   if (filesToUpload.length > 0) {
-
-  //     // Combine all files into one array
-  //     const allFiles = [
-  //       ...this.selectedTraditionalFiles,
-  //       ...this.selectedCandidFiles,
-  //       ...this.selectedLoginCoverFiles
-  //     ];
-
-  //     // Compute total size in bytes
-  //     const totalSize = allFiles.reduce((sum, file) => sum + file.size, 0);
-
-  //     if (totalSize > this.MAX_FILE_SIZE_BYTES) {
-  //       const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
-  //       this.notify.error(
-  //         `Total file size is ${totalSizeMB} MB. Maximum allowed size is ${this.MAX_FILE_SIZE_MB} MB.`
-  //       );
-  //       return;
-  //     }
-
-  //     this.loading = true;
-  //     const formData = new FormData();
-  //     for (const file of filesToUpload) {
-  //       formData.append('files', file, file.name);
-  //     }
-
-  //     this.apiService.uploadImages(formData, category, camera, +(this.clientId)).subscribe({
-  //       next: (response: any) => {
-  //         this.loading = false;
-  //         this.notify.success(`Upload successful for ${category}`);
-  //         // Clear the selection ONLY after a successful upload
-  //         this.clearSelection(category);
-  //         // Optional: Re-fetch counts from the API to update the UI
-  //         this.loadClientData();
-  //       },
-  //       error: (error: any) => {
-  //         this.loading = false;
-  //         this.notify.error(`Upload failed for ${category}`);
-  //         // Do not clear the selection if the upload fails
-  //       }
-  //     });
-  //   } else {
-  //     this.loading = false;
-  //     this.notify.warning('No files selected to upload.');
-  //   }
-  // }
-
-
   onFileSelected(event: any, category: string): void {
     const files = Array.from(event.target.files) as File[];
 
@@ -265,12 +125,15 @@ export class Uploadalbumpics implements OnInit {
       this.notify.error(`Invalid formats: ${invalid.join(', ')}`);
 
     if (valid.length) {
-      if (category === 'traditional') this.selectedTraditionalFiles.push(...valid);
+      if (category === 'traditional')
+        this.selectedTraditionalFiles.push(...valid);
       else if (category === 'candid') this.selectedCandidFiles.push(...valid);
-      else if (category === 'loginCover') this.selectedLoginCoverFiles.push(...valid);
+      else if (category === 'loginCover')
+        this.selectedLoginCoverFiles.push(...valid)
+      else if (category === 'zip') this.selectedZipFiles.push(...valid);
     }
 
-    event.target.value = "";
+    event.target.value = '';
   }
 
   async onUpload(category: string, camera: string) {
@@ -278,48 +141,49 @@ export class Uploadalbumpics implements OnInit {
 
     if (category === 'traditional') files = this.selectedTraditionalFiles;
     else if (category === 'candid') files = this.selectedCandidFiles;
-    else if (category === 'loginCover') files = this.selectedLoginCoverFiles;
+    else if (category === 'loginCover') files = this.selectedLoginCoverFiles
+    else if(category === 'zip') files = this.selectedZipFiles;
 
     if (!files.length) {
-      this.notify.warning("No files selected.");
+      this.notify.warning('No files selected.');
       return;
     }
 
     this.loading = true;
 
-    this.apiService.getUploadSas(+this.clientId, category, camera)
-      .subscribe({
-        next: async (res: any) => {
-          try {
-            await this.uploadFilesDirect(res.containerSasUrl, res.prefix, files);
-            this.notify.success(`Upload successful for ${category}`);
-            this.clearSelection(category);
-            this.loadClientData();
-          }
-          catch (err) {
-            console.error(err);
-            this.notify.error(`Upload failed for ${category}`);
-          }
-          finally {
-            this.loading = false;
-          }
-        },
-        error: err => {
-          this.notify.error("Failed to create upload session");
+    this.apiService.getUploadSas(+this.clientId, category, camera).subscribe({
+      next: async (res: any) => {
+        try {
+          await this.uploadFilesDirect(res.containerSasUrl, res.prefix, files);
+          this.notify.success(`Upload successful for ${category}`);
+          this.clearSelection(category);
+          this.loadClientData();
+        } catch (err) {
+          console.error(err);
+          this.notify.error(`Upload failed for ${category}`);
+        } finally {
           this.loading = false;
         }
-      });
+      },
+      error: (err) => {
+        this.notify.error('Failed to create upload session');
+        this.loading = false;
+      },
+    });
   }
 
-  async uploadFilesDirect(containerSasUrl: string, prefix: string, files: File[]) {
-
+  async uploadFilesDirect(
+    containerSasUrl: string,
+    prefix: string,
+    files: File[],
+  ) {
     this.uploading = true;
-    this.fileProgress = files.map(f => ({
+    this.fileProgress = files.map((f) => ({
       name: f.name,
       progress: 0,
       loaded: 0,
       total: f.size,
-      status: "uploading"
+      status: 'uploading',
     }));
 
     const totalSize = files.reduce((s, f) => s + f.size, 0);
@@ -338,11 +202,11 @@ export class Uploadalbumpics implements OnInit {
         const file = queue.shift();
         if (!file) return;
 
-        const [baseUrl, sasToken] = containerSasUrl.split("?");
+        const [baseUrl, sasToken] = containerSasUrl.split('?');
 
         const blobUrl = `${baseUrl}/${encodeURIComponent(prefix + file.name)}?${sasToken}`;
         const blobClient = new BlockBlobClient(blobUrl);
-        const pf = this.fileProgress.find(x => x.name === file.name);
+        const pf = this.fileProgress.find((x) => x.name === file.name);
 
         try {
           await blobClient.uploadBrowserData(file, {
@@ -353,30 +217,30 @@ export class Uploadalbumpics implements OnInit {
               pf.loaded = ev.loadedBytes;
               pf.progress = (ev.loadedBytes / file.size) * 100;
 
-              uploadedTotal = this.fileProgress.reduce((sum, fp) => sum + fp.loaded, 0);
+              uploadedTotal = this.fileProgress.reduce(
+                (sum, fp) => sum + fp.loaded,
+                0,
+              );
               updateOverall();
-            }
+            },
           });
 
           pf.progress = 100;
-          pf.status = "completed";
-        }
-        catch (err) {
+          pf.status = 'completed';
+        } catch (err) {
           console.error(err);
-          pf.status = "failed";
+          pf.status = 'failed';
           throw err;
         }
       }
     };
 
-    for (let i = 0; i < concurrency; i++)
-      tasks.push(worker());
+    for (let i = 0; i < concurrency; i++) tasks.push(worker());
 
     await Promise.all(tasks);
 
     this.uploading = false;
   }
-
 
   // Helper method to clear selected files
   private clearSelection(category: string): void {
@@ -390,12 +254,15 @@ export class Uploadalbumpics implements OnInit {
       case 'loginCover':
         this.selectedLoginCoverFiles = [];
         break;
+        case 'zip':
+          this.selectedZipFiles = [];
+          break;
     }
   }
 
   async onDeleteAll(category: string) {
     const confirmDelete = await this.notify.confirm(
-      `Are you sure to delete all the ${category} images?`
+      `Are you sure to delete all the ${category} images?`,
     );
     if (!confirmDelete) {
       return;
@@ -408,11 +275,12 @@ export class Uploadalbumpics implements OnInit {
         this.loadClientData();
       },
       error: (error: any) => {
-        this.notify.error(`Failed to delete ${category} images. ${error.error.message}`);
+        this.notify.error(
+          `Failed to delete ${category} images. ${error.error.message}`,
+        );
         this.loading = false;
-      }
+      },
     });
-
   }
 
   onLoadingChange(loading: boolean) {
