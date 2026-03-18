@@ -1,0 +1,48 @@
+<div class="card custom-img-card position-relative"
+     [class.selected-card]="albumSelected"
+     (click)="openPreview()">
+
+  <div class="badge-stack">
+    <span *ngIf="albumSelected" class="badge-tag badge-album">Album</span>
+    <span *ngIf="frameSelected" class="badge-tag badge-frame">Frame</span>
+    <span *ngIf="coverSelected" class="badge-tag badge-cover">Cover</span>
+  </div>
+
+  <img
+    [src]="img"
+    class="card-img-top fixed-img"
+    loading="lazy"
+    decoding="async"
+  />
+
+  <div class="card-footer-overlay d-flex justify-content-center align-items-center gap-1">
+
+    <button
+      class="icon-btn"
+      [class.active]="albumSelected"
+      *ngIf="!isSubmitted"
+      (click)="albumToggle.emit($event)"
+    >
+      <i class="bi" [ngClass]="albumSelected ? 'bi-check2-circle' : 'bi-circle'"></i>
+    </button>
+
+    <button
+      class="icon-btn"
+      [class.active]="frameSelected"
+      *ngIf="!isSubmitted"
+      (click)="frameToggle.emit($event)"
+    >
+      <i class="bi bi-bounding-box"></i>
+    </button>
+
+    <button
+      class="icon-btn"
+      [class.active]="coverSelected"
+      *ngIf="!isSubmitted"
+      (click)="coverToggle.emit($event)"
+    >
+      <i class="bi" [ngClass]="coverSelected ? 'bi-star-fill' : 'bi-star'"></i>
+    </button>
+
+  </div>
+</div>

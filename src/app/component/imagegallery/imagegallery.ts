@@ -7,8 +7,6 @@ import { clientData, ClientMenuItems } from '../../model/clientData';
 import { Notificationservice } from '../../services/notificationservice';
 import { userserviceapi } from '../../services/userservice';
 import { HostListener } from '@angular/core';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 
 
 type ViewFilter = 'all' | 'album' | 'frame' | 'cover';
@@ -28,6 +26,8 @@ export class Imagegallery implements OnInit {
 
   // All images for this folder (from API)
   images: string[] = [];
+  previewImages:string[] =[];
+  orginalImages:string[] =[];
 
   // "Load more" batching
   batchSize = 100;
@@ -164,7 +164,6 @@ export class Imagegallery implements OnInit {
     // re-read fresh snapshot from service and deep clone for working edits
     const data = this.clientDataService.getData();
     this.clientDataload = JSON.parse(JSON.stringify(data ?? {})) as clientData;
-
     if (folderName === this.folderNames[0]) {
       this.isTraditional = true;
       this.selectedItems = (
@@ -254,13 +253,33 @@ export class Imagegallery implements OnInit {
   // ---------- SIMPLE URL helpers (strict -3, -2, -1) ----------
   // expects url like .../<phototype>/<cameratype>/<filename>
 
-  // expects url like .../<phototype>/<cameratype>/<filename>
+  // expects url like .../<phototype>/<cameratype>/<thumb|preview>/<filename>
   private getFileParts(url: string) {
     const clean = (url || '').split('?')[0].split('#')[0];
     const parts = clean.split('/').filter((p) => p !== '');
     const fileName = parts.length ? parts[parts.length - 1] : '';
-    const cameraFolder = parts.length >= 2 ? parts[parts.length - 2] : '';
-    const photoType = parts.length >= 3 ? parts[parts.length - 3] : '';
+
+    // If the URL contains a quality folder (/thumb/ or /preview/), it should not
+    // be treated as the camera folder (which is the real folder containing images).
+    const qualitySegment = parts.length >= 2 ? parts[parts.length - 2].toLowerCase() : '';
+    const hasQualitySegment = qualitySegment === 'thumb' || qualitySegment === 'preview';
+
+    const cameraFolder = hasQualitySegment
+      ? parts.length >= 3
+        ? parts[parts.length - 3]
+        : ''
+      : parts.length >= 2
+      ? parts[parts.length - 2]
+      : '';
+
+    const photoType = hasQualitySegment
+      ? parts.length >= 4
+        ? parts[parts.length - 4]
+        : ''
+      : parts.length >= 3
+      ? parts[parts.length - 3]
+      : '';
+
     return { fileName, cameraFolder, photoType };
   }
 
@@ -650,17 +669,73 @@ export class Imagegallery implements OnInit {
 
   // ---------- Preview ----------
 
+  private findPreviewUrl(imgUrl: string): string | null {
+    if (!imgUrl || !this.previewImages?.length) return null;
+    const identity = this.getImageIdentity(imgUrl);
+
+    return (
+      this.previewImages.find((url) => this.getImageIdentity(url) === identity) ??
+      null
+    );
+  }
+
+  private getThumbUrlForPreviewUrl(url: string | null): string | null {
+    if (!url) return null;
+
+    const visible = this.visibleImages;
+    if (visible.includes(url)) return url;
+
+    const identity = this.getImageIdentity(url);
+    return visible.find((v) => this.getImageIdentity(v) === identity) ?? null;
+  }
+
   openPreview(imgUrl: string) {
     // Push modal state to browser history
     history.pushState({ previewOpen: true }, '');
 
-    this.previewImageUrl = imgUrl;
-    this.previewFileName = this.fileNameFromUrl(imgUrl);
+    const thumbUrl = this.getThumbUrlForPreviewUrl(imgUrl) ?? imgUrl;
+    this.previewFileName = this.fileNameFromUrl(thumbUrl);
+
+    const previewUrl = this.findPreviewUrl(thumbUrl);
     const existing = this.selectedItems.find((x) =>
-      this.matchesUrlToItem(imgUrl, x)
+      this.matchesUrlToItem(thumbUrl, x)
     );
+
+    this.previewImageUrl = previewUrl ?? thumbUrl;
     this.previewComment = existing?.comment ?? '';
     this.previewLoading = true;
+  }
+
+  private getCurrentImageIndex(): number {
+    const thumbUrl = this.getThumbUrlForPreviewUrl(this.previewImageUrl);
+    if (!thumbUrl) return -1;
+    return this.visibleImages.indexOf(thumbUrl);
+  }
+
+  showNextImage(event: Event) {
+    event.stopPropagation();
+    const list = this.visibleImages;
+    const idx = this.getCurrentImageIndex();
+    if (idx >= 0 && idx < list.length - 1) {
+      const nextThumb = list[idx + 1];
+      this.previewImageUrl = this.findPreviewUrl(nextThumb) ?? nextThumb;
+      this.previewFileName = this.fileNameFromUrl(nextThumb);
+    } else {
+      this.notify.error('You’ve reached the last image.');
+    }
+  }
+
+  showPreviousImage(event: Event) {
+    event.stopPropagation();
+    const list = this.visibleImages;
+    const idx = this.getCurrentImageIndex();
+    if (idx > 0) {
+      const prevThumb = list[idx - 1];
+      this.previewImageUrl = this.findPreviewUrl(prevThumb) ?? prevThumb;
+      this.previewFileName = this.fileNameFromUrl(prevThumb);
+    } else {
+      this.notify.error('This is the first image.');
+    }
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -688,35 +763,6 @@ export class Imagegallery implements OnInit {
     }
   }
 
-  private getCurrentImageIndex(): number {
-    if (!this.previewImageUrl) return -1;
-    return this.visibleImages.indexOf(this.previewImageUrl);
-  }
-
-  showNextImage(event: Event) {
-    event.stopPropagation();
-    const list = this.visibleImages;
-    const idx = this.getCurrentImageIndex();
-    if (idx >= 0 && idx < list.length - 1) {
-      this.previewImageUrl = list[idx + 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('You’ve reached the last image.');
-    }
-  }
-
-  showPreviousImage(event: Event) {
-    event.stopPropagation();
-    const list = this.visibleImages;
-    const idx = this.getCurrentImageIndex();
-    if (idx > 0) {
-      this.previewImageUrl = list[idx - 1];
-      this.previewFileName = this.fileNameFromUrl(this.previewImageUrl);
-    } else {
-      this.notify.error('This is the first image.');
-    }
-  }
-
   // ---------- API & Save ----------
 
   getImagesbyPath() {
@@ -728,7 +774,10 @@ export class Imagegallery implements OnInit {
     this.loading = true;
     this.userService.getImagesbyType(clientId, folderPath).subscribe({
       next: (data) => {
-        this.images = data;
+        this.images = data.filter((url1: string) => url1.includes('/thumb/'));
+        // this.images = data;
+        this.previewImages = data.filter((url1: string) => url1.includes('/preview/'));
+        this.orginalImages = [...this.images];
         this.resetInfiniteScroll();
         this.loading = false;
       },
